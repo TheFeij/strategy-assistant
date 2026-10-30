@@ -1,0 +1,66 @@
+/* Power BI inspired data visualisations (pure SVG). */
+.chart {
+  width: 100%;
+}
+
+.chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chart-hint {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.chart-gauge {
+  display: flex;
+  justify-content: center;
+  padding: 2px 0 4px;
+}
+
+.chart-gauge svg {
+  max-width: 290px;
+}
+
+/* Chart row: a narrow gauge column and a wide bar-chart column. */
+.chart-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 900px) {
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-bar text {
+  font-family: inherit;
+}
+
+.chart-bar .chart-bar-mark {
+  transition: filter 0.15s ease;
+}
+
+.chart-bar .chart-bar-mark:hover {
+  filter: brightness(0.92);
+}
+
+.chart-empty {
+  padding: 26px 12px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 620px) {
+  .chart-hint {
+    font-size: 11px;
+  }
+}
