@@ -42,7 +42,7 @@ export default function TabWeights() {
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
           <div>
             <h3 className="text-base font-black text-slate-900">
-              جدول ۴ مقاله مک‌گاهان و پورتر: سهم عوامل در تفاوت سودآوری (ROIC)
+              جدول 4 مقاله مک‌گاهان و پورتر: سهم عوامل در تفاوت سودآوری (ROIC)
             </h3>
             <p className="text-xs text-slate-500">
               روی بخش اقتصادی مرتبط کلیک کنید یا از سطر اول (میانگین کل صنایع) استفاده نمایید

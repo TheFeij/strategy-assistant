@@ -1,4 +1,4 @@
-// جدول ۴ مقاله مک‌گاهان و پورتر (۱۹۹۷) — سهم عوامل در تفاوت سودآوری
+// جدول 4 مقاله مک‌گاهان و پورتر (1997) — سهم عوامل در تفاوت سودآوری
 export const mcgahanSectors = [
   {
     id: 'all_avg',
@@ -6,8 +6,8 @@ export const mcgahanSectors = [
     indEffect: 18.68,
     firmEffect: 31.71,
     corpEffect: 4.33,
-    corpLabel: '۴.۳۳٪',
-    totalModel: '۵۱.۶۰٪',
+    corpLabel: '4.33%',
+    totalModel: '51.60%',
     interpretation: 'واحد کسب‌وکار سهم بالاتری دارد اما اثر صنعت نیز یک‌پنجم نوسانات را هدایت می‌کند.',
   },
   {
@@ -16,8 +16,8 @@ export const mcgahanSectors = [
     indEffect: 29.35,
     firmEffect: 5.02,
     corpEffect: 22.45,
-    corpLabel: '۲۲.۴۵٪',
-    totalModel: '۴۹.۵۴٪',
+    corpLabel: '22.45%',
+    totalModel: '49.54%',
     interpretation: 'صنایع مبتنی بر منابع طبیعی؛ نقش صنعت و مادر بالا اما تفاوت‌های داخلی بنگاه ناچیز است (کالایی شدن محصولات).',
   },
   {
@@ -26,8 +26,8 @@ export const mcgahanSectors = [
     indEffect: 10.81,
     firmEffect: 35.45,
     corpEffect: 0.0,
-    corpLabel: '۰٪ (منفی محدود)',
-    totalModel: '۴۶.۲۳٪',
+    corpLabel: '0% (منفی محدود)',
+    totalModel: '46.23%',
     interpretation: 'در تولیدی، اثر صنعت کمترین سهم را دارد و در عوض مهارت‌های درون‌بنگاهی و زنجیره ارزش حرف اول را می‌زنند.',
   },
   {
@@ -36,8 +36,8 @@ export const mcgahanSectors = [
     indEffect: 39.5,
     firmEffect: 9.77,
     corpEffect: 18.33,
-    corpLabel: '۱۸.۳۳٪',
-    totalModel: '۶۶.۷۱٪',
+    corpLabel: '18.33%',
+    totalModel: '66.71%',
     interpretation: 'وابستگی شدید به چارچوب‌های تنظیم‌گری و ساختار کلان صنعت.',
   },
   {
@@ -46,8 +46,8 @@ export const mcgahanSectors = [
     indEffect: 41.79,
     firmEffect: 2.04,
     corpEffect: 24.06,
-    corpLabel: '۲۴.۰۶٪',
-    totalModel: '۷۰.۲۹٪',
+    corpLabel: '24.06%',
+    totalModel: '70.29%',
     interpretation: 'ساختار شبکه و پشتیبانی هلدینگ مادر حرف اول را می‌زند؛ تفاوت‌های خرد سگمنتی سهم پایینی دارد.',
   },
   {
@@ -56,8 +56,8 @@ export const mcgahanSectors = [
     indEffect: 64.3,
     firmEffect: 19.41,
     corpEffect: 14.71,
-    corpLabel: '۱۴.۷۱٪',
-    totalModel: '۶۸.۴۳٪',
+    corpLabel: '14.71%',
+    totalModel: '68.43%',
     interpretation: 'بالاترین وابستگی به صنعت! موقعیت مکانی و ساختار کلان صنعت سرنوشت سودآوری را تعیین می‌کند.',
   },
   {
@@ -66,8 +66,8 @@ export const mcgahanSectors = [
     indEffect: 47.37,
     firmEffect: 32.96,
     corpEffect: 0.0,
-    corpLabel: '۰٪ (منفی محدود)',
-    totalModel: '۶۱.۰۲٪',
+    corpLabel: '0% (منفی محدود)',
+    totalModel: '61.02%',
     interpretation: 'هم جذابیت ساختاری صنعت و هم نوآوری و تمایز در سطح واحد خدماتی به طور همزمان حیاتی هستند.',
   },
 ]
