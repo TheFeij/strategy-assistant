@@ -3,19 +3,26 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "داشبورد راهبردی صنعت و بنگاه (پورتر، بارنی، مک‌گاهان)",
+  "description": "StratBI Pro v3.0 — تصمیم‌یار مدیریت استراتژیک (پورتر، بارنی، مک‌گاهان و پورتر)",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:single": "vite build --mode single",
     "preview": "vite preview"
   },
   "dependencies": {
     "@fontsource-variable/vazirmatn": "^5.3.0",
+    "chart.js": "^4.6.1",
     "react": "^19.1.0",
+    "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.4.1",
-    "vite": "^6.3.5"
+    "autoprefixer": "^10.6.2",
+    "postcss": "^8.5.32",
+    "tailwindcss": "^3.4.19",
+    "vite": "^6.3.5",
+    "vite-plugin-singlefile": "^2.3.4"
   }
 }

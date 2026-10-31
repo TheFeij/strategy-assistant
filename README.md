@@ -1,88 +1,68 @@
-# داشبورد راهبردی صنعت و بنگاه — Strategy Assistant
+# StratBI Pro v3.0 — تصمیم‌یار مدیریت استراتژیک
 
-A React + Vite rewrite of the single-file strategic dashboard (Porter's five forces, Barney's VRIN resources, and the McGahan–Porter combination). The UI is Persian/RTL with a modern analytics theme: Vazirmatn typeface, slate/indigo/cyan palette, and Power BI–style SVG visualisations.
+React + Vite implementation of the **StratBI Pro v3.0** strategic decision dashboard:
+
+- **ماژول ۱ — صنعت (پورتر ۲۰۰۸):** مرز صنعت و ROIC ۲۰ صنعت بورس ایران، ۵ صفحه نیروی رقابتی (۳۶ سوال)، ۴ فاکتور محیطی (۱۲ سوال) و کارنامه/استراتژی صنعت.
+- **ماژول ۲ — بنگاه (بارنی ۱۹۹۱):** چک‌لیست مصادیق منابع، سنجش V/R/I/N با کشف غیرمستقیم «ابهام علی» و کارنامه پایداری منابع.
+- **ماژول ۳ — ترکیب (مک‌گاهان و پورتر ۱۹۹۷):** جدول ضرایب ۷ بخش اقتصادی، وزن‌های نرمال‌شده (صنعت/بنگاه/شرکت مادر)، ماتریس موقعیت‌یابی و بیانیه استراتژی قابل چاپ.
+
+The UI is Persian/RTL, Vazirmatn, slate/indigo/teal palette. Default state is a blank form; the header can load a complete sample or reset back to blank.
 
 ## Getting started
 
 ```bash
 npm install
-npm run dev       # http://localhost:5173
-npm run build     # production build in dist/
-npm run preview   # serve the production build
+npm run dev          # http://localhost:5173
+npm run build        # normal production build in dist/
+npm run build:single # one self-contained dist/index.html (JS, CSS and fonts inlined)
+npm run preview      # serve the production build
 ```
 
-The build uses a relative base (`./`), so `dist/` can be dropped on any static host or sub-path.
+`base: './'` is set in `vite.config.js`, so `dist/` can be hosted from any static path.
+
+For a single shareable file, run `npm run build:single`. It uses `vite-plugin-singlefile` to produce a fully self-contained `dist/index.html` (no external JS, CSS, or font requests), which can be opened directly or sent by email/Telegram.
+
+## Stack
+
+- React 19 + Vite 6
+- Tailwind CSS 3 (build-time, no CDN) + custom range/AI slider styles in `src/styles/index.css`
+- Chart.js 4 + `react-chartjs-2` (radar, grouped bar, doughnut, scatter)
+- `@fontsource-variable/vazirmatn` for self-hosted Persian type
 
 ## Project structure
 
 ```
-index.html                 # Vite entry, sets lang="fa" dir="rtl"
+index.html                    # Vite entry (lang="fa" dir="rtl")
 src/
-  main.jsx                 # React root
-  App.jsx                  # layout + page switching
-  pages/                   # one file per dashboard screen
-    HomePage.jsx
-    IndustryPage.jsx       # module 1 (4 tabs)
-    FirmPage.jsx           # module 2 (4 tabs)
-    ComboPage.jsx          # module 3 (3 tabs)
-  components/
-    layout/                # TopBar, Sidebar, Footer
-    ui/                    # Button, Kpi, Note, Field, GaugeChart, BarChart
-    industry/              # module 1 tab content
-    firm/                  # module 2 tab content
-    combo/                 # module 3 tab content
+  main.jsx                    # React root + font + styles
+  App.jsx                     # header, breadcrumb, view switcher, footer
   state/
-    StrategyContext.jsx    # all inputs + actions (React context)
-    NavigationContext.jsx  # active sub-tab per module (drives the sidebar sub-nav)
-    initialState.js        # shape of the dashboard state
-  data/                    # static content: forces, resources, presets, copy
-    forces.js
-    resources.js
-    vrin.js
-    constants.js
-    modules.js             # module tabs (second level of the sidebar tree)
-    sections.js            # sidebar subsection anchors for every tab
+    StrategyContext.jsx       # all inputs, actions, sample/blank presets, derived results
+  data/
+    iranIndustries.js         # 20 Iranian industries + ROIC benchmark (39%)
+    mcgahan.js                # McGahan–Porter sector coefficients (Table 4)
+    porter.js                 # 5 force pages, rival types, 4 environmental factors
+    barney.js                 # resource checklists + VRIN AI guidance
   utils/
-    calculations.js        # industry / firm / combo scoring + advice
-    aiPrompt.js            # builds the external analysis prompt
-    export.js              # JSON export (same schema as the legacy file)
-    clipboard.js
-  hooks/
-    useHashRoute.js        # #home, #m1, #m2, #m3 deep links
-  styles/
-    index.css              # imports the four sheets below
-    base.css               # tokens, typography, forms, cards, notes, tables
-    layout.css             # header, shell, sidebar, footer, media queries
-    modules.css            # home cards, force/resource blocks
-    charts.css             # chart layout (gauge column + bar chart column)
-legacy/
-  strategic_dashboard_v2_porter_barney_mcgahan_3.html   # original single file, kept for reference
+    calculations.js           # force scores, industry score, VRIN score, combined score
+    chartSetup.js             # Chart.js registration + Persian font defaults
+  components/
+    layout/                   # Header, BreadcrumbBar
+    home/HomeView.jsx         # hero scores + 3 module portal cards
+    mod1/                     # TabRoic, TabForces, TabEnv, TabResult
+    mod2/                     # TabChecklist, TabFactor (V/R/N), TabI, TabFirmResult
+    mod3/                     # TabWeights, TabStrategy
+    ui/Controls.jsx           # AiConsult popover, Range, AnswerBadge
+  styles/index.css            # Tailwind layers + slider/tab/card primitives
+legacy/                       # original single-file dashboard, kept for reference
 ```
 
-## Where to change things
+## Scoring rules
 
-- **Wording / labels / reference figures:** `src/data/constants.js`, `src/data/forces.js`, `src/data/resources.js`.
-- **Scoring rules, thresholds, advice text:** `src/utils/calculations.js`.
-- **Theme colours, radii, shadows, fonts:** the `:root` block in `src/styles/base.css`. Charts read the `--chart-1` … `--chart-8` tokens, which start from Power BI's default categorical palette.
-- **New input field:** add it to `src/state/initialState.js`, a setter in `src/state/StrategyContext.jsx`, then render it in the relevant tab.
-- **New tab/step:** add `{ id, label }` to `src/data/modules.js` for the module, anchor its content in `src/data/sections.js`, and handle the id in the matching page.
-- **New section anchor:** give the block an `id="sec-…"` and add a `{ id, label }` entry for that module/tab in `src/data/sections.js`. The sidebar tree and scroll tracking pick it up automatically.
-- **New page/module:** add a page component in `src/pages/`, register its id in `src/data/constants.js` (`PAGES`) and render it in `src/App.jsx`. Use `useModuleTab(moduleId)` for its steps so the sidebar stays in sync.
-- **Styling:** shared primitives live in `base.css`; screen-specific pieces in `layout.css` / `modules.css`; chart-specific layout in `charts.css`.
-- **Font:** Vazirmatn Variable is self-hosted through `@fontsource-variable/vazirmatn` (imported in `src/main.jsx`), so no external font request is needed.
+- **Industry force score:** average of answered questions in each force. Buyer power uses `0.4·L + 0.4·S + 0.2·(L·S/5)`. Rivalry uses `0.65·intensity + 0.35·price − non-price relief`, multiplied by `1.25` (zero-sum), `1.0` (balanced) or `0.80` (positive-sum), clipped to 1–5.
+- **Environmental factors:** answered factor average normalized to `[-1, +1]`; each factor has a 5-force weight vector; future force = current + Σ(weight × normalized factor), clipped to 1–5.
+- **Industry attractiveness:** effective pressure = `65% mean + 35% strongest force`; score = `(5 − pressure) / 4 × 100`.
+- **Firm/VRIN:** `V` averages the two value questions, `I = max(historical, social, causal ambiguity)` where causal ambiguity is inferred from `6 − (codified + poach)/2`; per-resource score uses the multiplicative gate formula. Firm score = `50% best resource + 50% mean of the three resources`.
+- **McGahan–Porter combination:** selected sector weights for industry / business unit / corporate parent are normalized after the optional parent toggle. Effective industry score = `60% current + 40% future`; combined = weighted sum (missing components default to 50).
 
-## Charts
-
-- `GaugeChart` — Power BI style 270° arc gauge used for the industry, firm and combined scores.
-- `BarChart` — horizontal bars with gridlines, axis ticks, per-bar value labels, hover tooltips and an optional dashed target line. Bars grow right-to-left to match the RTL reading direction.
-
-Charts are plain SVG/React components, so they stay crisp, themeable and dependency-free. `BarChart` accepts `data`, `max`, `ticks`, `unit`, `target` and `formatValue`; reuse it for any new visual.
-
-## Behaviour notes
-
-- Scores are derived on render from context state, so there is no manual "recalculate" step; results stay in sync with edits.
-- Navigation lives entirely in the right-panel tree (`module → step → subsection`). Both module and step levels are collapsible; the active step auto-expands. There is no top tab bar.
-- The active subsection is highlighted while scrolling and clicking a leaf smooth-scrolls to its block; leaves from another step/module switch there first. The last section is highlighted at the bottom of the page.
-- Module 3 previously called an undefined `calcCombo()` in the legacy file. The combination score is now implemented: a normalised weighted mean of the industry and firm scores, plus the 2×2 decision matrix (threshold 50) and the effective weight shares shown above the gauge and in the strategy notes.
-- Data is kept for the session while moving between modules. Use **خروجی JSON** for a persistent copy.
-- The AI section never calls a service; it only generates a prompt from the recorded data.
+Scores update live as inputs change — there is no manual recalculate step. All data stays in React state for the session; use the print action on module 3 for a PDF, or the sample/blank buttons to switch modes.

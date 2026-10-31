@@ -1,34 +1,33 @@
-import { StrategyProvider } from './state/StrategyContext'
-import { NavigationProvider } from './state/NavigationContext'
-import { useHashRoute } from './hooks/useHashRoute'
-import TopBar from './components/layout/TopBar'
-import Sidebar from './components/layout/Sidebar'
-import Footer from './components/layout/Footer'
-import HomePage from './pages/HomePage'
-import IndustryPage from './pages/IndustryPage'
-import FirmPage from './pages/FirmPage'
-import ComboPage from './pages/ComboPage'
+import './utils/chartSetup'
+import { StrategyProvider, useStrategy } from './state/StrategyContext'
+import Header from './components/layout/Header'
+import BreadcrumbBar from './components/layout/BreadcrumbBar'
+import HomeView from './components/home/HomeView'
+import Module1 from './components/mod1/Module1'
+import Module2 from './components/mod2/Module2'
+import Module3 from './components/mod3/Module3'
 
-export default function App() {
-  const [page, navigate] = useHashRoute()
+function Views() {
+  const { view } = useStrategy()
 
   return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <BreadcrumbBar />
+      <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 flex-1">
+        {view === 'home' && <HomeView />}
+        {view === 'mod1' && <Module1 />}
+        {view === 'mod2' && <Module2 />}
+        {view === 'mod3' && <Module3 />}
+      </main>
+    </div>
+  )
+}
+
+export default function App() {
+  return (
     <StrategyProvider>
-      <NavigationProvider>
-        <div className="shell">
-          <TopBar />
-          <Sidebar page={page} onNavigate={navigate} />
-          <div className="content-frame">
-            <main className="content-scroll">
-              <HomePage active={page === 'home'} onNavigate={navigate} />
-              <IndustryPage active={page === 'm1'} onNavigate={navigate} />
-              <FirmPage active={page === 'm2'} onNavigate={navigate} />
-              <ComboPage active={page === 'm3'} onNavigate={navigate} />
-              <Footer />
-            </main>
-          </div>
-        </div>
-      </NavigationProvider>
+      <Views />
     </StrategyProvider>
   )
 }
