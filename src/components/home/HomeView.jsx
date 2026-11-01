@@ -102,17 +102,17 @@ const scoreTones = {
   sky: {
     from: '#6BAAD0',
     to: '#2878A8',
-    surface: 'border-industry-400/30 bg-midnight',
+    surface: 'border-industry-200 bg-industry-50',
   },
   brand: {
     from: '#6EC5C0',
     to: '#147D78',
-    surface: 'border-brand-400/30 bg-midnight',
+    surface: 'border-brand-200 bg-brand-50',
   },
   gold: {
     from: '#EBD09A',
     to: '#D6A449',
-    surface: 'border-gold-400/30 bg-midnight',
+    surface: 'border-gold-200 bg-gold-50',
   },
 }
 
@@ -153,7 +153,7 @@ function ScoreRing({ id, value, label, source, tone = 'industry' }) {
     <div
       className={`relative overflow-hidden rounded-2xl border p-4 shadow-sm sm:flex sm:flex-col sm:items-center sm:gap-3 sm:p-5 sm:text-center ${colors.surface}`}
     >
-      <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-l from-transparent via-white/20 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-l from-transparent via-white/70 to-transparent" />
 
       <div className="relative flex items-center gap-4 sm:flex-col sm:gap-3">
         <div
@@ -179,7 +179,7 @@ function ScoreRing({ id, value, label, source, tone = 'industry' }) {
                 stroke={tick.active ? colors.from : 'currentColor'}
                 strokeWidth={tick.active ? 2.2 : 1.2}
                 strokeLinecap="round"
-                className={tick.active ? undefined : 'text-white/20'}
+                className={tick.active ? undefined : 'text-midnight-300'}
               />
             ))}
 
@@ -190,7 +190,7 @@ function ScoreRing({ id, value, label, source, tone = 'industry' }) {
               fill="none"
               stroke="currentColor"
               strokeWidth="8"
-              className="text-white/10"
+              className="text-midnight-200 dark:text-midnight-600"
               strokeLinecap="round"
               strokeDasharray={`${arcLength} ${circumference}`}
               transform={`rotate(${startAngle} ${center} ${center})`}
@@ -216,7 +216,7 @@ function ScoreRing({ id, value, label, source, tone = 'industry' }) {
               strokeWidth="1"
               strokeDasharray="1 6"
               strokeLinecap="round"
-              className="text-white/10"
+              className="text-midnight-200 dark:text-midnight-600"
             />
             {hasValue && filled > 0 && (
               <>
@@ -227,15 +227,15 @@ function ScoreRing({ id, value, label, source, tone = 'industry' }) {
           </svg>
 
           <div className="absolute inset-0 flex flex-col items-center justify-center pt-1">
-            <span className="text-4xl font-black leading-none tracking-tight text-white">{displayValue}</span>
-            <span className="mt-1 text-xs font-semibold text-midnight-300">از ۱۰۰</span>
+            <span className="text-4xl font-black leading-none tracking-tight text-midnight-900">{displayValue}</span>
+            <span className="mt-1 text-xs font-semibold text-muted">از ۱۰۰</span>
           </div>
         </div>
 
         <div>
-          <div className="text-sm font-extrabold text-white sm:text-base">{label}</div>
-          <div className="mt-0.5 text-xs text-midnight-300">{source}</div>
-          <div className="mt-2 h-1.5 w-20 overflow-hidden rounded-full bg-white/10 sm:mx-auto">
+          <div className="text-sm font-extrabold text-midnight-900 sm:text-base">{label}</div>
+          <div className="mt-0.5 text-xs text-muted">{source}</div>
+          <div className="mt-2 h-1.5 w-20 overflow-hidden rounded-full bg-midnight-100 dark:bg-midnight-700 sm:mx-auto">
             <div
               className="h-full rounded-full transition-all duration-700 ease-out"
               style={{
@@ -255,14 +255,19 @@ export default function HomeView() {
 
   return (
     <div className="space-y-4">
-      <div className="relative overflow-hidden rounded-3xl border border-line bg-white/85 p-5 shadow-card backdrop-blur-sm sm:p-7 dark:border-midnight-700 dark:bg-midnight-900/60">
-        <div className="relative">
-          <h1 className="text-center text-2xl font-black leading-tight text-midnight-900 sm:text-3xl dark:text-white">
+      <div className="overflow-hidden rounded-3xl border border-line bg-white shadow-card dark:border-midnight-700">
+        <div className="relative overflow-hidden border-b border-midnight-700 bg-gradient-to-l from-midnight via-midnight-900 to-brand-900 px-5 py-3 text-center sm:px-7 sm:py-4">
+          <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-industry-500/20 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 left-1/4 h-56 w-56 rounded-full bg-gold-500/10 blur-3xl" />
+          <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-l from-transparent via-white/25 to-transparent" />
+
+          <h1 className="relative text-xl font-black leading-tight text-white sm:text-2xl">
             داشبورد مدیریتی
           </h1>
-          <div className="mx-auto mt-3 h-1 w-28 rounded-full bg-gradient-to-l from-brand-600 via-brand-500 to-gold-500" />
+        </div>
 
-          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="bg-white p-4 sm:p-5 dark:bg-midnight-900">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <ScoreRing
               id="hero-score-industry"
               value={IS_current}
