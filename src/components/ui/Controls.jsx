@@ -9,19 +9,19 @@ export function AiConsult({ hint, onApply, applyLabel, children, buttonLabel = '
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="text-xs bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-300 px-2.5 py-1 rounded-lg font-extrabold inline-flex items-center gap-1 transition"
+        className="text-xs bg-brand-50 hover:bg-brand-100 text-brand-800 border border-brand-300 px-2.5 py-1 rounded-lg font-extrabold inline-flex items-center gap-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
       >
         <span>{buttonLabel}</span>
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 max-w-[80vw] z-40 bg-teal-950 text-teal-50 p-3 rounded-xl text-xs space-y-2 border border-teal-700 shadow-2xl text-right">
+        <div className="absolute right-0 top-full mt-2 w-80 max-w-[80vw] z-40 bg-midnight text-white p-3 rounded-xl text-xs space-y-2 border border-midnight-600 shadow-raised text-right">
           {children}
-          {hint && <p className="text-xs leading-relaxed text-teal-100">{hint}</p>}
+          {hint && <p className="text-xs leading-relaxed text-midnight-200">{hint}</p>}
           {onApply && (
             <button
               type="button"
               onClick={onApply}
-              className="bg-teal-500 hover:bg-teal-400 text-slate-950 font-extrabold px-2.5 py-1 rounded-lg text-xs"
+              className="bg-brand-500 hover:bg-brand-400 text-white font-extrabold px-2.5 py-1 rounded-lg text-xs transition"
             >
               {applyLabel || 'قرار دادن عدد پیشنهادی AI'}
             </button>
@@ -32,8 +32,9 @@ export function AiConsult({ hint, onApply, applyLabel, children, buttonLabel = '
   )
 }
 
-export function Range({ value, onChange, tone = 'indigo', answered = value != null, ...rest }) {
-  const toneClass = tone === 'ai' ? 'ai-range' : tone === 'emerald' ? 'emerald-range' : ''
+export function Range({ value, onChange, tone = 'industry', answered = value != null, ...rest }) {
+  const toneClass =
+    tone === 'ai' ? 'ai-range' : tone === 'brand' ? 'brand-range' : tone === 'industry' ? 'industry-range' : ''
   return (
     <input
       type="range"
@@ -48,22 +49,18 @@ export function Range({ value, onChange, tone = 'indigo', answered = value != nu
   )
 }
 
-export function AnswerBadge({ value, tone = 'indigo', emptyText = 'پاسخ داده نشده' }) {
+export function AnswerBadge({ value, tone = 'industry', emptyText = 'پاسخ داده نشده' }) {
   const answered = value != null
   const toneClass =
-    tone === 'emerald'
-      ? 'bg-emerald-600 text-white'
-      : tone === 'teal'
-        ? 'bg-teal-600 text-white'
-        : tone === 'amber'
-          ? 'bg-amber-600 text-white'
-          : tone === 'purple'
-            ? 'bg-purple-600 text-white'
-            : 'bg-indigo-600 text-white'
+    tone === 'brand'
+      ? 'bg-brand-600 text-white'
+      : tone === 'gold'
+        ? 'bg-gold-500 text-midnight'
+        : 'bg-industry-600 text-white'
   return (
     <span
       className={`text-xs font-black px-2.5 py-1 rounded-lg shrink-0 ${
-        answered ? toneClass : 'bg-amber-100 text-amber-800'
+        answered ? toneClass : 'bg-gold-100 text-gold-800 border border-gold-200'
       }`}
     >
       {answered ? toFaNumber(Number(value).toFixed(1)) : emptyText}

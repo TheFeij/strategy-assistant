@@ -25,19 +25,19 @@ export default function TabResult() {
       {
         label: 'فشار فعلی نیروها',
         data: F_cur_arr,
-        backgroundColor: 'rgba(79,70,229,0.2)',
-        borderColor: '#4f46e5',
+        backgroundColor: 'rgba(40,120,168,0.18)',
+        borderColor: '#2878A8',
         borderWidth: 2,
-        pointBackgroundColor: '#4f46e5',
+        pointBackgroundColor: '#2878A8',
       },
       {
         label: 'فشار آینده (پس از ۴ فاکتور)',
         data: F_fut_arr,
-        backgroundColor: 'rgba(13,148,136,0.2)',
-        borderColor: '#0d9488',
+        backgroundColor: 'rgba(20,125,120,0.18)',
+        borderColor: '#147D78',
         borderDash: [4, 4],
         borderWidth: 2,
-        pointBackgroundColor: '#0d9488',
+        pointBackgroundColor: '#147D78',
       },
     ],
   }
@@ -65,10 +65,10 @@ export default function TabResult() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col">
-        <div className="border-b border-slate-100 pb-2 mb-3">
-          <h4 className="text-sm font-black text-slate-900">رادار ۵ نیروی رقابتی (وضعیت فعلی در برابر آینده)</h4>
-          <p className="text-xs text-slate-500">
+      <div className="bg-white rounded-2xl p-4 border border-line shadow-sm flex flex-col">
+        <div className="border-b border-line pb-2 mb-3">
+          <h4 className="text-sm font-black text-midnight-900">رادار ۵ نیروی رقابتی (وضعیت فعلی در برابر آینده)</h4>
+          <p className="text-xs text-muted">
             عدد ۱ یعنی فشار کم (سودآوری بالا) و عدد ۵ یعنی فشار شدید (سودآوری پایین)
           </p>
         </div>
@@ -77,29 +77,29 @@ export default function TabResult() {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+      <div className="bg-white rounded-2xl p-4 border border-line shadow-sm flex flex-col justify-between space-y-4">
         <div>
-          <div className="border-b border-slate-100 pb-2 mb-3">
-            <h4 className="text-sm font-black text-slate-900">فرمول امتیاز جذابیت صنعت (با جریمه تنگناترین نیرو)</h4>
-            <p className="text-xs text-slate-500">
+          <div className="border-b border-line pb-2 mb-3">
+            <h4 className="text-sm font-black text-midnight-900">فرمول امتیاز جذابیت صنعت (با جریمه تنگناترین نیرو)</h4>
+            <p className="text-xs text-muted">
               فشار مؤثر صنعت = ۶۵٪ میانگین ۵ نیرو + ۳۵٪ شدیدترین نیروی تنگناکننده
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="bg-indigo-50 p-3 rounded-2xl border border-indigo-100 text-center">
-              <div className="text-xs text-slate-600">امتیاز فعلی صنعت</div>
-              <div className="text-3xl font-black text-indigo-800 mt-1">
+            <div className="bg-industry-50 p-3 rounded-2xl border border-industry-100 text-center">
+              <div className="text-xs text-muted">امتیاز فعلی صنعت</div>
+              <div className="text-3xl font-black text-industry-800 mt-1">
                 {IS_current != null ? toFaNumber(IS_current) : '—'}
               </div>
             </div>
-            <div className="bg-teal-50 p-3 rounded-2xl border border-teal-100 text-center">
-              <div className="text-xs text-slate-600">امتیاز آینده صنعت</div>
-              <div className="text-3xl font-black text-teal-800 mt-1">
+            <div className="bg-brand-50 p-3 rounded-2xl border border-brand-100 text-center">
+              <div className="text-xs text-muted">امتیاز آینده صنعت</div>
+              <div className="text-3xl font-black text-brand-800 mt-1">
                 {IS_future != null ? toFaNumber(IS_future) : '—'}
               </div>
             </div>
           </div>
-          <div className="bg-rose-50 border border-rose-200 rounded-2xl p-3.5 text-sm text-rose-900 leading-relaxed">
+          <div className="bg-gold-50 border border-gold-200 rounded-2xl p-3.5 text-sm text-gold-900 leading-relaxed">
             {IS_current != null ? (
               <>
                 <strong>تنگنای اصلی سودآوری صنعت:</strong> بیشترین فشار از سمت{' '}
@@ -113,7 +113,7 @@ export default function TabResult() {
           </div>
         </div>
 
-        <div className="bg-slate-100 rounded-2xl p-3.5 text-sm text-slate-700 leading-relaxed border border-slate-200">
+        <div className="bg-canvas rounded-2xl p-3.5 text-sm text-midnight-700 leading-relaxed border border-line">
           {firmRoic != null ? (
             <>
               <strong>مقایسه ROIC بنگاه و صنعت در ایران:</strong> بازده سرمایه بنگاه شما{' '}
@@ -131,17 +131,17 @@ export default function TabResult() {
         </div>
       </div>
 
-      <div className="bg-slate-900 text-white rounded-2xl p-4 border border-slate-800 shadow-lg flex flex-col justify-between space-y-4">
+      <div className="bg-midnight text-white rounded-2xl p-4 border border-midnight-700 shadow-sm flex flex-col justify-between space-y-4">
         <div className="space-y-3">
-          <span className="text-xs font-bold text-amber-400">بیانیه استراتژی در سطح صنعت (مقاله پورتر ۲۰۰۸)</span>
+          <span className="text-xs font-bold text-gold-400">بیانیه استراتژی در سطح صنعت (مقاله پورتر ۲۰۰۸)</span>
           <div className="text-base font-black text-white">{porterStrategyTitle}</div>
-          <p className="text-sm text-slate-300 leading-relaxed">{porterStrategyBody}</p>
+          <p className="text-sm text-midnight-200 leading-relaxed">{porterStrategyBody}</p>
         </div>
 
         <button
           type="button"
           onClick={() => navigate('mod2')}
-          className="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-md"
+          className="w-full bg-brand-600 hover:bg-brand-700 text-white text-xs font-extrabold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-sm"
         >
           <span>ذخیره و انتقال به تحلیل منابع بنگاه (بارنی ۱۹۹۱)</span>
           <span>←</span>

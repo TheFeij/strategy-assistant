@@ -3,25 +3,20 @@ import { useStrategy } from '../../state/StrategyContext'
 
 const THEMES = {
   dark: {
-    palette: ['129, 140, 248', '45, 212, 191', '96, 165, 250', '148, 163, 184'],
-    particleAlpha: [0.45, 0.85],
-    lineAlpha: 0.3,
-    speed: 34,
-    wrapper:
-      'bg-gradient-to-br from-[#050814] via-[#0b1330] to-[#04141a]',
-    glows: [
-      'bg-indigo-500/25',
-      'bg-teal-400/15',
-      'bg-violet-500/10',
-    ],
+    palette: ['107, 170, 208', '110, 197, 192', '214, 164, 73', '139, 163, 187'],
+    particleAlpha: [0.2, 0.45],
+    lineAlpha: 0.14,
+    speed: 30,
+    wrapper: 'bg-gradient-to-br from-midnight-950 via-midnight-900 to-midnight-950',
+    glows: ['bg-industry-500/10', 'bg-brand-500/10', 'bg-gold-500/10'],
   },
   light: {
-    palette: ['67, 56, 202', '15, 118, 110', '51, 65, 85', '37, 99, 235'],
-    particleAlpha: [0.6, 0.95],
-    lineAlpha: 0.5,
-    speed: 28,
-    wrapper: 'bg-gradient-to-br from-slate-100 via-indigo-100 to-teal-100',
-    glows: ['bg-indigo-300/40', 'bg-teal-300/35', 'bg-sky-300/25'],
+    palette: ['16, 29, 48', '20, 125, 120', '40, 120, 168', '214, 164, 73'],
+    particleAlpha: [0.12, 0.3],
+    lineAlpha: 0.16,
+    speed: 24,
+    wrapper: 'bg-canvas',
+    glows: ['bg-industry-300/15', 'bg-brand-300/15', 'bg-gold-300/10'],
   },
 }
 

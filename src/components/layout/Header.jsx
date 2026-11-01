@@ -3,9 +3,9 @@ import { toFaNumber } from '../../utils/numbers'
 
 function ScorePill({ label, value, dotClass, valueClass }) {
   return (
-    <div className="flex items-center gap-2 rounded-xl px-2.5 py-1.5 transition hover:bg-slate-200/70 dark:hover:bg-white/5">
+    <div className="flex items-center gap-2 rounded-xl px-2.5 py-1.5 transition hover:bg-canvas dark:hover:bg-white/5">
       <span className={`h-1.5 w-1.5 rounded-full ${dotClass}`} />
-      <span className="text-xs text-slate-500 dark:text-slate-400">{label}</span>
+      <span className="text-xs text-muted dark:text-muted">{label}</span>
       <strong className={`text-sm font-black ${valueClass}`}>{value != null ? toFaNumber(value) : '—'}</strong>
     </div>
   )
@@ -16,10 +16,10 @@ export default function Header() {
     useStrategy()
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 text-slate-900 shadow-lg shadow-slate-900/10 backdrop-blur dark:border-white/10 dark:bg-slate-950/80 dark:text-white dark:shadow-slate-950/30">
+    <header className="sticky top-0 z-50 border-b border-line bg-white/90 text-ink shadow-sm backdrop-blur dark:border-midnight-700 dark:bg-midnight-950/90 dark:text-white">
       <div className="relative mx-auto flex min-h-16 max-w-[84rem] flex-wrap items-center justify-between gap-3 px-3 py-2.5 sm:px-5">
         <button type="button" className="flex items-center gap-3 text-right" onClick={() => navigate('home')}>
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-indigo-600 to-teal-500 shadow-lg shadow-indigo-950/50 ring-1 ring-white/15">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-midnight via-midnight-800 to-brand-700 text-white shadow-sm ring-1 ring-midnight-900/10">
             <svg
               viewBox="0 0 24 24"
               className="h-6 w-6"
@@ -37,34 +37,34 @@ export default function Header() {
           <div className="leading-tight">
             <div className="text-base font-black tracking-tight sm:text-lg">
               StratBI{' '}
-              <span className="bg-gradient-to-l from-teal-600 to-indigo-600 bg-clip-text text-transparent dark:from-teal-300 dark:to-indigo-300">
+              <span className="bg-gradient-to-l from-brand-700 to-industry-700 bg-clip-text text-transparent dark:from-brand-300 dark:to-industry-300">
                 Pro
               </span>
-              <span className="mr-1.5 align-middle text-xs font-bold text-slate-400 dark:text-slate-500">
+              <span className="mr-1.5 align-middle text-xs font-bold text-muted dark:text-muted">
                 v3.0
               </span>
             </div>
           </div>
         </button>
 
-        <div className="pointer-events-none order-3 flex w-full items-center justify-center gap-1 rounded-2xl border border-slate-200 bg-slate-100 p-1 lg:absolute lg:left-1/2 lg:top-1/2 lg:order-none lg:w-auto lg:-translate-x-1/2 lg:-translate-y-1/2 dark:border-white/10 dark:bg-white/[0.04]">
+        <div className="pointer-events-none order-3 flex w-full items-center justify-center gap-1 rounded-2xl border border-line bg-canvas p-1 lg:absolute lg:left-1/2 lg:top-1/2 lg:order-none lg:w-auto lg:-translate-x-1/2 lg:-translate-y-1/2 dark:border-white/10 dark:bg-white/[0.04]">
           <ScorePill
             label="صنعت"
             value={IS_current}
-            dotClass="bg-indigo-500 dark:bg-indigo-400"
-            valueClass="text-indigo-600 dark:text-indigo-300"
+            dotClass="bg-industry-500 dark:bg-industry-400"
+            valueClass="text-industry-700 dark:text-industry-300"
           />
           <ScorePill
             label="بنگاه"
             value={FS}
-            dotClass="bg-emerald-500 dark:bg-emerald-400"
-            valueClass="text-emerald-600 dark:text-emerald-300"
+            dotClass="bg-brand-500 dark:bg-brand-400"
+            valueClass="text-brand-700 dark:text-brand-300"
           />
           <ScorePill
             label="ترکیب"
             value={combinedScore}
-            dotClass="bg-amber-500 dark:bg-amber-400"
-            valueClass="text-amber-600 dark:text-amber-300"
+            dotClass="bg-gold-500 dark:bg-gold-400"
+            valueClass="text-gold-800 dark:text-gold-300"
           />
         </div>
 
@@ -72,7 +72,7 @@ export default function Header() {
           <button
             type="button"
             onClick={resetToBlank}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600 transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-300 dark:hover:border-rose-400/40 dark:hover:bg-rose-500/10 dark:hover:text-rose-200"
+            className="inline-flex items-center gap-2 rounded-xl border border-line bg-canvas px-3 py-2 text-xs font-bold text-muted transition hover:border-gold-300 hover:bg-gold-50 hover:text-gold-800 dark:border-white/10 dark:bg-white/[0.04] dark:text-midnight-300 dark:hover:border-gold-400/40 dark:hover:bg-gold-500/10 dark:hover:text-gold-200"
           >
             <svg
               viewBox="0 0 24 24"
@@ -94,7 +94,7 @@ export default function Header() {
           <button
             type="button"
             onClick={fillSample}
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-l from-teal-600 to-emerald-500 px-3.5 py-2 text-xs font-black text-white shadow-lg shadow-teal-950/40 transition hover:brightness-110"
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-3.5 py-2 text-xs font-black text-white shadow-sm transition hover:bg-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2"
           >
             <svg
               viewBox="0 0 24 24"
@@ -116,7 +116,7 @@ export default function Header() {
             onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'تغییر به حالت روشن' : 'تغییر به حالت تاریک'}
             title={theme === 'dark' ? 'حالت روشن' : 'حالت تاریک'}
-            className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-slate-100 p-2.5 text-slate-600 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-300 dark:hover:border-indigo-400/40 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-200"
+            className="inline-flex items-center justify-center rounded-xl border border-line bg-canvas p-2.5 text-muted transition hover:border-industry-300 hover:bg-industry-50 hover:text-industry-700 dark:border-white/10 dark:bg-white/[0.04] dark:text-midnight-300 dark:hover:border-industry-400/40 dark:hover:bg-industry-500/10 dark:hover:text-industry-200"
           >
             {theme === 'dark' ? (
               <svg
@@ -147,7 +147,7 @@ export default function Header() {
           </button>
         </div>
       </div>
-      <div className="h-px bg-gradient-to-l from-transparent via-indigo-400/60 to-transparent" />
+      <div className="h-px bg-gradient-to-l from-transparent via-brand-500/30 to-transparent" />
     </header>
   )
 }

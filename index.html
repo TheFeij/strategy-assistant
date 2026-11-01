@@ -3,11 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101D30" />
     <title>StratBI Pro v3.0 | پلتفرم هوشمند محاسبه امتیاز صنعت، بنگاه و استراتژی</title>
     <script>
       try {
         var theme = localStorage.getItem('stratbi-theme')
-        if (theme !== 'light') document.documentElement.classList.add('dark')
+        if (theme === 'dark') document.documentElement.classList.add('dark')
       } catch (error) {}
     </script>
   </head>

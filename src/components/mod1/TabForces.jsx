@@ -16,22 +16,22 @@ const rivalryOptions = [
     value: 'zero_sum',
     title: 'رقابت مجموع صفر (Zero-Sum)',
     desc: 'جنگ قیمتی بر سر یک کیک ثابت؛ سود یک شرکت به معنای زیان دیگری است (تشدید فشار رقابت)',
-    box: 'border-rose-200 bg-rose-50/60',
-    title2: 'text-rose-900',
+    box: 'border-gold-200 bg-gold-50/60',
+    title2: 'text-gold-900',
   },
   {
     value: 'balanced',
     title: 'رقابت ترکیبی متعادل',
     desc: 'ترکیبی از رقابت قیمتی و غیرقیمتی در بخش‌های مختلف بازار',
-    box: 'border-slate-200 bg-white',
-    title2: 'text-slate-800',
+    box: 'border-line bg-white',
+    title2: 'text-midnight-800',
   },
   {
     value: 'positive_sum',
     title: 'رقابت مجموع مثبت (Positive-Sum)',
     desc: 'هر رقیب بخش خاصی از مشتریان را با کیفیت و خدمات متمایز هدف گرفته و سود کل صنعت زیاد می‌شود',
-    box: 'border-emerald-200 bg-emerald-50/60',
-    title2: 'text-emerald-900',
+    box: 'border-brand-200 bg-brand-50/60',
+    title2: 'text-brand-900',
   },
 ]
 
@@ -55,14 +55,14 @@ export default function TabForces() {
 
   return (
     <div className="space-y-4">
-      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+      <div className="bg-white rounded-2xl p-4 border border-line shadow-sm space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="text-sm text-slate-600">
-            <strong className="text-slate-900">راهنمای پاسخ‌دهی:</strong> هر یک از ۵ نیروی رقابتی در یک صفحه جداگانه قرار
+          <div className="text-sm text-muted">
+            <strong className="text-midnight-900">راهنمای پاسخ‌دهی:</strong> هر یک از ۵ نیروی رقابتی در یک صفحه جداگانه قرار
             دارد. سوالات به زبان ساده طراحی شده‌اند؛ برای هر سوال از <strong>۱ (خیلی کم) تا ۵ (خیلی زیاد)</strong> امتیاز
             دهید.
           </div>
-          <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200">
+          <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-industry-50 text-industry-800 border border-industry-200">
             سوالات پاسخ داده شده: {answeredForceQs} از {totalForceQs}
           </span>
         </div>
@@ -79,13 +79,13 @@ export default function TabForces() {
                 className={`rounded-2xl p-3 text-right border transition flex flex-col justify-between ${
                   active
                     ? 'force-page-btn-active'
-                    : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                    : 'bg-white hover:bg-industry-50 text-midnight-700 border-line'
                 } ${p === 5 ? 'col-span-2 sm:col-span-1' : ''}`}
               >
                 <div className="text-xs font-black">{f.label}</div>
                 <div className={`flex items-center justify-between mt-1.5 text-xs ${active ? 'opacity-90' : 'opacity-80'}`}>
                   <span>{f.meta}</span>
-                  <strong className={`px-2 py-0.5 rounded ${active ? 'bg-white/20' : 'bg-slate-200 text-slate-800'}`}>
+                  <strong className={`px-2 py-0.5 rounded ${active ? 'bg-white/20 text-white' : 'bg-industry-50 text-industry-700'}`}>
                     {forceScores[idx] != null ? toFaNumber(forceScores[idx].toFixed(1)) : '—'}
                   </strong>
                 </div>
@@ -95,17 +95,17 @@ export default function TabForces() {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-4">
-        <div className="border-b border-slate-100 pb-3 flex flex-wrap items-center justify-between gap-2">
+      <div className="bg-white rounded-2xl p-4 border border-line shadow-sm space-y-4">
+        <div className="border-b border-line pb-3 flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h3 className="text-base font-black text-indigo-950">{pageData.title}</h3>
-            <p className="text-xs text-slate-500 mt-0.5">{pageData.subtitle}</p>
+            <h3 className="text-base font-black text-industry-950">{pageData.title}</h3>
+            <p className="text-xs text-muted mt-0.5">{pageData.subtitle}</p>
           </div>
         </div>
 
         {forcePage === 1 && pageData.incumbentChecklist && (
-          <div className="bg-indigo-50/70 border border-indigo-200 rounded-2xl p-4 space-y-2.5">
-            <div className="text-xs font-extrabold text-indigo-950">
+          <div className="bg-industry-50/70 border border-industry-200 rounded-2xl p-4 space-y-2.5">
+            <div className="text-xs font-extrabold text-industry-950">
               ☑️ چک‌لیست مزایای شرکت‌های مستقر مستقل از اندازه (موارد موجود در صنعت را تیک بزنید تا به پاسخ سوال ۵ کمک
               کند):
             </div>
@@ -113,15 +113,15 @@ export default function TabForces() {
               {pageData.incumbentChecklist.map((c) => (
                 <label
                   key={c.id}
-                  className="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-indigo-100 cursor-pointer"
+                  className="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-industry-100 cursor-pointer"
                 >
                   <input
                     type="checkbox"
                     checked={!!incumbentChecks[c.id]}
                     onChange={(e) => toggleIncumbent(c.id, e.target.checked)}
-                    className="rounded text-indigo-600"
+                    className="rounded accent-industry-600"
                   />
-                  <span className="font-semibold text-slate-700">{c.label}</span>
+                  <span className="font-semibold text-midnight-700">{c.label}</span>
                 </label>
               ))}
             </div>
@@ -137,11 +137,11 @@ export default function TabForces() {
               <div
                 key={q.id}
                 className={`p-4 rounded-2xl border space-y-2 transition ${
-                  answered ? 'border-indigo-300 bg-white' : 'border-slate-200 bg-slate-50'
+                  answered ? 'border-industry-300 bg-white' : 'border-line bg-canvas'
                 }`}
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-xs sm:text-sm font-black text-slate-900">{q.title}</span>
+                  <span className="text-xs sm:text-sm font-black text-midnight-900">{q.title}</span>
                   <div className="flex items-center gap-2">
                     {q.source === 'ai' ? (
                       <AiConsult
@@ -150,22 +150,22 @@ export default function TabForces() {
                         applyLabel={`قرار دادن عدد AI (${toFaNumber(q.aiRec.toFixed(1))})`}
                       />
                     ) : (
-                      <span className="text-xs px-2 py-0.5 rounded bg-indigo-50 text-indigo-800 font-bold border border-indigo-200">
+                      <span className="text-xs px-2 py-0.5 rounded bg-industry-50 text-industry-800 font-bold border border-industry-200">
                         👤 سوال مستقیم از مدیرعامل
                       </span>
                     )}
                     <AnswerBadge value={value} />
                   </div>
                 </div>
-                <p className="text-sm text-slate-600 leading-relaxed">{q.desc}</p>
+                <p className="text-sm text-muted leading-relaxed">{q.desc}</p>
                 <div className="pt-1">
                   <Range
                     value={value}
                     answered={answered}
-                    tone={q.source === 'ai' ? 'ai' : 'indigo'}
+                    tone={q.source === 'ai' ? 'ai' : 'industry'}
                     onChange={(v) => setForceAnswer(q.id, v)}
                   />
-                  <div className="flex justify-between text-xs text-slate-500 mt-1 font-semibold gap-2">
+                  <div className="flex justify-between text-xs text-muted mt-1 font-semibold gap-2">
                     <span>{left}</span>
                     <span className="text-left">{right}</span>
                   </div>
@@ -176,8 +176,8 @@ export default function TabForces() {
         </div>
 
         {forcePage === 5 && (
-          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
-            <div className="text-xs font-extrabold text-slate-900">
+          <div className="bg-canvas border border-line rounded-2xl p-4 space-y-2">
+            <div className="text-xs font-extrabold text-midnight-900">
               ج) انتخاب نوع رقابت حاکم بر صنعت (مجموع صفر در برابر مجموع مثبت):
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
@@ -196,7 +196,7 @@ export default function TabForces() {
                   />
                   <div>
                     <div className={`font-black ${opt.title2}`}>{opt.title}</div>
-                    <div className="text-xs text-slate-600">{opt.desc}</div>
+                    <div className="text-xs text-muted">{opt.desc}</div>
                   </div>
                 </label>
               ))}
@@ -204,12 +204,12 @@ export default function TabForces() {
           </div>
         )}
 
-        <div className="flex items-center justify-between pt-3 border-t border-slate-100 gap-2">
+        <div className="flex items-center justify-between pt-3 border-t border-line gap-2">
           {forcePage > 1 ? (
             <button
               type="button"
               onClick={() => setForcePage(forcePage - 1)}
-              className="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold px-4 py-2.5 rounded-xl"
+              className="bg-canvas hover:bg-line text-ink text-xs font-bold px-4 py-2.5 rounded-xl border border-line transition"
             >
               → صفحه نیروی قبلی
             </button>
@@ -220,7 +220,7 @@ export default function TabForces() {
             <button
               type="button"
               onClick={() => setForcePage(forcePage + 1)}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl flex items-center gap-1.5"
+              className="bg-brand-600 hover:bg-brand-700 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl flex items-center gap-1.5 transition"
             >
               <span>صفحه نیروی بعدی (نیروی {forcePage + 1})</span>
               <span>←</span>
@@ -229,7 +229,7 @@ export default function TabForces() {
             <button
               type="button"
               onClick={() => setMod1Tab(3)}
-              className="bg-teal-600 hover:bg-teal-500 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl flex items-center gap-1.5"
+              className="bg-brand-600 hover:bg-brand-700 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl flex items-center gap-1.5 transition"
             >
               <span>اتمام ۵ نیرو و رفتن به ۴ فاکتور محیطی</span>
               <span>←</span>

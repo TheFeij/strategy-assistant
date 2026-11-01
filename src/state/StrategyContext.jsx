@@ -55,7 +55,7 @@ const getInitialTheme = () => {
   } catch (error) {
     /* localStorage may be unavailable */
   }
-  return 'dark'
+  return 'light'
 }
 
 const StrategyContext = createContext(null)

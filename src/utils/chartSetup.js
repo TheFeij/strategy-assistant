@@ -4,10 +4,10 @@ Chart.register(...registerables)
 Chart.defaults.font.family = 'Vazirmatn Variable, Vazirmatn, Tahoma, sans-serif'
 Chart.defaults.font.size = 13
 
-const LIGHT_TICK = '#475569'
-const DARK_TICK = '#94a3b8'
-const LIGHT_GRID = 'rgba(148, 163, 184, 0.35)'
-const DARK_GRID = 'rgba(148, 163, 184, 0.15)'
+const LIGHT_TICK = '#718096'
+const DARK_TICK = '#9FB0C4'
+const LIGHT_GRID = 'rgba(223, 230, 239, 0.9)'
+const DARK_GRID = 'rgba(139, 163, 187, 0.15)'
 
 export function applyChartTheme(isDark) {
   const tickColor = isDark ? DARK_TICK : LIGHT_TICK

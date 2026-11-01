@@ -6,7 +6,7 @@ React + Vite implementation of the **StratBI Pro v3.0** strategic decision dashb
 - **ماژول ۲ — بنگاه (بارنی ۱۹۹۱):** چک‌لیست مصادیق منابع، سنجش V/R/I/N با کشف غیرمستقیم «ابهام علی» و کارنامه پایداری منابع.
 - **ماژول ۳ — ترکیب (مک‌گاهان و پورتر ۱۹۹۷):** جدول ضرایب ۷ بخش اقتصادی، وزن‌های نرمال‌شده (صنعت/بنگاه/شرکت مادر)، ماتریس موقعیت‌یابی و بیانیه استراتژی قابل چاپ.
 
-The UI is Persian/RTL, Vazirmatn, slate/indigo/teal palette. Default state is a blank form; the header can load a complete sample or reset back to blank.
+The UI is Persian/RTL, Vazirmatn, using the **Midnight Executive** palette (midnight navy, teal, muted gold, light blue-gray canvas). Default state is a blank form; the header can load a complete sample or reset back to blank.
 
 ## Getting started
 

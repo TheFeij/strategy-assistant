@@ -21,19 +21,19 @@ export default function Module3() {
 
   return (
     <div className="space-y-4">
-      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-3">
+      <div className="bg-white rounded-2xl p-4 border border-line shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3 mb-3">
           <div>
-            <span className="text-xs font-bold text-amber-600">
+            <span className="text-xs font-bold text-gold-800">
               ترکیب امتیاز صنعت و بنگاه (مقاله مک‌گاهان و پورتر ۱۹۹۷)
             </span>
-            <h2 className="text-lg sm:text-xl font-black text-slate-900">
+            <h2 className="text-lg sm:text-xl font-black text-midnight-900">
               وزن‌دهی به امتیاز صنعت و بنگاه بر اساس جدول ضرایب صنایع و صدور بیانیه استراتژی
             </h2>
           </div>
-          <div className="bg-amber-50 px-4 py-2 rounded-2xl border border-amber-200 text-center">
-            <div className="text-xs text-amber-900">امتیاز موزون مک‌گاهان-پورتر</div>
-            <div className="text-xl font-black text-amber-700">
+          <div className="bg-gold-50 px-4 py-2 rounded-2xl border border-gold-200 text-center">
+            <div className="text-xs text-gold-900">امتیاز موزون مک‌گاهان-پورتر</div>
+            <div className="text-xl font-black text-gold-800">
               {combinedScore != null ? toFaNumber(combinedScore) : '—'}
             </div>
           </div>
@@ -49,13 +49,13 @@ export default function Module3() {
                 onClick={() => setMod3Tab(t.id)}
                 className={`rounded-xl p-3.5 text-right transition flex items-center gap-3 border ${
                   active
-                    ? 'subtab-active-amber border-slate-200'
-                    : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                    ? 'subtab-active-gold border-gold-600'
+                    : 'bg-white hover:bg-gold-50 text-midnight-700 border-line'
                 }`}
               >
                 <span
                   className={`w-8 h-8 rounded-lg font-black text-xs flex items-center justify-center shrink-0 ${
-                    active ? 'bg-white/20' : 'bg-slate-200 text-slate-700'
+                    active ? 'bg-midnight/10 text-midnight' : 'bg-gold-50 text-gold-800'
                   }`}
                 >
                   {t.id}

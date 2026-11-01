@@ -17,25 +17,25 @@ export default function Module1() {
 
   return (
     <div className="space-y-4">
-      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-3">
+      <div className="bg-white rounded-2xl p-4 border border-line shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3 mb-3">
           <div>
-            <span className="text-xs font-bold text-indigo-600">تحلیل جذابیت صنعت (مقاله پورتر ۲۰۰۸)</span>
-            <h2 className="text-lg sm:text-xl font-black text-slate-900">
+            <span className="text-xs font-bold text-industry-700">تحلیل جذابیت صنعت (مقاله پورتر ۲۰۰۸)</span>
+            <h2 className="text-lg sm:text-xl font-black text-midnight-900">
               سنجش ۵ نیروی رقابتی (هر نیرو در یک صفحه مجزا)، ۴ فاکتور محیطی و ROIC صنایع ایران
             </h2>
           </div>
-          <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-2xl border border-slate-200 text-center">
+          <div className="flex items-center gap-3 bg-canvas px-4 py-2 rounded-2xl border border-line text-center">
             <div>
-              <div className="text-xs text-slate-500">امتیاز فعلی صنعت</div>
-              <div className="text-xl font-black text-indigo-700">
+              <div className="text-xs text-muted">امتیاز فعلی صنعت</div>
+              <div className="text-xl font-black text-industry-700">
                 {IS_current != null ? toFaNumber(IS_current) : '—'}
               </div>
             </div>
-            <div className="h-7 w-px bg-slate-200" />
+            <div className="h-7 w-px bg-line" />
             <div>
-              <div className="text-xs text-slate-500">امتیاز آینده صنعت</div>
-              <div className="text-xl font-black text-teal-600">
+              <div className="text-xs text-muted">امتیاز آینده صنعت</div>
+              <div className="text-xl font-black text-brand-700">
                 {IS_future != null ? toFaNumber(IS_future) : '—'}
               </div>
             </div>
@@ -51,12 +51,14 @@ export default function Module1() {
                 key={t.id}
                 onClick={() => setMod1Tab(t.id)}
                 className={`rounded-xl p-3 text-right transition flex items-center gap-2.5 border ${
-                  active ? 'subtab-active border-slate-200' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                  active
+                    ? 'subtab-active border-industry-700'
+                    : 'bg-white hover:bg-industry-50 text-midnight-700 border-line'
                 }`}
               >
                 <span
                   className={`w-7 h-7 rounded-lg font-black text-xs flex items-center justify-center shrink-0 ${
-                    active ? 'bg-white/20' : 'bg-slate-200 text-slate-700'
+                    active ? 'bg-white/20 text-white' : 'bg-industry-50 text-industry-700'
                   }`}
                 >
                   {t.id}
