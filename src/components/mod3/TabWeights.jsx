@@ -1,6 +1,7 @@
 import { Doughnut } from 'react-chartjs-2'
 import { useStrategy } from '../../state/StrategyContext'
 import { mcgahanSectors } from '../../data/mcgahan'
+import { toFaNumber } from '../../utils/numbers'
 
 export default function TabWeights() {
   const {
@@ -31,14 +32,19 @@ export default function TabWeights() {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
+      legend: { position: 'bottom', labels: { boxWidth: 14, font: { size: 13 } } },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => `${ctx.label}: ${toFaNumber(Number(ctx.parsed).toFixed(1))}%`,
+        },
+      },
     },
     cutout: '58%',
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="lg:col-span-2 bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
           <div>
             <h3 className="text-base font-black text-slate-900">
@@ -74,14 +80,14 @@ export default function TabWeights() {
                   >
                     <td className="py-3 px-3 font-extrabold text-slate-900">{sec.name}</td>
                     <td className="py-3 px-2 text-center font-mono text-indigo-700 font-bold">
-                      {sec.indEffect.toFixed(2)}%
+                      {toFaNumber(sec.indEffect.toFixed(2))}%
                     </td>
                     <td className="py-3 px-2 text-center font-mono text-emerald-700 font-bold">
-                      {sec.firmEffect.toFixed(2)}%
+                      {toFaNumber(sec.firmEffect.toFixed(2))}%
                     </td>
-                    <td className="py-3 px-2 text-center font-mono text-amber-700">{sec.corpLabel}</td>
-                    <td className="py-3 px-2 text-center font-mono">{sec.totalModel}</td>
-                    <td className="py-3 px-3 text-[11px] text-slate-600">{sec.interpretation}</td>
+                    <td className="py-3 px-2 text-center font-mono text-amber-700">{toFaNumber(sec.corpLabel)}</td>
+                    <td className="py-3 px-2 text-center font-mono">{toFaNumber(sec.totalModel)}</td>
+                    <td className="py-3 px-3 text-xs text-slate-600">{toFaNumber(sec.interpretation)}</td>
                   </tr>
                 )
               })}
@@ -90,7 +96,7 @@ export default function TabWeights() {
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
         <div className="space-y-4">
           <div className="border-b border-slate-100 pb-3">
             <h4 className="text-sm font-black text-slate-900">ضرایب نرمال‌شده ترکیب امتیاز</h4>
@@ -110,7 +116,7 @@ export default function TabWeights() {
             </label>
             <div className="flex justify-between pt-1">
               <span>امتیاز پشتیبانی شرکت مادر (از ۱۰۰):</span>
-              <strong className="text-amber-700">{corpScore}</strong>
+              <strong className="text-amber-700">{toFaNumber(corpScore)}</strong>
             </div>
             <input
               type="range"
@@ -124,15 +130,15 @@ export default function TabWeights() {
           <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 text-xs space-y-1.5">
             <div className="flex justify-between gap-2">
               <span>وزن نرمال‌شده جذابیت صنعت:</span>
-              <strong className="text-indigo-700">{(nWI * 100).toFixed(1)}%</strong>
+              <strong className="text-indigo-700">{toFaNumber((nWI * 100).toFixed(1))}%</strong>
             </div>
             <div className="flex justify-between gap-2">
               <span>وزن نرمال‌شده منابع بنگاه:</span>
-              <strong className="text-emerald-700">{(nWF * 100).toFixed(1)}%</strong>
+              <strong className="text-emerald-700">{toFaNumber((nWF * 100).toFixed(1))}%</strong>
             </div>
             <div className="flex justify-between gap-2">
               <span>وزن نرمال‌شده شرکت مادر:</span>
-              <strong className="text-amber-700">{(nWC * 100).toFixed(1)}%</strong>
+              <strong className="text-amber-700">{toFaNumber((nWC * 100).toFixed(1))}%</strong>
             </div>
           </div>
         </div>
@@ -141,7 +147,7 @@ export default function TabWeights() {
           onClick={() => setMod3Tab(2)}
           className="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold py-3 px-4 rounded-xl shadow-md flex items-center justify-center gap-2"
         >
-          <span>مشاهده تب ۲: بیانیه نهایی استراتژی ورود و رقابت</span>
+          <span>مشاهده بیانیه نهایی استراتژی ورود و رقابت</span>
           <span>←</span>
         </button>
       </div>

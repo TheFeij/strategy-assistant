@@ -1,16 +1,17 @@
 import { useStrategy } from '../../state/StrategyContext'
+import { toFaNumber } from '../../utils/numbers'
 import TabWeights from './TabWeights'
 import TabStrategy from './TabStrategy'
 
 const tabs = [
   {
     id: 1,
-    title: 'تب ۱: جدول ضرایب مک‌گاهان و پورتر و انتخاب بخش اقتصادی',
+    title: 'جدول ضرایب مک‌گاهان و پورتر و انتخاب بخش اقتصادی',
     sub: 'انتخاب ضریب وابسته به صنعت یا «همه صنایع (میانگین کل)»',
   },
   {
     id: 2,
-    title: 'تب ۲: نتیجه نهایی، ماتریس موقعیت‌یابی و استراتژی ورود به صنعت',
+    title: 'نتیجه نهایی، ماتریس موقعیت‌یابی و استراتژی ورود به صنعت',
     sub: 'گزارش جامع ترکیب پورتر، بارنی و مک‌گاهان',
   },
 ]
@@ -19,20 +20,22 @@ export default function Module3() {
   const { mod3Tab, setMod3Tab, combinedScore } = useStrategy()
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4 mb-4">
+    <div className="space-y-4">
+      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-3">
           <div>
             <span className="text-xs font-bold text-amber-600">
-              ماژول ۳ • ترکیب امتیاز صنعت و بنگاه (مقاله مک‌گاهان و پورتر ۱۹۹۷)
+              ترکیب امتیاز صنعت و بنگاه (مقاله مک‌گاهان و پورتر ۱۹۹۷)
             </span>
             <h2 className="text-lg sm:text-xl font-black text-slate-900">
               وزن‌دهی به امتیاز صنعت و بنگاه بر اساس جدول ضرایب صنایع و صدور بیانیه استراتژی
             </h2>
           </div>
           <div className="bg-amber-50 px-4 py-2 rounded-2xl border border-amber-200 text-center">
-            <div className="text-[10px] text-amber-900">امتیاز موزون مک‌گاهان-پورتر</div>
-            <div className="text-xl font-black text-amber-700">{combinedScore ?? '—'}</div>
+            <div className="text-xs text-amber-900">امتیاز موزون مک‌گاهان-پورتر</div>
+            <div className="text-xl font-black text-amber-700">
+              {combinedScore != null ? toFaNumber(combinedScore) : '—'}
+            </div>
           </div>
         </div>
 
@@ -58,8 +61,8 @@ export default function Module3() {
                   {t.id}
                 </span>
                 <div>
-                  <div className="text-xs sm:text-sm font-extrabold">{t.title}</div>
-                  <div className={`text-[11px] ${active ? 'opacity-85' : 'opacity-75'}`}>{t.sub}</div>
+                  <div className="text-sm sm:text-base font-extrabold">{t.title}</div>
+                  <div className={`text-xs ${active ? 'opacity-85' : 'opacity-75'}`}>{t.sub}</div>
                 </div>
               </button>
             )

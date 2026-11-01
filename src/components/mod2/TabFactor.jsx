@@ -1,43 +1,44 @@
 import { useStrategy } from '../../state/StrategyContext'
 import { barneyData, barneyKeys } from '../../data/barney'
 import { AiConsult, AnswerBadge, Range } from '../ui/Controls'
+import { toFaNumber } from '../../utils/numbers'
 
 const configs = {
   V: {
-    title: 'تب ۱: شاخص ارزشمند بودن (Valuable) — بهره‌برداری از فرصت‌ها و خنثی کردن تهدیدهای محیطی (SWOT)',
+    title: 'شاخص ارزشمند بودن (Valuable) — بهره‌برداری از فرصت‌ها و خنثی کردن تهدیدهای محیطی (SWOT)',
     description:
       'منابع بنگاه زمانی ارزشمند هستند که به شرکت کمک کنند هزینه‌ها را کاهش دهد، درآمد را بالا ببرد یا تهدیدهای ۵ نیروی پورتر را خنثی کند. به سوالات زیر درباره هر ۳ دسته منبع پاسخ دهید:',
     box: 'bg-indigo-50 border-indigo-200 text-indigo-950',
     titleColor: 'text-indigo-900',
     tone: 'emerald',
     next: 'R',
-    nextLabel: 'ادامه به تب ۲: سنجش کمیاب بودن (Rare)',
+    nextLabel: 'ادامه به سنجش کمیاب بودن (Rare)',
     prev: 'CHK',
     prevLabel: 'بازگشت به فهرست منابع',
   },
   R: {
-    title: 'تب ۲: شاخص کمیاب بودن (Rare) — چقدر این منابع بین رقبای فعلی و بالقوه نادر است؟',
+    title: 'شاخص کمیاب بودن (Rare) — چقدر این منابع بین رقبای فعلی و بالقوه نادر است؟',
     description:
       'منبع ارزشمندی که اکثر رقبا هم آن را داشته باشند، مزیت رقابتی نمی‌آورد بلکه فقط باعث بقای معمولی می‌شود. در هر کارت می‌توانید با دکمه «🤖 مشورت با AI» وضعیت رقبا را بررسی کنید.',
     box: 'bg-teal-50 border-teal-200 text-teal-950',
     titleColor: 'text-teal-900',
     tone: 'teal',
     next: 'I',
-    nextLabel: 'ادامه به تب ۳: سنجش غیرقابل تقلید بودن (I)',
+    nextLabel: 'ادامه به سنجش غیرقابل تقلید بودن (I)',
     prev: 'V',
-    prevLabel: 'بازگشت به تب ۱ (V)',
+    prevLabel: 'بازگشت به ارزشمند بودن (V)',
   },
   N: {
-    title: 'تب ۴: شاخص نبود جایگزین راهبردی هم‌ارز (Non-Substitutability)',
+    title: 'شاخص نبود جایگزین راهبردی هم‌ارز (Non-Substitutability)',
     description:
       'آیا رقیب می‌تواند بدون کپی کردن منبع شما، از یک راه یا فناوری کاملاً متفاوت به همان نتیجه برسد؟ با کلیک روی «🤖 مشورت با AI» جایگزین‌های احتمالی صنعت را بررسی کنید.',
     box: 'bg-purple-50 border-purple-200 text-purple-950',
     titleColor: 'text-purple-900',
     tone: 'purple',
     next: 'RES',
-    nextLabel: 'مشاهده تب ۵: کارنامه نهایی پایداری منابع بنگاه',
+    nextLabel: 'مشاهده کارنامه نهایی پایداری منابع بنگاه',
     prev: 'I',
-    prevLabel: 'بازگشت به تب ۳ (I)',
+    prevLabel: 'بازگشت به تقلیدناپذیری (I)',
   },
 }
 
@@ -46,8 +47,8 @@ export default function TabFactor({ mode }) {
   const cfg = configs[mode]
 
   return (
-    <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5">
-      <div className={`border rounded-2xl p-4 text-xs ${cfg.box}`}>
+    <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-4">
+      <div className={`border rounded-2xl p-4 text-sm ${cfg.box}`}>
         <span className={`font-extrabold block mb-1 ${cfg.titleColor}`}>{cfg.title}</span>
         <p className="leading-relaxed">{cfg.description}</p>
       </div>
@@ -64,7 +65,7 @@ export default function TabFactor({ mode }) {
                   <AiConsult
                     hint={mode === 'R' ? b.R_aiHint : b.N_aiHint}
                     onApply={() => setBarneyAnswer(k, mode === 'R' ? 'R_q1' : 'N_q1', mode === 'R' ? b.R_aiRec : b.N_aiRec)}
-                    applyLabel={`قرار دادن عدد AI (${(mode === 'R' ? b.R_aiRec : b.N_aiRec).toFixed(1)})`}
+                    applyLabel={`قرار دادن عدد AI (${toFaNumber((mode === 'R' ? b.R_aiRec : b.N_aiRec).toFixed(1))})`}
                   />
                 )}
               </div>
@@ -74,7 +75,7 @@ export default function TabFactor({ mode }) {
                   {['V_q1', 'V_q2'].map((field, idx) => {
                     const value = values[field]
                     return (
-                      <div key={field} className="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5 text-xs">
+                      <div key={field} className="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5 text-sm">
                         <div className="flex justify-between items-center gap-2">
                           <span className="font-bold">
                             {idx === 0
@@ -91,7 +92,7 @@ export default function TabFactor({ mode }) {
               )}
 
               {mode === 'R' && (
-                <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5 text-xs">
+                <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5 text-sm">
                   <div className="flex justify-between items-center gap-2">
                     <span className="font-bold">
                       چقدر این منبع شما در مقایسه با رقبای فعلی و بالقوه صنعت کمیاب و منحصربه‌فرد است؟
@@ -99,7 +100,7 @@ export default function TabFactor({ mode }) {
                     <AnswerBadge value={values.R_q1} tone="teal" emptyText="خالی" />
                   </div>
                   <Range value={values.R_q1} tone="ai" onChange={(v) => setBarneyAnswer(k, 'R_q1', v)} />
-                  <div className="flex justify-between text-[10px] text-slate-400">
+                  <div className="flex justify-between text-xs text-slate-400">
                     <span>۱ = اکثر رقبا دارند</span>
                     <span>۵ = فقط شرکت ما دارد</span>
                   </div>
@@ -107,7 +108,7 @@ export default function TabFactor({ mode }) {
               )}
 
               {mode === 'N' && (
-                <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5 text-xs">
+                <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5 text-sm">
                   <div className="flex justify-between items-center gap-2">
                     <span className="font-bold">
                       چقدر این منبع در برابر جایگزینی با یک فناوری یا مدل کسب‌وکار دیگر (هم‌ارز استراتژیک) مصون و
@@ -116,7 +117,7 @@ export default function TabFactor({ mode }) {
                     <AnswerBadge value={values.N_q1} tone="purple" emptyText="خالی" />
                   </div>
                   <Range value={values.N_q1} tone="ai" onChange={(v) => setBarneyAnswer(k, 'N_q1', v)} />
-                  <div className="flex justify-between text-[10px] text-slate-400">
+                  <div className="flex justify-between text-xs text-slate-400">
                     <span>۱ = به راحتی با روش دیگری دور زده می‌شود</span>
                     <span>۵ = هیچ جایگزین هم‌ارزی ندارد</span>
                   </div>

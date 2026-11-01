@@ -2,6 +2,7 @@ import { Radar } from 'react-chartjs-2'
 import { useStrategy } from '../../state/StrategyContext'
 import { forceShortNames } from '../../data/porter'
 import { IRAN_ROIC_BENCHMARK } from '../../data/iranIndustries'
+import { toFaNumber } from '../../utils/numbers'
 
 export default function TabResult() {
   const {
@@ -44,16 +45,30 @@ export default function TabResult() {
   const radarOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } },
-    scales: { r: { min: 1, max: 5, ticks: { stepSize: 1, backdropColor: 'transparent' } } },
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 14, font: { size: 13 } } },
+      tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${toFaNumber(ctx.parsed.r)}` } },
+    },
+    scales: {
+      r: {
+        min: 1,
+        max: 5,
+        ticks: {
+          stepSize: 1,
+          backdropColor: 'transparent',
+          font: { size: 12 },
+          callback: (value) => toFaNumber(value),
+        },
+      },
+    },
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex flex-col">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col">
         <div className="border-b border-slate-100 pb-2 mb-3">
           <h4 className="text-sm font-black text-slate-900">رادار ۵ نیروی رقابتی (وضعیت فعلی در برابر آینده)</h4>
-          <p className="text-[11px] text-slate-500">
+          <p className="text-xs text-slate-500">
             عدد ۱ یعنی فشار کم (سودآوری بالا) و عدد ۵ یعنی فشار شدید (سودآوری پایین)
           </p>
         </div>
@@ -62,59 +77,65 @@ export default function TabResult() {
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
+      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
         <div>
           <div className="border-b border-slate-100 pb-2 mb-3">
             <h4 className="text-sm font-black text-slate-900">فرمول امتیاز جذابیت صنعت (با جریمه تنگناترین نیرو)</h4>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-xs text-slate-500">
               فشار مؤثر صنعت = ۶۵٪ میانگین ۵ نیرو + ۳۵٪ شدیدترین نیروی تنگناکننده
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="bg-indigo-50 p-3 rounded-2xl border border-indigo-100 text-center">
               <div className="text-xs text-slate-600">امتیاز فعلی صنعت</div>
-              <div className="text-3xl font-black text-indigo-800 mt-1">{IS_current ?? '—'}</div>
+              <div className="text-3xl font-black text-indigo-800 mt-1">
+                {IS_current != null ? toFaNumber(IS_current) : '—'}
+              </div>
             </div>
             <div className="bg-teal-50 p-3 rounded-2xl border border-teal-100 text-center">
               <div className="text-xs text-slate-600">امتیاز آینده صنعت</div>
-              <div className="text-3xl font-black text-teal-800 mt-1">{IS_future ?? '—'}</div>
+              <div className="text-3xl font-black text-teal-800 mt-1">
+                {IS_future != null ? toFaNumber(IS_future) : '—'}
+              </div>
             </div>
           </div>
-          <div className="bg-rose-50 border border-rose-200 rounded-2xl p-3.5 text-xs text-rose-900 leading-relaxed">
+          <div className="bg-rose-50 border border-rose-200 rounded-2xl p-3.5 text-sm text-rose-900 leading-relaxed">
             {IS_current != null ? (
               <>
                 <strong>تنگنای اصلی سودآوری صنعت:</strong> بیشترین فشار از سمت{' '}
-                <strong>«{bindingForceName}»</strong> (شدت {bindingForceScore.toFixed(1)} از ۵) وارد می‌شود که ۳۵٪ از کل
+                <strong>«{bindingForceName}»</strong> (شدت {toFaNumber(bindingForceScore.toFixed(1))} از ۵) وارد می‌شود که ۳۵٪ از
+                کل
                 فشار مؤثر صنعت را تعیین کرده است.
               </>
             ) : (
-              'لطفاً سوالات تب ۲ را تکمیل کنید تا تنگنای اصلی سودآوری صنعت مشخص شود.'
+              'لطفاً سوالات سنجش ۵ نیروی رقابتی را تکمیل کنید تا تنگنای اصلی سودآوری صنعت مشخص شود.'
             )}
           </div>
         </div>
 
-        <div className="bg-slate-100 rounded-2xl p-3.5 text-xs text-slate-700 leading-relaxed border border-slate-200">
+        <div className="bg-slate-100 rounded-2xl p-3.5 text-sm text-slate-700 leading-relaxed border border-slate-200">
           {firmRoic != null ? (
             <>
               <strong>مقایسه ROIC بنگاه و صنعت در ایران:</strong> بازده سرمایه بنگاه شما{' '}
-              <strong>{firmRoic.toFixed(1)}%</strong> و میانگین صنعت انتخابی در بورس ایران{' '}
-              <strong>{Number(indRoicEffective).toFixed(1)}%</strong> (خط مبنای کل صنایع ایران: {IRAN_ROIC_BENCHMARK.toFixed(1)}٪)
+              <strong>{toFaNumber(firmRoic.toFixed(1))}%</strong> و میانگین صنعت انتخابی در بورس ایران{' '}
+              <strong>{toFaNumber(Number(indRoicEffective).toFixed(1))}%</strong> (خط مبنای کل صنایع ایران:{' '}
+              {toFaNumber(IRAN_ROIC_BENCHMARK.toFixed(1))}٪)
               است.{' '}
               {firmRoic > Number(indRoicEffective)
-                ? 'عملکرد مالی شما بالاتر از میانگین صنعت است که وجود مزیت رقابتی درونی در ماژول ۲ را تایید می‌کند.'
+                ? 'عملکرد مالی شما بالاتر از میانگین صنعت است که وجود مزیت رقابتی درونی در تحلیل بنگاه را تایید می‌کند.'
                 : 'عملکرد مالی نزدیک یا پایین‌تر از میانگین صنعت است.'}
             </>
           ) : (
-            'پس از انتخاب صنعت در تب ۱ و پاسخ به سوالات تب ۲، سازگاری امتیاز صنعت با ROIC بورس ایران در اینجا تحلیل می‌شود.'
+            'پس از انتخاب صنعت و پاسخ به سوالات ۵ نیروی رقابتی، سازگاری امتیاز صنعت با ROIC بورس ایران در اینجا تحلیل می‌شود.'
           )}
         </div>
       </div>
 
-      <div className="bg-slate-900 text-white rounded-3xl p-5 border border-slate-800 shadow-lg flex flex-col justify-between space-y-4">
+      <div className="bg-slate-900 text-white rounded-2xl p-4 border border-slate-800 shadow-lg flex flex-col justify-between space-y-4">
         <div className="space-y-3">
           <span className="text-xs font-bold text-amber-400">بیانیه استراتژی در سطح صنعت (مقاله پورتر ۲۰۰۸)</span>
           <div className="text-base font-black text-white">{porterStrategyTitle}</div>
-          <p className="text-xs text-slate-300 leading-relaxed">{porterStrategyBody}</p>
+          <p className="text-sm text-slate-300 leading-relaxed">{porterStrategyBody}</p>
         </div>
 
         <button
@@ -122,7 +143,7 @@ export default function TabResult() {
           onClick={() => navigate('mod2')}
           className="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-md"
         >
-          <span>ذخیره و انتقال به ماژول ۲: تحلیل منابع بنگاه (بارنی ۱۹۹۱)</span>
+          <span>ذخیره و انتقال به تحلیل منابع بنگاه (بارنی ۱۹۹۱)</span>
           <span>←</span>
         </button>
       </div>

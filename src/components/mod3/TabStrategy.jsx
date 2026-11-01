@@ -1,5 +1,6 @@
 import { Scatter } from 'react-chartjs-2'
 import { useStrategy } from '../../state/StrategyContext'
+import { toFaNumber } from '../../utils/numbers'
 
 export default function TabStrategy() {
   const {
@@ -30,26 +31,44 @@ export default function TabStrategy() {
   const scatterOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (ctx) =>
+            `${ctx.dataset.label}: بنگاه ${toFaNumber(ctx.parsed.x)}، صنعت ${toFaNumber(ctx.parsed.y)}`,
+        },
+      },
+    },
     scales: {
-      x: { min: 0, max: 100, title: { display: true, text: 'امتیاز بنگاه (بارنی)' }, ticks: { stepSize: 20 } },
-      y: { min: 0, max: 100, title: { display: true, text: 'امتیاز صنعت (پورتر)' }, ticks: { stepSize: 20 } },
+      x: {
+        min: 0,
+        max: 100,
+        title: { display: true, text: 'امتیاز بنگاه (بارنی)', font: { size: 13 } },
+        ticks: { stepSize: 20, font: { size: 12 }, callback: (value) => toFaNumber(value) },
+      },
+      y: {
+        min: 0,
+        max: 100,
+        title: { display: true, text: 'امتیاز صنعت (پورتر)', font: { size: 13 } },
+        ticks: { stepSize: 20, font: { size: 12 }, callback: (value) => toFaNumber(value) },
+      },
     },
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex flex-col">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col">
         <div className="border-b border-slate-100 pb-2 mb-3">
           <h4 className="text-sm font-black text-slate-900">ماتریس موقعیت‌یابی صنعت (پورتر) و بنگاه (بارنی)</h4>
-          <p className="text-[11px] text-slate-500">محور افقی: امتیاز بنگاه | محور عمودی: امتیاز صنعت</p>
+          <p className="text-xs text-slate-500">محور افقی: امتیاز بنگاه | محور عمودی: امتیاز صنعت</p>
         </div>
         <div className="relative flex-1 min-h-[260px] flex items-center justify-center">
           <Scatter data={scatterData} options={scatterOptions} />
         </div>
       </div>
 
-      <div className="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+      <div className="lg:col-span-2 bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-4">
         <div className="border-b border-slate-100 pb-3 flex flex-wrap items-center justify-between gap-2">
           <div>
             <span className="text-xs font-bold text-indigo-600">سند خروجی تصمیم‌گیری مدیرعامل</span>
@@ -65,29 +84,30 @@ export default function TabStrategy() {
           </button>
         </div>
 
-        <div className="space-y-4 text-xs sm:text-sm leading-relaxed text-slate-700">
+        <div className="space-y-4 text-sm sm:text-base leading-relaxed text-slate-700">
           {combinedScore === null ? (
             <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900">
-              فرم در حالت خام قرار دارد. لطفاً سوالات ماژول ۱ و ماژول ۲ را پاسخ دهید (یا روی دکمه «پر کردن نمونه
+              فرم در حالت خام قرار دارد. لطفاً سوالات تحلیل صنعت و تحلیل بنگاه را پاسخ دهید (یا روی دکمه «پر کردن نمونه
               آزمایشی» در بالای صفحه کلیک کنید) تا گزارش استراتژی تولید شود.
             </div>
           ) : (
             <>
               <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-200 space-y-2">
                 <div className="font-black text-indigo-950 text-base">
-                  امتیاز نهایی تصمیم‌گیری (مک‌گاهان و پورتر): {combinedScore} از ۱۰۰
+                  امتیاز نهایی تصمیم‌گیری (مک‌گاهان و پورتر): {toFaNumber(combinedScore)} از ۱۰۰
                 </div>
                 <p>
                   در بخش اقتصادی <strong>«{secObj.name}»</strong>، وزن جذابیت صنعت{' '}
-                  <strong>{(nWI * 100).toFixed(1)}%</strong> و وزن قابلیت‌های درونی بنگاه{' '}
-                  <strong>{(nWF * 100).toFixed(1)}%</strong>
+                  <strong>{toFaNumber((nWI * 100).toFixed(1))}%</strong> و وزن قابلیت‌های درونی بنگاه{' '}
+                  <strong>{toFaNumber((nWF * 100).toFixed(1))}%</strong>
                   {includeCorpParent && nWC > 0 ? (
                     <>
                       {' '}
-                      و وزن پشتیبانی شرکت مادر <strong>{(nWC * 100).toFixed(1)}%</strong>
+                      و وزن پشتیبانی شرکت مادر <strong>{toFaNumber((nWC * 100).toFixed(1))}%</strong>
                     </>
                   ) : null}{' '}
-                  است. با ترکیب امتیاز صنعت شما ({IS_current ?? 50}) و امتیاز منابع بنگاه ({FS ?? 50})، استراتژی بهینه
+                  است. با ترکیب امتیاز صنعت شما ({toFaNumber(IS_current ?? 50)}) و امتیاز منابع بنگاه (
+                  {toFaNumber(FS ?? 50)})، استراتژی بهینه
                   عبارت است از:{' '}
                   <strong>
                     مهار «{bindingForceName}» با تکیه بر منابع انسانی و سازمانی دارای ابهام علی بالا و پرهیز از جنگ قیمتی
@@ -101,7 +121,7 @@ export default function TabStrategy() {
                 <p className="text-xs text-slate-600">
                   {checkedBarneyItems.length
                     ? checkedBarneyItems.join(' • ')
-                    : 'هنوز موردی در چک‌لیست گام ۰ تیک نخورده است.'}
+                    : 'هنوز موردی در فهرست منابع بنگاه تیک نخورده است.'}
                 </p>
               </div>
 

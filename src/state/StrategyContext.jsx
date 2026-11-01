@@ -1,8 +1,9 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { porterForcesPages, envFactorsMulti } from '../data/porter'
 import { barneyData, barneyKeys, barneyAiInimitability } from '../data/barney'
 import { iranIndustriesRoic } from '../data/iranIndustries'
 import { computeAll } from '../utils/calculations'
+import { applyChartTheme } from '../utils/chartSetup'
 
 const emptyBarneyAnswers = () => ({
   phys: { V_q1: null, V_q2: null, R_q1: null, I_hist_q: null, I_soc_q: null, I_codified_q: null, I_poach_q: null, N_q1: null },
@@ -47,10 +48,35 @@ const initialState = {
   ...blankData(),
 }
 
+const getInitialTheme = () => {
+  try {
+    const stored = localStorage.getItem('stratbi-theme')
+    if (stored === 'light' || stored === 'dark') return stored
+  } catch (error) {
+    /* localStorage may be unavailable */
+  }
+  return 'dark'
+}
+
 const StrategyContext = createContext(null)
 
 export function StrategyProvider({ children }) {
   const [state, setState] = useState(initialState)
+  const [theme, setTheme] = useState(getInitialTheme)
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark')
+    applyChartTheme(theme === 'dark')
+    try {
+      localStorage.setItem('stratbi-theme', theme)
+    } catch (error) {
+      /* ignore unavailable storage */
+    }
+  }, [theme])
+
+  const toggleTheme = useCallback(() => {
+    setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
+  }, [])
 
   const set = useCallback((patch) => {
     setState((prev) => ({ ...prev, ...(typeof patch === 'function' ? patch(prev) : patch) }))
@@ -218,6 +244,8 @@ export function StrategyProvider({ children }) {
   const value = {
     ...state,
     ...derived,
+    theme,
+    toggleTheme,
     set,
     navigate,
     setMod1Tab,

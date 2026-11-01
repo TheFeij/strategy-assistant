@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toFaNumber } from '../../utils/numbers'
 
 export function AiConsult({ hint, onApply, applyLabel, children, buttonLabel = '🤖 مشورت با AI', className = '' }) {
   const [open, setOpen] = useState(false)
@@ -8,19 +9,19 @@ export function AiConsult({ hint, onApply, applyLabel, children, buttonLabel = '
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="text-[11px] bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-300 px-2.5 py-1 rounded-lg font-extrabold inline-flex items-center gap-1 transition"
+        className="text-xs bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-300 px-2.5 py-1 rounded-lg font-extrabold inline-flex items-center gap-1 transition"
       >
         <span>{buttonLabel}</span>
       </button>
       {open && (
         <div className="absolute right-0 top-full mt-2 w-80 max-w-[80vw] z-40 bg-teal-950 text-teal-50 p-3 rounded-xl text-xs space-y-2 border border-teal-700 shadow-2xl text-right">
           {children}
-          {hint && <p className="text-[11px] leading-relaxed text-teal-100">{hint}</p>}
+          {hint && <p className="text-xs leading-relaxed text-teal-100">{hint}</p>}
           {onApply && (
             <button
               type="button"
               onClick={onApply}
-              className="bg-teal-500 hover:bg-teal-400 text-slate-950 font-extrabold px-2.5 py-1 rounded-lg text-[11px]"
+              className="bg-teal-500 hover:bg-teal-400 text-slate-950 font-extrabold px-2.5 py-1 rounded-lg text-xs"
             >
               {applyLabel || 'قرار دادن عدد پیشنهادی AI'}
             </button>
@@ -65,7 +66,7 @@ export function AnswerBadge({ value, tone = 'indigo', emptyText = 'پاسخ دا
         answered ? toneClass : 'bg-amber-100 text-amber-800'
       }`}
     >
-      {answered ? Number(value).toFixed(1) : emptyText}
+      {answered ? toFaNumber(Number(value).toFixed(1)) : emptyText}
     </span>
   )
 }

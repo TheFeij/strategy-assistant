@@ -1,6 +1,7 @@
 import { useStrategy } from '../../state/StrategyContext'
 import { envFactorsMulti, forceNames } from '../../data/porter'
 import { AiConsult, AnswerBadge, Range } from '../ui/Controls'
+import { toFaNumber } from '../../utils/numbers'
 
 export default function TabEnv() {
   const {
@@ -17,8 +18,8 @@ export default function TabEnv() {
   const hasForces = forceScores.some((x) => x !== null)
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5">
+    <div className="space-y-4">
+      <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-4">
         <div className="border-b border-slate-100 pb-3 flex flex-wrap items-center justify-between gap-2">
           <div>
             <h3 className="text-base font-black text-slate-900">
@@ -32,7 +33,7 @@ export default function TabEnv() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {envFactorsMulti.map((ef) => (
             <div key={ef.id} className="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-3">
               <div className="flex items-center justify-between gap-2">
@@ -53,12 +54,12 @@ export default function TabEnv() {
                       key={q.id}
                       className={`bg-white p-3 rounded-xl border space-y-1.5 ${answered ? 'border-indigo-200' : 'border-slate-200'}`}
                     >
-                      <div className="flex items-center justify-between gap-2 text-xs">
+                      <div className="flex items-center justify-between gap-2 text-sm">
                         <span className="font-bold text-slate-800">{q.text}</span>
                         <AnswerBadge value={value} />
                       </div>
                       <Range value={value} answered={answered} onChange={(v) => setEnvAnswer(q.id, v)} />
-                      <div className="flex justify-between text-[10px] text-slate-400">
+                      <div className="flex justify-between text-xs text-slate-400">
                         <span>۱ = کاملاً مخالفم / خیلی کم</span>
                         <span>۵ = کاملاً موافقم / خیلی زیاد</span>
                       </div>
@@ -91,7 +92,7 @@ export default function TabEnv() {
                 <tr key={fn}>
                   <td className="py-2 px-3 font-bold">{fn}</td>
                   <td className="py-2 px-2 text-center font-mono font-bold">
-                    {forceScores[fIdx] != null ? forceScores[fIdx].toFixed(2) : '—'}
+                    {forceScores[fIdx] != null ? toFaNumber(forceScores[fIdx].toFixed(2)) : '—'}
                   </td>
                   {envEffects[fIdx].map((eff, eIdx) => (
                     <td
@@ -101,17 +102,17 @@ export default function TabEnv() {
                       }`}
                     >
                       {eff > 0 ? '+' : ''}
-                      {eff.toFixed(2)}
+                      {toFaNumber(eff.toFixed(2))}
                     </td>
                   ))}
                   <td className="py-2 px-3 text-center font-mono font-black text-indigo-800">
-                    {hasForces ? F_fut_arr[fIdx].toFixed(2) : '—'}
+                    {hasForces ? toFaNumber(F_fut_arr[fIdx].toFixed(2)) : '—'}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <p className="text-[10px] text-slate-400 mt-2">
+          <p className="text-xs text-slate-400 mt-2">
             ضریب هر فاکتور از میانگین پاسخ‌ها در بازه ۱− تا ۱+ نرمال می‌شود؛ مقادیر خنثی (بدون پاسخ) صفر در نظر گرفته
             می‌شوند.
           </p>
@@ -124,19 +125,19 @@ export default function TabEnv() {
           onClick={() => setMod1Tab(2)}
           className="bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold px-4 py-2.5 rounded-xl"
         >
-          بازگشت به تب ۲ (۵ نیرو)
+          بازگشت به سنجش ۵ نیرو
         </button>
         <button
           type="button"
           onClick={() => setMod1Tab(4)}
           className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold px-5 py-3 rounded-xl shadow-md flex items-center gap-2"
         >
-          <span>مشاهده تب ۴: امتیاز نهایی صنعت و استراتژی پورتر</span>
+          <span>مشاهده امتیاز نهایی صنعت و استراتژی پورتر</span>
           <span>←</span>
         </button>
       </div>
 
-      <p className="sr-only">میانگین ضرایب: {envMultipliers.map((x) => x.toFixed(2)).join(', ')}</p>
+      <p className="sr-only">میانگین ضرایب: {envMultipliers.map((x) => toFaNumber(x.toFixed(2))).join('، ')}</p>
     </div>
   )
 }

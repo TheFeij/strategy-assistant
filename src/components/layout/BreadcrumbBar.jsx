@@ -1,9 +1,9 @@
 import { useStrategy } from '../../state/StrategyContext'
 
 const titles = {
-  mod1: 'ماژول ۱: تحلیل جذابیت صنعت (مقاله پورتر ۲۰۰۸ + ROIC صنایع ایران)',
-  mod2: 'ماژول ۲: تحلیل جذابیت بنگاه (مقاله پایداری منابع بارنی ۱۹۹۱)',
-  mod3: 'ماژول ۳: ترکیب امتیاز صنعت و بنگاه (مقاله مک‌گاهان و پورتر ۱۹۹۷)',
+  mod1: 'تحلیل جذابیت صنعت (مقاله پورتر ۲۰۰۸ + ROIC صنایع ایران)',
+  mod2: 'تحلیل جذابیت بنگاه (مقاله پایداری منابع بارنی ۱۹۹۱)',
+  mod3: 'ترکیب امتیاز صنعت و بنگاه (مقاله مک‌گاهان و پورتر ۱۹۹۷)',
 }
 
 export default function BreadcrumbBar() {
@@ -12,7 +12,7 @@ export default function BreadcrumbBar() {
 
   return (
     <div className="bg-white border-b border-slate-200 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <div className="max-w-[84rem] mx-auto px-3 sm:px-5 py-2 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-xs">
           <button
             type="button"
@@ -20,7 +20,7 @@ export default function BreadcrumbBar() {
             className="flex items-center gap-1.5 text-indigo-700 hover:text-indigo-900 font-extrabold bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition border border-indigo-200"
           >
             <span>▦</span>
-            <span>بازگشت به صفحه اول (۳ ماژول اصلی)</span>
+            <span>بازگشت به صفحه اول</span>
           </button>
           <span className="text-slate-400">‹</span>
           <span className="font-extrabold text-slate-800">{titles[view]}</span>
@@ -34,7 +34,7 @@ export default function BreadcrumbBar() {
               view === 'mod1' ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            ماژول ۱: صنعت (پورتر)
+            تحلیل صنعت (پورتر)
           </button>
           <button
             type="button"
@@ -43,7 +43,7 @@ export default function BreadcrumbBar() {
               view === 'mod2' ? 'bg-emerald-600 text-white' : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            ماژول ۲: بنگاه (بارنی)
+            تحلیل بنگاه (بارنی)
           </button>
           <button
             type="button"
@@ -52,7 +52,7 @@ export default function BreadcrumbBar() {
               view === 'mod3' ? 'bg-amber-600 text-white' : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            ماژول ۳: ترکیب (مک‌گاهان)
+            ترکیب و استراتژی (مک‌گاهان)
           </button>
         </div>
       </div>

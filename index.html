@@ -4,6 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>StratBI Pro v3.0 | پلتفرم هوشمند محاسبه امتیاز صنعت، بنگاه و استراتژی</title>
+    <script>
+      try {
+        var theme = localStorage.getItem('stratbi-theme')
+        if (theme !== 'light') document.documentElement.classList.add('dark')
+      } catch (error) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>
