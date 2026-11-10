@@ -150,6 +150,14 @@
     background: #2878a8 !important;
   }
 
+  .gold-range::-webkit-slider-thumb {
+    background: #d6a449 !important;
+  }
+
+  .gold-range::-moz-range-thumb {
+    background: #d6a449 !important;
+  }
+
   .module-portal-card {
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   }

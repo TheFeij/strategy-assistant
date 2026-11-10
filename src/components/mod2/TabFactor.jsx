@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { useStrategy } from '../../state/StrategyContext'
 import { barneyData, barneyKeys } from '../../data/barney'
 import { AiConsult, AnswerBadge, Range } from '../ui/Controls'
 import { toFaNumber } from '../../utils/numbers'
+import ResourceTabs from './ResourceTabs'
 
 const configs = {
   V: {
@@ -45,6 +47,11 @@ const configs = {
 export default function TabFactor({ mode }) {
   const { barney, setBarneyAnswer, setMod2Tab } = useStrategy()
   const cfg = configs[mode]
+  const [activeKey, setActiveKey] = useState(barneyKeys[0])
+
+  const k = activeKey
+  const b = barneyData[k]
+  const values = barney[k]
 
   return (
     <div className="bg-white rounded-2xl p-4 border border-line shadow-sm space-y-4">
@@ -53,79 +60,72 @@ export default function TabFactor({ mode }) {
         <p className="leading-relaxed text-muted">{cfg.description}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {barneyKeys.map((k) => {
-          const b = barneyData[k]
-          const values = barney[k]
-          return (
-            <div key={k} className="bg-white rounded-2xl p-4 border border-line space-y-3">
-              <div className="flex items-center justify-between gap-2 border-b border-line pb-2">
-                <h4 className="text-sm font-black text-midnight-900">{b.title}</h4>
-                {mode !== 'V' && (
-                  <AiConsult
-                    hint={mode === 'R' ? b.R_aiHint : b.N_aiHint}
-                    onApply={() => setBarneyAnswer(k, mode === 'R' ? 'R_q1' : 'N_q1', mode === 'R' ? b.R_aiRec : b.N_aiRec)}
-                    applyLabel={`قرار دادن عدد AI (${toFaNumber((mode === 'R' ? b.R_aiRec : b.N_aiRec).toFixed(1))})`}
-                  />
-                )}
-              </div>
+      <ResourceTabs activeKey={activeKey} onChange={setActiveKey} />
 
-              {mode === 'V' && (
-                <>
-                  {['V_q1', 'V_q2'].map((field, idx) => {
-                    const value = values[field]
-                    return (
-                      <div key={field} className="bg-canvas p-3 rounded-xl border border-line space-y-1.5 text-sm">
-                        <div className="flex justify-between items-center gap-2">
-                          <span className="font-bold">
-                            {idx === 0
-                              ? '۱. چقدر این منبع به کاهش هزینه‌ها یا دریافت قیمت بالاتر از مشتری کمک می‌کند؟'
-                              : '۲. چقدر این منبع مستقیماً تهدیدها و فشار ۵ نیروی صنعت را برای شرکت شما خنثی می‌کند؟'}
-                          </span>
-                          <AnswerBadge value={value} tone="brand" emptyText="خالی" />
-                        </div>
-                        <Range value={value} tone="brand" onChange={(v) => setBarneyAnswer(k, field, v)} />
-                      </div>
-                    )
-                  })}
-                </>
-              )}
+      <div className="bg-white rounded-2xl p-4 border border-line border-r-4 !border-r-brand-400 space-y-3">
+        {mode !== 'V' && (
+          <div className="flex items-center justify-end gap-2 border-b border-line pb-2">
+            <AiConsult
+              hint={mode === 'R' ? b.R_aiHint : b.N_aiHint}
+              onApply={() => setBarneyAnswer(k, mode === 'R' ? 'R_q1' : 'N_q1', mode === 'R' ? b.R_aiRec : b.N_aiRec)}
+              applyLabel={`قرار دادن عدد AI (${toFaNumber((mode === 'R' ? b.R_aiRec : b.N_aiRec).toFixed(1))})`}
+            />
+          </div>
+        )}
 
-              {mode === 'R' && (
-                <div className="bg-canvas p-3 rounded-xl border border-line space-y-1.5 text-sm">
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="font-bold">
-                      چقدر این منبع شما در مقایسه با رقبای فعلی و بالقوه صنعت کمیاب و منحصربه‌فرد است؟
+        {mode === 'V' && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {['V_q1', 'V_q2'].map((field, idx) => {
+              const value = values[field]
+              return (
+                <div key={field} className="min-w-0 bg-canvas p-3 rounded-xl border border-line space-y-1.5 text-sm">
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-bold min-w-0">
+                      {idx === 0
+                        ? '۱. چقدر این منبع به کاهش هزینه‌ها یا دریافت قیمت بالاتر از مشتری کمک می‌کند؟'
+                        : '۲. چقدر این منبع مستقیماً تهدیدها و فشار ۵ نیروی صنعت را برای شرکت شما خنثی می‌کند؟'}
                     </span>
-                    <AnswerBadge value={values.R_q1} tone="brand" emptyText="خالی" />
+                    <AnswerBadge value={value} tone="brand" emptyText="خالی" />
                   </div>
-                  <Range value={values.R_q1} tone="ai" onChange={(v) => setBarneyAnswer(k, 'R_q1', v)} />
-                  <div className="flex justify-between text-xs text-muted">
-                    <span>۱ = اکثر رقبا دارند</span>
-                    <span>۵ = فقط شرکت ما دارد</span>
-                  </div>
+                  <Range value={value} tone="brand" onChange={(v) => setBarneyAnswer(k, field, v)} />
                 </div>
-              )}
+              )
+            })}
+          </div>
+        )}
 
-              {mode === 'N' && (
-                <div className="bg-canvas p-3 rounded-xl border border-line space-y-1.5 text-sm">
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="font-bold">
-                      چقدر این منبع در برابر جایگزینی با یک فناوری یا مدل کسب‌وکار دیگر (هم‌ارز استراتژیک) مصون و
-                      جایگزین‌ناپذیر است؟
-                    </span>
-                    <AnswerBadge value={values.N_q1} tone="industry" emptyText="خالی" />
-                  </div>
-                  <Range value={values.N_q1} tone="ai" onChange={(v) => setBarneyAnswer(k, 'N_q1', v)} />
-                  <div className="flex justify-between text-xs text-muted">
-                    <span>۱ = به راحتی با روش دیگری دور زده می‌شود</span>
-                    <span>۵ = هیچ جایگزین هم‌ارزی ندارد</span>
-                  </div>
-                </div>
-              )}
+        {mode === 'R' && (
+          <div className="bg-canvas p-3 rounded-xl border border-line space-y-1.5 text-sm">
+            <div className="flex justify-between items-center gap-2">
+              <span className="font-bold">
+                چقدر این منبع شما در مقایسه با رقبای فعلی و بالقوه صنعت کمیاب و منحصربه‌فرد است؟
+              </span>
+              <AnswerBadge value={values.R_q1} tone="brand" emptyText="خالی" />
             </div>
-          )
-        })}
+            <Range value={values.R_q1} tone="ai" onChange={(v) => setBarneyAnswer(k, 'R_q1', v)} />
+            <div className="flex justify-between text-xs text-muted">
+              <span>۱ = اکثر رقبا دارند</span>
+              <span>۵ = فقط شرکت ما دارد</span>
+            </div>
+          </div>
+        )}
+
+        {mode === 'N' && (
+          <div className="bg-canvas p-3 rounded-xl border border-line space-y-1.5 text-sm">
+            <div className="flex justify-between items-center gap-2">
+              <span className="font-bold">
+                چقدر این منبع در برابر جایگزینی با یک فناوری یا مدل کسب‌وکار دیگر (هم‌ارز استراتژیک) مصون و
+                جایگزین‌ناپذیر است؟
+              </span>
+              <AnswerBadge value={values.N_q1} tone="industry" emptyText="خالی" />
+            </div>
+            <Range value={values.N_q1} tone="ai" onChange={(v) => setBarneyAnswer(k, 'N_q1', v)} />
+            <div className="flex justify-between text-xs text-muted">
+              <span>۱ = به راحتی با روش دیگری دور زده می‌شود</span>
+              <span>۵ = هیچ جایگزین هم‌ارزی ندارد</span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-wrap justify-between gap-3 pt-2">

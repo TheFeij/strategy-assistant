@@ -34,7 +34,15 @@ export function AiConsult({ hint, onApply, applyLabel, children, buttonLabel = '
 
 export function Range({ value, onChange, tone = 'industry', answered = value != null, ...rest }) {
   const toneClass =
-    tone === 'ai' ? 'ai-range' : tone === 'brand' ? 'brand-range' : tone === 'industry' ? 'industry-range' : ''
+    tone === 'ai'
+      ? 'ai-range'
+      : tone === 'brand'
+        ? 'brand-range'
+        : tone === 'industry'
+          ? 'industry-range'
+          : tone === 'gold'
+            ? 'gold-range'
+            : ''
   return (
     <input
       type="range"
