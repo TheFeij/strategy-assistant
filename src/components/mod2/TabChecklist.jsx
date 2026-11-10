@@ -6,17 +6,6 @@ export default function TabChecklist() {
 
   return (
     <div className="bg-white rounded-2xl p-4 border border-line shadow-sm space-y-4">
-      <div className="border-b border-line pb-3">
-        <h3 className="text-base font-black text-midnight-900">
-          شناسایی و تیک‌زدن مصادیق منابع سه‌گانه بنگاه (فیزیکی، انسانی، سازمانی)
-        </h3>
-        <p className="text-sm text-muted mt-1">
-          از آنجا که ممکن است کاربر با دیدن عنوان کلی «منابع فیزیکی، انسانی و سازمانی» نداند دقیقاً چه مواردی مد نظر مقاله
-          بارنی (۱۹۹۱) است، در جدول زیر مصادیق هر دسته را تیک بزنید و در کادر روبه‌روی آن، توضیح یا مصداق خاص شرکت
-          خودتان را بنویسید:
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {barneyKeys.map((k) => {
           const b = barneyData[k]
