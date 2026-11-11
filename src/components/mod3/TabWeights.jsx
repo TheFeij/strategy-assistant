@@ -16,28 +16,29 @@ export default function TabWeights() {
     setMod3Tab,
   } = useStrategy()
 
+  const chartColors = ['#2878A8', '#147D78', '#D6A449']
+
   const doughnutData = {
     labels: ['اثر صنعت (%)', 'اثر بنگاه (%)', 'اثر شرکت مادر (%)'],
     datasets: [
       {
         data: [secObj.indEffect, secObj.firmEffect, secObj.corpEffect],
-        backgroundColor: ['#2878A8', '#147D78', '#D6A449'],
+        backgroundColor: chartColors,
         borderWidth: 2,
         borderColor: '#ffffff',
       },
     ],
   }
 
+  const legendItems = doughnutData.labels.map((label, i) => ({ label, color: chartColors[i] }))
+
   const doughnutOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: { padding: 8 },
     plugins: {
-      legend: { position: 'bottom', labels: { boxWidth: 14, font: { size: 13 } } },
-      tooltip: {
-        callbacks: {
-          label: (ctx) => `${ctx.label}: ${toFaNumber(Number(ctx.parsed).toFixed(1))}%`,
-        },
-      },
+      legend: { display: false },
+      tooltip: { enabled: false },
     },
     cutout: '58%',
   }
@@ -96,15 +97,25 @@ export default function TabWeights() {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl p-4 border border-line shadow-sm flex flex-col justify-between space-y-4">
-        <div className="space-y-4">
-          <div className="border-b border-line pb-3">
-            <h4 className="text-sm font-black text-midnight-900">ضرایب نرمال‌شده ترکیب امتیاز</h4>
-            <p className="text-xs font-extrabold text-gold-800 mt-1">بخش انتخابی: {secObj.name}</p>
-          </div>
-          <div className="h-44 flex items-center justify-center">
+      <div className="bg-white rounded-2xl p-4 border border-line shadow-sm flex flex-col space-y-4">
+        <div className="border-b border-line pb-3">
+          <h4 className="text-sm font-black text-midnight-900">ضرایب نرمال‌شده ترکیب امتیاز</h4>
+          <p className="text-xs font-extrabold text-gold-800 mt-1">بخش انتخابی: {secObj.name}</p>
+        </div>
+        <div className="flex-1 rounded-2xl border border-line bg-white p-4 flex flex-col">
+          <div className="flex-1 min-h-[260px] sm:min-h-[300px]">
             <Doughnut data={doughnutData} options={doughnutOptions} />
           </div>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 border-t border-line pt-4 text-xs font-bold text-midnight-700">
+            {legendItems.map((item) => (
+              <span key={item.label} className="flex items-center gap-2">
+                <span className="w-3.5 h-3.5 rounded-sm shrink-0" style={{ backgroundColor: item.color }} />
+                <span>{item.label}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="mt-auto space-y-2.5">
           <div className="bg-canvas p-3.5 rounded-2xl border border-line space-y-2 text-xs">
             <label className="flex items-center gap-2 font-bold text-midnight-800 cursor-pointer">
               <input
