@@ -77,11 +77,34 @@ export default function TabRoic() {
           </div>
 
           <div className="bg-canvas p-4 rounded-2xl border border-line space-y-3 mt-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
               <span className="font-extrabold text-midnight-800">میانگین ROIC صنعت انتخابی در ایران (%):</span>
-              <span className="font-black text-base text-industry-700 bg-white px-3 py-0.5 rounded-lg border">
-                {indRoic != null ? `${toFaNumber(Number(indRoic).toFixed(1))}%` : '—'}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="font-black text-base text-industry-700 bg-white px-3 py-0.5 rounded-lg border">
+                  {indRoic != null ? `${toFaNumber(Number(indRoic).toFixed(1))}%` : '—'}
+                </span>
+                <span className="group relative inline-flex shrink-0">
+                  <button
+                    type="button"
+                    aria-label="راهنمای نحوه محاسبه ROIC"
+                    className="w-6 h-6 rounded-full bg-white border border-industry-300 text-industry-700 text-xs font-black flex items-center justify-center hover:bg-industry-50 focus-visible:bg-industry-50"
+                  >
+                    ؟
+                  </button>
+                  <span
+                    role="tooltip"
+                    className="pointer-events-none absolute top-full mt-2 right-0 z-30 w-72 max-w-[80vw] rounded-xl bg-midnight p-3 text-xs leading-relaxed text-midnight-100 text-right shadow-lg opacity-0 invisible transition-opacity duration-150 group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible"
+                  >
+                    <strong className="block mb-1 text-white">
+                      نحوه محاسبه ROIC صنایع ایران (هم‌سنگ فرمول صفحه ۲۸ مقاله پورتر):
+                    </strong>
+                    تقسیم سود عملیاتی قبل از بهره و مالیات (EBIT) بر میانگین سرمایه درگیر عملیاتی (دارایی‌های ثابت + سرمایه
+                    در گردش عملیاتی منهای وجه نقد مازاد) بر اساس صورت‌های مالی حسابرسی‌شده سامانه کدال (۱۳۹۳–۱۴۰۲) در مقیاس
+                    اسمی ریالی (خط مبنای میانگین صنایع ایران = <strong className="text-brand-300">۳۹.۰٪</strong> در برابر
+                    ۱۴.۹٪ در اقتصاد کم‌تورم آمریکا).
+                  </span>
+                </span>
+              </div>
             </div>
             <input
               type="range"
@@ -92,12 +115,6 @@ export default function TabRoic() {
               onChange={(e) => set({ indRoic: parseFloat(e.target.value) })}
               className="industry-range"
             />
-            <p className="text-xs text-muted leading-relaxed">
-              <strong>نحوه محاسبه ROIC صنایع ایران (هم‌سنگ فرمول صفحه ۲۸ مقاله پورتر):</strong> تقسیم سود عملیاتی قبل از
-              بهره و مالیات (EBIT) بر میانگین سرمایه درگیر عملیاتی (دارایی‌های ثابت + سرمایه در گردش عملیاتی منهای وجه نقد
-              مازاد) بر اساس صورت‌های مالی حسابرسی‌شده سامانه کدال (۱۳۹۳–۱۴۰۲) در مقیاس اسمی ریالی (خط مبنای میانگین
-              صنایع ایران = <strong>۳۹.۰٪</strong> در برابر ۱۴.۹٪ در اقتصاد کم‌تورم آمریکا).
-            </p>
           </div>
 
           <div className="bg-gold-50/70 p-4 rounded-2xl border border-gold-200 space-y-2.5">

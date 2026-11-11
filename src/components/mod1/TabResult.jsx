@@ -54,10 +54,8 @@ export default function TabResult() {
         min: 1,
         max: 5,
         ticks: {
+          display: false,
           stepSize: 1,
-          backdropColor: 'transparent',
-          font: { size: 12 },
-          callback: (value) => toFaNumber(value),
         },
       },
     },
@@ -67,7 +65,6 @@ export default function TabResult() {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div className="bg-white rounded-2xl p-4 border border-line shadow-sm flex flex-col">
         <div className="border-b border-line pb-2 mb-3">
-          <h4 className="text-sm font-black text-midnight-900">رادار ۵ نیروی رقابتی (وضعیت فعلی در برابر آینده)</h4>
           <p className="text-xs text-muted">
             عدد ۱ یعنی فشار کم (سودآوری بالا) و عدد ۵ یعنی فشار شدید (سودآوری پایین)
           </p>
@@ -79,12 +76,6 @@ export default function TabResult() {
 
       <div className="bg-white rounded-2xl p-4 border border-line shadow-sm flex flex-col justify-between space-y-4">
         <div>
-          <div className="border-b border-line pb-2 mb-3">
-            <h4 className="text-sm font-black text-midnight-900">فرمول امتیاز جذابیت صنعت (با جریمه تنگناترین نیرو)</h4>
-            <p className="text-xs text-muted">
-              فشار مؤثر صنعت = ۶۵٪ میانگین ۵ نیرو + ۳۵٪ شدیدترین نیروی تنگناکننده
-            </p>
-          </div>
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="bg-industry-50 p-3 rounded-2xl border border-industry-100 text-center">
               <div className="text-xs text-muted">امتیاز فعلی صنعت</div>
@@ -133,7 +124,6 @@ export default function TabResult() {
 
       <div className="bg-midnight text-white rounded-2xl p-4 border border-midnight-700 shadow-sm flex flex-col justify-between space-y-4">
         <div className="space-y-3">
-          <span className="text-xs font-bold text-gold-400">بیانیه استراتژی در سطح صنعت (مقاله پورتر ۲۰۰۸)</span>
           <div className="text-base font-black text-white">{porterStrategyTitle}</div>
           <p className="text-sm text-midnight-200 leading-relaxed">{porterStrategyBody}</p>
         </div>

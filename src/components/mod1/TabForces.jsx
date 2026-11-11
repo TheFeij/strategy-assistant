@@ -4,11 +4,11 @@ import { AiConsult, AnswerBadge, Range } from '../ui/Controls'
 import { toFaNumber } from '../../utils/numbers'
 
 const forceMeta = [
-  { label: 'صفحه نیروی ۱: تهدید ورود', meta: '۸ سوال + چک‌لیست' },
-  { label: 'صفحه نیروی ۲: تامین‌کنندگان', meta: '۶ سوال کامل' },
-  { label: 'صفحه نیروی ۳: خریداران', meta: '۸ سوال (چانه‌زنی و قیمت)' },
-  { label: 'صفحه نیروی ۴: کالای جایگزین', meta: '۴ سوال کامل' },
-  { label: 'صفحه نیروی ۵: رقبای موجود', meta: '۱۰ سوال + نوع رقابت' },
+  { label: 'تهدید ورود' },
+  { label: 'تامین‌کنندگان' },
+  { label: 'خریداران' },
+  { label: 'کالای جایگزین' },
+  { label: 'رقبای موجود' },
 ]
 
 const rivalryOptions = [
@@ -40,9 +40,6 @@ export default function TabForces() {
     forcePage,
     setForcePage,
     setMod1Tab,
-    forceScores,
-    answeredForceQs,
-    totalForceQs,
     forceAnswers,
     incumbentChecks,
     toggleIncumbent,
@@ -56,17 +53,6 @@ export default function TabForces() {
   return (
     <div className="space-y-4">
       <div className="bg-white rounded-2xl p-4 border border-line shadow-sm space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="text-sm text-muted">
-            <strong className="text-midnight-900">راهنمای پاسخ‌دهی:</strong> هر یک از ۵ نیروی رقابتی در یک صفحه جداگانه قرار
-            دارد. سوالات به زبان ساده طراحی شده‌اند؛ برای هر سوال از <strong>۱ (خیلی کم) تا ۵ (خیلی زیاد)</strong> امتیاز
-            دهید.
-          </div>
-          <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-industry-50 text-industry-800 border border-industry-200">
-            سوالات پاسخ داده شده: {answeredForceQs} از {totalForceQs}
-          </span>
-        </div>
-
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
           {forceMeta.map((f, idx) => {
             const p = idx + 1
@@ -83,12 +69,6 @@ export default function TabForces() {
                 } ${p === 5 ? 'col-span-2 sm:col-span-1' : ''}`}
               >
                 <div className="text-xs font-black">{f.label}</div>
-                <div className={`flex items-center justify-between mt-1.5 text-xs ${active ? 'opacity-90' : 'opacity-80'}`}>
-                  <span>{f.meta}</span>
-                  <strong className={`px-2 py-0.5 rounded ${active ? 'bg-white/20 text-white' : 'bg-industry-50 text-industry-700'}`}>
-                    {forceScores[idx] != null ? toFaNumber(forceScores[idx].toFixed(1)) : '—'}
-                  </strong>
-                </div>
               </button>
             )
           })}
@@ -96,13 +76,6 @@ export default function TabForces() {
       </div>
 
       <div className="bg-white rounded-2xl p-4 border border-line shadow-sm space-y-4">
-        <div className="border-b border-line pb-3 flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h3 className="text-base font-black text-industry-950">{pageData.title}</h3>
-            <p className="text-xs text-muted mt-0.5">{pageData.subtitle}</p>
-          </div>
-        </div>
-
         {forcePage === 1 && pageData.incumbentChecklist && (
           <div className="bg-industry-50/70 border border-industry-200 rounded-2xl p-4 space-y-2.5">
             <div className="text-xs font-extrabold text-industry-950">

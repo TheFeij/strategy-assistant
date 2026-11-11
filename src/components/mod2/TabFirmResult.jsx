@@ -59,15 +59,15 @@ export default function TabFirmResult() {
             <p className="text-xs text-muted">ترکیب ضرب‌پذیر ارزشمندی، کمیابی، تقلیدناپذیری و جایگزین‌ناپذیری</p>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-xs text-center border-collapse min-w-[420px]">
+            <table className="w-full text-xs text-center border-collapse">
               <thead>
                 <tr className="bg-midnight text-white">
-                  <th className="py-2 px-2 text-right">دسته منبع</th>
+                  <th className="py-2 px-1 text-right">دسته منبع</th>
                   <th className="py-2 px-1">ارزشمند (V)</th>
                   <th className="py-2 px-1">کمیاب (R)</th>
                   <th className="py-2 px-1">تقلیدناپذیر (I)</th>
                   <th className="py-2 px-1">جایگزین‌ناپذیر (N)</th>
-                  <th className="py-2 px-2">امتیاز (از ۱۰۰)</th>
+                  <th className="py-2 px-1">امتیاز (از ۱۰۰)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line font-bold">
@@ -75,20 +75,20 @@ export default function TabFirmResult() {
                   const r = resScores[k]
                   return (
                     <tr key={k}>
-                      <td className="py-2.5 px-2 text-right font-bold">{barneyData[k].title}</td>
-                      <td className="py-2.5 px-1 font-mono">
+                      <td className="py-2 px-1 text-right font-bold">{barneyData[k].title}</td>
+                      <td className="py-2 px-1 tabular-nums">
                         {anyBarneyAnswered ? toFaNumber(r.V.toFixed(1)) : '—'}
                       </td>
-                      <td className="py-2.5 px-1 font-mono">
+                      <td className="py-2 px-1 tabular-nums">
                         {anyBarneyAnswered ? toFaNumber(r.R.toFixed(1)) : '—'}
                       </td>
-                      <td className="py-2.5 px-1 font-mono">
+                      <td className="py-2 px-1 tabular-nums">
                         {anyBarneyAnswered ? toFaNumber(r.I.toFixed(1)) : '—'}
                       </td>
-                      <td className="py-2.5 px-1 font-mono">
+                      <td className="py-2 px-1 tabular-nums">
                         {anyBarneyAnswered ? toFaNumber(r.N.toFixed(1)) : '—'}
                       </td>
-                      <td className="py-2.5 px-2 font-mono font-black text-brand-700">
+                      <td className="py-2 px-1 tabular-nums font-black text-brand-700">
                         {anyBarneyAnswered ? `${toFaNumber(r.S_k)}%` : '—'}
                       </td>
                     </tr>

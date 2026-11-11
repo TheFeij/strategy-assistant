@@ -20,19 +20,6 @@ export default function TabEnv() {
   return (
     <div className="space-y-4">
       <div className="bg-white rounded-2xl p-4 border border-line shadow-sm space-y-4">
-        <div className="border-b border-line pb-3 flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h3 className="text-base font-black text-midnight-900">
-              سنجش ۴ فاکتور محیطی مؤثر بر نیروهای رقابتی (هر فاکتور با ۳ سوال ملموس + مشورت با AI)
-            </h3>
-            <p className="text-xs text-muted mt-1">
-              به جای یک سوال کلی، برای هر فاکتور به ۳ سوال ساده پاسخ دهید (یا با کلیک روی{' '}
-              <strong>«🤖 مشورت با AI»</strong>، تحلیل صنعت و اعداد پیشنهادی هوش مصنوعی را اعمال کنید) تا اثر هر فاکتور بر
-              ۵ نیرو محاسبه شود.
-            </p>
-          </div>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {envFactorsMulti.map((ef) => (
             <div
