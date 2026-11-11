@@ -1,6 +1,6 @@
 import { useStrategy } from '../../state/StrategyContext'
 import { envFactorsMulti, forceNames } from '../../data/porter'
-import { AiConsult, AnswerBadge, Range } from '../ui/Controls'
+import { AiConsult, AnswerBadge, ScaleInfo, SegmentedScale } from '../ui/Controls'
 import { toFaNumber } from '../../utils/numbers'
 
 export default function TabEnv() {
@@ -24,37 +24,52 @@ export default function TabEnv() {
           {envFactorsMulti.map((ef) => (
             <div
               key={ef.id}
-              className="bg-white rounded-2xl p-4 border border-line border-r-4 !border-r-industry-400 space-y-3 flex flex-col"
+              className="bg-white rounded-xl p-4 border border-line border-r-4 !border-r-industry-400 flex h-full flex-col gap-3"
             >
-              <div className="flex items-center justify-between gap-2 border-b border-line pb-2">
-                <h4 className="text-sm font-black text-midnight-900">{ef.title}</h4>
+              <div className="flex flex-wrap items-start justify-between gap-2 border-b border-line pb-2.5">
+                <div className="min-w-0">
+                  <h4 className="text-sm font-extrabold text-midnight-900">{ef.title}</h4>
+                  <span className="mt-0.5 inline-flex items-center gap-1 text-[0.7rem] text-muted">
+                    <span aria-hidden="true">🤖</span>
+                    <span>مشورت AI</span>
+                  </span>
+                </div>
                 <AiConsult
                   buttonLabel="🤖 مشورت با AI و درج خودکار"
                   hint={ef.aiSummary}
                   onApply={() => applyAiEnvFactor(ef.id)}
                   applyLabel="قرار دادن اعداد پیشنهادی AI برای این فاکتور"
+                  panelAlign="left"
                 />
               </div>
-              <div className="flex flex-col flex-1 gap-2">
+              <div className="flex flex-1 flex-col gap-3">
                 {ef.questions.map((q) => {
                   const value = envAnswers[q.id] ?? null
-                  const answered = value != null
                   return (
-                    <div
-                      key={q.id}
-                      className={`flex-1 flex flex-col justify-center p-3 rounded-xl border gap-1.5 ${
-                        answered ? 'border-industry-300 bg-white' : 'border-line bg-canvas'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between gap-2 text-sm">
-                        <span className="font-bold text-midnight-800">{q.text}</span>
-                        <AnswerBadge value={value} />
+                    <div key={q.id} className="flex flex-1 flex-col gap-2 rounded-lg border border-line bg-canvas/60 p-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="text-sm font-semibold leading-6 text-midnight-800">{q.text}</p>
+                        <AnswerBadge value={value} emptyText="بدون پاسخ" />
                       </div>
-                      <Range value={value} answered={answered} onChange={(v) => setEnvAnswer(q.id, v)} />
-                      <div className="flex justify-between text-xs text-muted">
-                        <span>۱ = کاملاً مخالفم / خیلی کم</span>
-                        <span>۵ = کاملاً موافقم / خیلی زیاد</span>
-                      </div>
+                      <SegmentedScale
+                        value={value}
+                        onChange={(v) => setEnvAnswer(q.id, v)}
+                        lowLabel="خیلی کم"
+                        highLabel="خیلی زیاد"
+                        ariaLabel={q.text}
+                        tooltips={{
+                          1: 'کاملاً مخالفم / خیلی کم',
+                          2: 'مخالفم / کم',
+                          3: 'بی‌نظر / متوسط',
+                          4: 'موافقم / زیاد',
+                          5: 'کاملاً موافقم / خیلی زیاد',
+                        }}
+                      />
+                      <ScaleInfo>
+                        ۱ = کاملاً مخالفم / خیلی کم؛ ۲ = مخالفم / کم؛ ۳ = بی‌نظر / متوسط؛ ۴ = موافقم / زیاد؛ ۵ =
+                        کاملاً موافقم / خیلی زیاد. این پاسخ در محاسبه اثر فاکتور «{ef.title}» بر پنج نیروی پورتر استفاده
+                        می‌شود.
+                      </ScaleInfo>
                     </div>
                   )
                 })}

@@ -1,7 +1,70 @@
 import { useStrategy } from '../../state/StrategyContext'
 import { porterForcesPages } from '../../data/porter'
-import { AiConsult, AnswerBadge, Range } from '../ui/Controls'
+import { AiConsult } from '../ui/Controls'
+import EvaluationCard from '../ui/EvaluationCard'
 import { toFaNumber } from '../../utils/numbers'
+
+const persianDigit = '۰-۹'
+
+// Short endpoint labels for the card layout. The complete original wording is
+// still available from the AI hint and the expandable criterion explanation.
+const SHORT_ANCHORS = {
+  f1_q1: ['ورود سخت', 'ورود آسان'],
+  f1_q2: ['فقط شبکه بزرگ', 'بدون تعصب'],
+  f1_q3: ['تغییر پرهزینه', 'تغییر آسان'],
+  f1_q4: ['سرمایه کلان', 'سرمایه کم'],
+  f1_q5: ['انحصار قدیمی‌ها', 'دسترسی آزاد'],
+  f1_q6: ['کانال بسته', 'کانال باز'],
+  f1_q7: ['قوانین سخت', 'بدون مانع'],
+  f1_q8: ['واکنش تهاجمی', 'واکنش آرام'],
+
+  f2_q1: ['تامین‌کننده پراکنده', 'تامین‌کننده متمرکز'],
+  f2_q2: ['وابسته به ما', 'بی‌نیاز از ما'],
+  f2_q3: ['تغییر آسان', 'تغییر پرهزینه'],
+  f2_q4: ['کالای معمولی', 'کاملاً تخصصی'],
+  f2_q5: ['جایگزین زیاد', 'بدون جایگزین'],
+  f2_q6: ['غیرممکن', 'بسیار محتمل'],
+
+  f3_q1: ['مشتریان خرد', 'چند مشتری بزرگ'],
+  f3_q2: ['محصول متمایز', 'محصول یکسان'],
+  f3_q3: ['تغییر سخت', 'تغییر آسان'],
+  f3_q4: ['توان تولید ندارد', 'خودش تولید می‌کند'],
+  f3_q5: ['سهم ناچیز', 'سهم سنگین'],
+  f3_q6: ['مشتری مرفه', 'فشار قیمتی'],
+  f3_q7: ['کیفیت وابسته', 'کیفیت بی‌اثر'],
+  f3_q8: ['کاهش هزینه', 'بدون صرفه‌جویی'],
+
+  f4_q1: ['بدون جایگزین', 'جایگزین متعدد'],
+  f4_q2: ['کاملاً ضروری', 'قابل حذف'],
+  f4_q3: ['بازار دست‌دوم نیست', 'بازار دست‌دوم داغ'],
+  f4_q4: ['خودش نمی‌تواند', 'خودش انجام می‌دهد'],
+
+  f5_q1: ['رقبای کم', 'رقبای زیاد'],
+  f5_q2: ['بازار در حال رشد', 'بازار راکد'],
+  f5_q3: ['خروج آسان', 'خروج پرهزینه'],
+  f5_q4: ['رقبای منطقی', 'رقبای غیرمنطقی'],
+  f5_q5: ['رفتار قابل پیش‌بینی', 'رفتار هیجانی'],
+  f5_q6: ['محصول متمایز', 'محصول یکسان'],
+  f5_q7: ['هزینه ثابت کم', 'هزینه ثابت بالا'],
+  f5_q8: ['ظرفیت تدریجی', 'ظرفیت پله‌ای'],
+  f5_q9: ['ماندگاری بالا', 'فاسدشدنی'],
+  f5_q10: ['رقابت قیمتی', 'رقابت کیفی'],
+}
+
+function splitQuestionTitle(title = '') {
+  const match = title.match(new RegExp(`^([${persianDigit}]+)\\.\\s*(.*)$`))
+  return match ? { number: match[1], title: match[2] } : { number: null, title }
+}
+
+function shortenAnchor(raw = '') {
+  const withoutScore = raw.replace(new RegExp(`^\\s*[${persianDigit}]+\\s*=\\s*`), '').trim()
+  const withoutParens = withoutScore.replace(/\s*\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim()
+  if (!withoutParens) return ''
+  const firstClause = withoutParens.split('؛')[0].split('،')[0].trim()
+  const concise = firstClause.split(' ').filter(Boolean).length >= 3 ? firstClause : withoutParens
+  const words = concise.split(' ').filter(Boolean)
+  return words.length > 6 ? `${words.slice(0, 6).join(' ')}…` : concise
+}
 
 const forceMeta = [
   { label: 'تهدید ورود' },
@@ -104,46 +167,51 @@ export default function TabForces() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {pageData.questions.map((q) => {
             const value = forceAnswers[q.id] ?? null
-            const answered = value != null
             const [left, right] = q.anchor.split('|')
+            const { number, title } = splitQuestionTitle(q.title)
+            const isAi = q.source === 'ai'
+            const shortAnchor = SHORT_ANCHORS[q.id]
             return (
-              <div
+              <EvaluationCard
                 key={q.id}
-                className={`p-4 rounded-2xl border space-y-2 transition ${
-                  answered ? 'border-industry-300 bg-white' : 'border-line bg-canvas'
-                }`}
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-xs sm:text-sm font-black text-midnight-900">{q.title}</span>
-                  <div className="flex items-center gap-2">
-                    {q.source === 'ai' ? (
-                      <AiConsult
-                        hint={q.aiHint}
-                        onApply={() => setForceAnswer(q.id, q.aiRec)}
-                        applyLabel={`قرار دادن عدد AI (${toFaNumber(q.aiRec.toFixed(1))})`}
-                      />
-                    ) : (
-                      <span className="text-xs px-2 py-0.5 rounded bg-industry-50 text-industry-800 font-bold border border-industry-200">
-                        👤 سوال مستقیم از مدیرعامل
-                      </span>
-                    )}
-                    <AnswerBadge value={value} />
+                number={number}
+                title={title}
+                question={q.desc}
+                value={value}
+                onChange={(v) => setForceAnswer(q.id, v)}
+                lowLabel={shortAnchor?.[0] || shortenAnchor(left)}
+                highLabel={shortAnchor?.[1] || shortenAnchor(right)}
+                tooltips={{
+                  1: left?.replace(/^\s*[۰-۹]+\s*=\s*/, '').trim(),
+                  5: right?.replace(/^\s*[۰-۹]+\s*=\s*/, '').trim(),
+                }}
+                sourceIcon={isAi ? '🤖' : '👤'}
+                sourceLabel={isAi ? 'مشورت AI' : 'سوال مستقیم از مدیرعامل'}
+                ariaLabel={`${title} — امتیاز از ۱ تا ۵`}
+                detail={
+                  <div className="space-y-1.5">
+                    <p>
+                      <strong className="text-midnight-700">مقیاس کامل: </strong>
+                      {left}؛ {right}
+                    </p>
+                    <p>
+                      <strong className="text-midnight-700">شرح سوال: </strong>
+                      {q.desc}
+                    </p>
+                    {isAi && q.aiHint && <p className="text-midnight-600">{q.aiHint}</p>}
                   </div>
-                </div>
-                <p className="text-sm text-muted leading-relaxed">{q.desc}</p>
-                <div className="pt-1">
-                  <Range
-                    value={value}
-                    answered={answered}
-                    tone={q.source === 'ai' ? 'ai' : 'industry'}
-                    onChange={(v) => setForceAnswer(q.id, v)}
-                  />
-                  <div className="flex justify-between text-xs text-muted mt-1 font-semibold gap-2">
-                    <span>{left}</span>
-                    <span className="text-left">{right}</span>
-                  </div>
-                </div>
-              </div>
+                }
+                action={
+                  isAi ? (
+                    <AiConsult
+                      hint={q.aiHint}
+                      onApply={() => setForceAnswer(q.id, q.aiRec)}
+                      applyLabel={`قرار دادن عدد AI (${toFaNumber(q.aiRec.toFixed(1))})`}
+                      panelAlign="left"
+                    />
+                  ) : null
+                }
+              />
             )
           })}
         </div>

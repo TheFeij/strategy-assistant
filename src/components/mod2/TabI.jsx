@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useStrategy } from '../../state/StrategyContext'
 import { barneyData, barneyKeys } from '../../data/barney'
-import { AiConsult, AnswerBadge, Range } from '../ui/Controls'
-import { toFaNumber } from '../../utils/numbers'
+import { AiConsult } from '../ui/Controls'
+import EvaluationCard from '../ui/EvaluationCard'
 import ResourceTabs from './ResourceTabs'
+import { toFaNumber } from '../../utils/numbers'
 
 export default function TabI() {
   const { barney, setBarneyAnswer, applyAiInimitability, setMod2Tab } = useStrategy()
@@ -32,40 +33,68 @@ export default function TabI() {
             ? 'متوسط'
             : 'نسبتاً ساده'
 
-  const questions = [
+  const cards = [
     {
       field: 'I_hist_q',
-      label:
-        '۱. (مسیر تاریخی) آیا این منبع در طول سالیان، در مکان/زمان خاص یا با مجوز قدیمی شکل گرفته که رقیب امروز حتی با پول زیاد هم نمی‌تواند سریع بخرد؟',
-      left: '۱ = امروز در بازار آزاد قابل خرید فوری است',
-      right: '۵ = نیازمند دهه‌ها زمان و سابقه تاریخی غیرقابل تکرار',
-      tone: 'industry',
-      badge: 'industry',
+      number: 1,
+      title: 'تاریخ‌مندی منبع',
+      question:
+        'آیا این منبع در طول سالیان، در مکان/زمان خاص یا با مجوز قدیمی شکل گرفته که رقیب امروز حتی با پول زیاد هم نمی‌تواند سریع بخرد؟',
+      lowLabel: 'خرید فوری از بازار',
+      highLabel: 'سابقه غیرقابل تکرار',
+      tooltips: {
+        1: 'امروز در بازار آزاد قابل خرید فوری است',
+        5: 'نیازمند دهه‌ها زمان و سابقه تاریخی غیرقابل تکرار',
+      },
+      detail:
+        '۱ = امروز در بازار آزاد قابل خرید فوری است؛ ۵ = نیازمند دهه‌ها زمان و سابقه تاریخی غیرقابل تکرار.',
     },
     {
       field: 'I_soc_q',
-      label:
-        '۲. (پیچیدگی اجتماعی) چقدر عملکرد این منبع به فرهنگ شرکت، اعتماد متقابل بین افراد و روابط غیررسمی تیم‌ها گره خورده است؟',
-      left: '۱ = مستقل از فرهنگ و روابط افراد',
-      right: '۵ = کاملاً متکی به فرهنگ و روابط پیچیده انسانی',
-      tone: 'industry',
-      badge: 'industry',
+      number: 2,
+      title: 'پیچیدگی اجتماعی',
+      question:
+        'چقدر عملکرد این منبع به فرهنگ شرکت، اعتماد متقابل بین افراد و روابط غیررسمی تیم‌ها گره خورده است؟',
+      lowLabel: 'مستقل از فرهنگ',
+      highLabel: 'وابسته به روابط انسانی',
+      tooltips: {
+        1: 'مستقل از فرهنگ و روابط افراد',
+        5: 'کاملاً متکی به فرهنگ و روابط پیچیده انسانی',
+      },
+      detail:
+        '۱ = مستقل از فرهنگ و روابط افراد؛ ۵ = کاملاً متکی به فرهنگ و روابط پیچیده انسانی.',
     },
-  ]
-
-  const diagnostics = [
     {
       field: 'I_codified_q',
-      label: '۳. چقدر راز موفقیت این منبع به صورت دستورالعمل و کاتالوگ مکتوب قابل نوشتن است؟',
-      left: '۱ = اصلاً قابل نوشتن روی کاغذ نیست (ابهام بالا)',
-      right: '۵ = کاملاً مکتوب و فرموله است',
+      number: 3,
+      title: 'مستندسازی دانش',
+      question:
+        'چقدر راز موفقیت این منبع به صورت دستورالعمل و کاتالوگ مکتوب قابل نوشتن است؟',
+      lowLabel: 'غیرقابل مکتوب‌سازی',
+      highLabel: 'کاملاً مکتوب و فرموله',
+      tooltips: {
+        1: 'اصلاً قابل نوشتن روی کاغذ نیست (ابهام بالا)',
+        5: 'کاملاً مکتوب و فرموله است',
+      },
+      detail:
+        '۱ = اصلاً قابل نوشتن روی کاغذ نیست (ابهام بالا)؛ ۵ = کاملاً مکتوب و فرموله است. این معیار برای محاسبه سختی کپی‌برداری استفاده می‌شود.',
+      tag: 'تشخیصی',
     },
     {
       field: 'I_poach_q',
-      label:
-        '۴. اگر رقیب یکی از مدیران کلیدی شما را با حقوق بالا استخدام کند، چقدر راحت می‌تواند این مزیت را در شرکت رقیب کپی کند؟',
-      left: '۱ = هیچ فردی به تنهایی راز کل سیستم را نمی‌داند (ابهام علی بالا)',
-      right: '۵ = با بردن یک نفر کل راز کپی می‌شود',
+      number: 4,
+      title: 'وابستگی به افراد کلیدی',
+      question:
+        'اگر رقیب یکی از مدیران کلیدی شما را با حقوق بالا استخدام کند، چقدر راحت می‌تواند این مزیت را در شرکت رقیب کپی کند؟',
+      lowLabel: 'راز پخش‌شده در تیم',
+      highLabel: 'کپی با رفتن یک نفر',
+      tooltips: {
+        1: 'هیچ فردی به تنهایی راز کل سیستم را نمی‌داند (ابهام علی بالا)',
+        5: 'با بردن یک نفر کل راز کپی می‌شود',
+      },
+      detail:
+        '۱ = هیچ فردی به تنهایی راز کل سیستم را نمی‌داند (ابهام علی بالا)؛ ۵ = با بردن یک نفر کل راز کپی می‌شود. این معیار برای محاسبه سختی کپی‌برداری استفاده می‌شود.',
+      tag: 'تشخیصی',
     },
   ]
 
@@ -83,46 +112,34 @@ export default function TabI() {
       <ResourceTabs activeKey={activeKey} onChange={setActiveKey} />
 
       <div className="bg-white rounded-2xl p-4 border border-line border-r-4 !border-r-brand-400 space-y-3">
-        <div className="flex items-center justify-end gap-2 border-b border-line pb-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line pb-2">
+          <p className="text-xs font-bold text-muted">هر معیار را با انتخاب یکی از پنج سطح تکمیل کنید.</p>
           <AiConsult
             hint={b.I_aiHint}
             onApply={() => applyAiInimitability(k)}
             applyLabel="تکمیل پیشنهادی AI برای این بخش"
+            panelAlign="left"
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {questions.map((q) => (
-            <div key={q.field} className="min-w-0 bg-canvas p-3 rounded-xl border border-line space-y-1 text-sm">
-              <div className="flex items-start justify-between gap-2">
-                <span className="font-bold min-w-0 break-words">{q.label}</span>
-                <AnswerBadge value={values[q.field]} tone={q.badge} emptyText="خالی" />
-              </div>
-              <Range value={values[q.field]} onChange={(v) => setBarneyAnswer(k, q.field, v)} />
-              <div className="flex flex-wrap justify-between text-xs text-muted gap-2">
-                <span>{q.left}</span>
-                <span className="text-left">{q.right}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {diagnostics.map((q) => (
-            <div
-              key={q.field}
-              className="min-w-0 bg-gold-50/90 p-3 rounded-xl border border-gold-200 space-y-1 text-sm"
-            >
-              <div className="flex items-start justify-between gap-2">
-                <span className="font-bold text-midnight-800 min-w-0 break-words">{q.label}</span>
-                <AnswerBadge value={values[q.field]} tone="gold" emptyText="خالی" />
-              </div>
-              <Range value={values[q.field]} tone="gold" onChange={(v) => setBarneyAnswer(k, q.field, v)} />
-              <div className="flex flex-wrap justify-between text-xs text-muted gap-2">
-                <span>{q.left}</span>
-                <span className="text-left">{q.right}</span>
-              </div>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          {cards.map((card) => (
+            <EvaluationCard
+              key={card.field}
+              number={card.number}
+              title={card.title}
+              question={card.question}
+              value={values[card.field]}
+              onChange={(v) => setBarneyAnswer(k, card.field, v)}
+              lowLabel={card.lowLabel}
+              highLabel={card.highLabel}
+              tooltips={card.tooltips}
+              sourceLabel="ورودی مدیرعامل · مشورت AI"
+              sourceIcon="👤"
+              tag={card.tag}
+              detail={card.detail}
+              ariaLabel={card.title}
+            />
           ))}
         </div>
 
