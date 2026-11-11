@@ -168,15 +168,14 @@ export default function TabForces() {
           {pageData.questions.map((q) => {
             const value = forceAnswers[q.id] ?? null
             const [left, right] = q.anchor.split('|')
-            const { number, title } = splitQuestionTitle(q.title)
+            const { number, title: purpose } = splitQuestionTitle(q.title)
             const isAi = q.source === 'ai'
             const shortAnchor = SHORT_ANCHORS[q.id]
             return (
               <EvaluationCard
                 key={q.id}
                 number={number}
-                title={title}
-                question={q.desc}
+                title={q.desc}
                 value={value}
                 onChange={(v) => setForceAnswer(q.id, v)}
                 lowLabel={shortAnchor?.[0] || shortenAnchor(left)}
@@ -187,16 +186,16 @@ export default function TabForces() {
                 }}
                 sourceIcon={isAi ? '🤖' : '👤'}
                 sourceLabel={isAi ? 'مشورت AI' : 'سوال مستقیم از مدیرعامل'}
-                ariaLabel={`${title} — امتیاز از ۱ تا ۵`}
+                ariaLabel={`${q.desc} — امتیاز از ۱ تا ۵`}
                 detail={
                   <div className="space-y-1.5">
                     <p>
-                      <strong className="text-midnight-700">مقیاس کامل: </strong>
-                      {left}؛ {right}
+                      <strong className="text-midnight-700">هدف سوال: </strong>
+                      {purpose}
                     </p>
                     <p>
-                      <strong className="text-midnight-700">شرح سوال: </strong>
-                      {q.desc}
+                      <strong className="text-midnight-700">مقیاس کامل: </strong>
+                      {left}؛ {right}
                     </p>
                     {isAi && q.aiHint && <p className="text-midnight-600">{q.aiHint}</p>}
                   </div>

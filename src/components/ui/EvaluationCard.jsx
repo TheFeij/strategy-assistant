@@ -56,7 +56,7 @@ export default function EvaluationCard({
         </div>
       )}
 
-      <p className="text-sm leading-6 text-midnight-800">{question}</p>
+      {question && <p className="text-sm leading-6 text-midnight-800">{question}</p>}
 
       <div className="mt-auto space-y-2.5 pt-1">
         <SegmentedScale

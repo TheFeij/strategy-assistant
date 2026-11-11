@@ -97,6 +97,13 @@ export function SegmentedScale({
 
   return (
     <div className={`relative w-full ${className}`}>
+      {(lowLabel || highLabel) && (
+        <div className="mb-1.5 flex items-start justify-between gap-3 text-[0.7rem] leading-5 text-muted">
+          <span className="max-w-[48%] text-right font-semibold">{lowLabel}</span>
+          <span className="max-w-[48%] text-left font-semibold">{highLabel}</span>
+        </div>
+      )}
+
       <div
         role="radiogroup"
         aria-label={ariaLabel}
