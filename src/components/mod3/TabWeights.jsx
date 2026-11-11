@@ -79,14 +79,14 @@ export default function TabWeights() {
                     }`}
                   >
                     <td className="py-3 px-3 font-extrabold text-midnight-900">{sec.name}</td>
-                    <td className="py-3 px-2 text-center font-mono text-industry-700 font-bold">
+                    <td className="py-3 px-2 text-center tabular-nums text-industry-700 font-bold">
                       {toFaNumber(sec.indEffect.toFixed(2))}%
                     </td>
-                    <td className="py-3 px-2 text-center font-mono text-brand-700 font-bold">
+                    <td className="py-3 px-2 text-center tabular-nums text-brand-700 font-bold">
                       {toFaNumber(sec.firmEffect.toFixed(2))}%
                     </td>
-                    <td className="py-3 px-2 text-center font-mono text-gold-800">{toFaNumber(sec.corpLabel)}</td>
-                    <td className="py-3 px-2 text-center font-mono">{toFaNumber(sec.totalModel)}</td>
+                    <td className="py-3 px-2 text-center tabular-nums text-gold-800">{toFaNumber(sec.corpLabel)}</td>
+                    <td className="py-3 px-2 text-center tabular-nums">{toFaNumber(sec.totalModel)}</td>
                     <td className="py-3 px-3 text-xs text-muted">{toFaNumber(sec.interpretation)}</td>
                   </tr>
                 )

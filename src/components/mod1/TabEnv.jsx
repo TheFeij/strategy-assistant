@@ -83,13 +83,13 @@ export default function TabEnv() {
               {forceNames.map((fn, fIdx) => (
                 <tr key={fn}>
                   <td className="py-2 px-3 font-bold">{fn}</td>
-                  <td className="py-2 px-2 text-center font-mono font-bold">
+                  <td className="py-2 px-2 text-center tabular-nums font-bold">
                     {forceScores[fIdx] != null ? toFaNumber(forceScores[fIdx].toFixed(2)) : '—'}
                   </td>
                   {envEffects[fIdx].map((eff, eIdx) => (
                     <td
                       key={eIdx}
-                      className={`py-2 px-2 text-center font-mono ${
+                      className={`py-2 px-2 text-center tabular-nums ${
                         eff < 0 ? 'text-brand-700 font-bold' : eff > 0 ? 'text-gold-800 font-bold' : 'text-muted'
                       }`}
                     >
@@ -97,7 +97,7 @@ export default function TabEnv() {
                       {toFaNumber(eff.toFixed(2))}
                     </td>
                   ))}
-                  <td className="py-2 px-3 text-center font-mono font-black text-industry-800">
+                  <td className="py-2 px-3 text-center tabular-nums font-black text-industry-800">
                     {hasForces ? toFaNumber(F_fut_arr[fIdx].toFixed(2)) : '—'}
                   </td>
                 </tr>

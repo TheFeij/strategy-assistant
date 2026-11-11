@@ -194,7 +194,7 @@ export default function TabRoic() {
                       {toFaNumber(ind.roic.toFixed(1))}%
                     </div>
                   </div>
-                  <div className="col-span-1 text-left font-mono font-bold text-midnight-700">
+                  <div className="col-span-1 text-left tabular-nums font-bold text-midnight-700">
                     {toFaNumber(ind.roic.toFixed(1))}
                   </div>
                 </button>
