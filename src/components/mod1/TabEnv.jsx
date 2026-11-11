@@ -24,7 +24,7 @@ export default function TabEnv() {
           {envFactorsMulti.map((ef) => (
             <div
               key={ef.id}
-              className="bg-white rounded-2xl p-4 border border-line border-r-4 !border-r-industry-400 space-y-3"
+              className="bg-white rounded-2xl p-4 border border-line border-r-4 !border-r-industry-400 space-y-3 flex flex-col"
             >
               <div className="flex items-center justify-between gap-2 border-b border-line pb-2">
                 <h4 className="text-sm font-black text-midnight-900">{ef.title}</h4>
@@ -35,14 +35,14 @@ export default function TabEnv() {
                   applyLabel="قرار دادن اعداد پیشنهادی AI برای این فاکتور"
                 />
               </div>
-              <div className="space-y-2">
+              <div className="flex flex-col flex-1 gap-2">
                 {ef.questions.map((q) => {
                   const value = envAnswers[q.id] ?? null
                   const answered = value != null
                   return (
                     <div
                       key={q.id}
-                      className={`p-3 rounded-xl border space-y-1.5 ${
+                      className={`flex-1 flex flex-col justify-center p-3 rounded-xl border gap-1.5 ${
                         answered ? 'border-industry-300 bg-white' : 'border-line bg-canvas'
                       }`}
                     >
