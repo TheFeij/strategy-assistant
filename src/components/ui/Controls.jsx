@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { toFaNumber } from '../../utils/numbers'
 
 const DEFAULT_SCALE_OPTIONS = [1, 2, 3, 4, 5]
@@ -13,9 +13,28 @@ export function AiConsult({
   panelAlign = 'right',
 }) {
   const [open, setOpen] = useState(false)
+  const rootRef = useRef(null)
+
+  useEffect(() => {
+    if (!open) return
+
+    const handlePointerDown = (event) => {
+      if (rootRef.current && !rootRef.current.contains(event.target)) setOpen(false)
+    }
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setOpen(false)
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [open])
 
   return (
-    <div className={`relative inline-flex items-center ${className}`}>
+    <div ref={rootRef} className={`relative inline-flex items-center ${className}`}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -152,9 +171,28 @@ export function Range({ value, onChange, answered = value != null, tone, ...rest
 export function ScaleInfo({ label = 'توضیح کامل مقیاس', title, children, className = '' }) {
   const [open, setOpen] = useState(false)
   const panelId = useId()
+  const rootRef = useRef(null)
+
+  useEffect(() => {
+    if (!open) return
+
+    const handlePointerDown = (event) => {
+      if (rootRef.current && !rootRef.current.contains(event.target)) setOpen(false)
+    }
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') setOpen(false)
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [open])
 
   return (
-    <div className={`relative text-xs ${className}`}>
+    <div ref={rootRef} className={`relative text-xs ${className}`}>
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}

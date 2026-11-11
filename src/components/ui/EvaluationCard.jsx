@@ -30,7 +30,7 @@ export default function EvaluationCard({
       <header className="flex items-start gap-2">
         <div className="flex min-w-0 items-center gap-2">
           {number != null && (
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-midnight-50 text-[0.7rem] font-black text-midnight-700">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-midnight-50 text-sm font-black text-midnight-700">
               {toFaNumber(number)}
             </span>
           )}

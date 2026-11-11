@@ -127,8 +127,7 @@ export default function TabI() {
             <EvaluationCard
               key={card.field}
               number={card.number}
-              title={card.title}
-              question={card.question}
+              title={card.question}
               value={values[card.field]}
               onChange={(v) => setBarneyAnswer(k, card.field, v)}
               lowLabel={card.lowLabel}
@@ -137,8 +136,16 @@ export default function TabI() {
               sourceLabel="ورودی مدیرعامل · مشورت AI"
               sourceIcon="👤"
               tag={card.tag}
-              detail={card.detail}
-              ariaLabel={card.title}
+              ariaLabel={card.question}
+              detail={
+                <div className="space-y-1.5">
+                  <p>
+                    <strong className="text-midnight-700">هدف سوال: </strong>
+                    {card.title}
+                  </p>
+                  <p>{card.detail}</p>
+                </div>
+              }
             />
           ))}
         </div>

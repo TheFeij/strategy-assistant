@@ -24,7 +24,7 @@ export default function TabEnv() {
           {envFactorsMulti.map((ef) => (
             <div
               key={ef.id}
-              className="bg-white rounded-xl p-4 border border-line border-r-4 !border-r-industry-400 flex h-full flex-col gap-3"
+              className="bg-white rounded-xl p-4 border border-line border-r-4 !border-r-industry-400 grid gap-3 lg:row-span-4 lg:grid-rows-subgrid"
             >
               <div className="flex flex-wrap items-start justify-between gap-2 border-b border-line pb-2.5">
                 <div className="min-w-0">
@@ -42,37 +42,36 @@ export default function TabEnv() {
                   panelAlign="left"
                 />
               </div>
-              <div className="flex flex-1 flex-col gap-3">
-                {ef.questions.map((q) => {
-                  const value = envAnswers[q.id] ?? null
-                  return (
-                    <div key={q.id} className="flex flex-1 flex-col gap-2 rounded-lg border border-line bg-canvas/60 p-3">
-                      <div className="flex items-start gap-2">
-                        <p className="text-sm font-semibold leading-6 text-midnight-800">{q.text}</p>
-                      </div>
-                      <SegmentedScale
-                        value={value}
-                        onChange={(v) => setEnvAnswer(q.id, v)}
-                        lowLabel="خیلی کم"
-                        highLabel="خیلی زیاد"
-                        ariaLabel={q.text}
-                        tooltips={{
-                          1: 'کاملاً مخالفم / خیلی کم',
-                          2: 'مخالفم / کم',
-                          3: 'بی‌نظر / متوسط',
-                          4: 'موافقم / زیاد',
-                          5: 'کاملاً موافقم / خیلی زیاد',
-                        }}
-                      />
-                      <ScaleInfo>
-                        ۱ = کاملاً مخالفم / خیلی کم؛ ۲ = مخالفم / کم؛ ۳ = بی‌نظر / متوسط؛ ۴ = موافقم / زیاد؛ ۵ =
-                        کاملاً موافقم / خیلی زیاد. این پاسخ در محاسبه اثر فاکتور «{ef.title}» بر پنج نیروی پورتر استفاده
-                        می‌شود.
-                      </ScaleInfo>
+              {ef.questions.map((q) => {
+                const value = envAnswers[q.id] ?? null
+                return (
+                  <div key={q.id} className="flex flex-col gap-2 rounded-lg border border-line bg-canvas/60 p-3">
+                    <div className="flex items-start gap-2">
+                      <p className="text-sm font-semibold leading-6 text-midnight-800">{q.text}</p>
                     </div>
-                  )
-                })}
-              </div>
+                    <SegmentedScale
+                      className="mt-auto"
+                      value={value}
+                      onChange={(v) => setEnvAnswer(q.id, v)}
+                      lowLabel="خیلی کم"
+                      highLabel="خیلی زیاد"
+                      ariaLabel={q.text}
+                      tooltips={{
+                        1: 'کاملاً مخالفم / خیلی کم',
+                        2: 'مخالفم / کم',
+                        3: 'بی‌نظر / متوسط',
+                        4: 'موافقم / زیاد',
+                        5: 'کاملاً موافقم / خیلی زیاد',
+                      }}
+                    />
+                    <ScaleInfo>
+                      ۱ = کاملاً مخالفم / خیلی کم؛ ۲ = مخالفم / کم؛ ۳ = بی‌نظر / متوسط؛ ۴ = موافقم / زیاد؛ ۵ =
+                      کاملاً موافقم / خیلی زیاد. این پاسخ در محاسبه اثر فاکتور «{ef.title}» بر پنج نیروی پورتر استفاده
+                      می‌شود.
+                    </ScaleInfo>
+                  </div>
+                )
+              })}
             </div>
           ))}
         </div>
