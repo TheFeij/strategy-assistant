@@ -52,7 +52,7 @@ src/
     mod1/                     # TabRoic, TabForces, TabEnv, TabResult
     mod2/                     # TabChecklist, TabFactor (V/R/N), TabI, TabFirmResult
     mod3/                     # TabWeights, TabStrategy
-    ui/Controls.jsx           # AiConsult popover, Range, AnswerBadge
+    ui/Controls.jsx           # AiConsult popover, Range, ScaleInfo
   styles/index.css            # Tailwind layers + slider/tab/card primitives
 legacy/                       # original single-file dashboard, kept for reference
 ```

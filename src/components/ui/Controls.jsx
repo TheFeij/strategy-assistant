@@ -1,18 +1,7 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 import { toFaNumber } from '../../utils/numbers'
 
 const DEFAULT_SCALE_OPTIONS = [1, 2, 3, 4, 5]
-
-function formatScore(value) {
-  const number = Number(value)
-  return Number.isInteger(number) ? String(number) : number.toFixed(1)
-}
-
-function cleanHint(hint) {
-  return String(hint || '')
-    .replace(/^\s*[۰-۹0-9]+\s*=\s*/, '')
-    .trim()
-}
 
 export function AiConsult({
   hint,
@@ -74,9 +63,6 @@ export function SegmentedScale({
   disabled = false,
 }) {
   const buttonRefs = useRef([])
-  const toastTimerRef = useRef(null)
-  const rootRef = useRef(null)
-  const [hintToast, setHintToast] = useState(null)
   const numericValue = value == null || value === '' ? null : Number(value)
   const selected =
     numericValue == null || Number.isNaN(numericValue)
@@ -86,41 +72,8 @@ export function SegmentedScale({
         )
   const selectedIndex = selected == null ? -1 : options.indexOf(selected)
 
-  useEffect(() => () => clearTimeout(toastTimerRef.current), [])
-
-  useEffect(() => {
-    if (!hintToast) return
-
-    const dismiss = () => {
-      clearTimeout(toastTimerRef.current)
-      setHintToast(null)
-    }
-    const handlePointerDown = (event) => {
-      if (rootRef.current && !rootRef.current.contains(event.target)) dismiss()
-    }
-    const handleDocumentKeyDown = (event) => {
-      if (event.key === 'Escape') dismiss()
-    }
-
-    document.addEventListener('pointerdown', handlePointerDown)
-    document.addEventListener('keydown', handleDocumentKeyDown)
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown)
-      document.removeEventListener('keydown', handleDocumentKeyDown)
-    }
-  }, [hintToast])
-
   const choose = (option) => {
     onChange?.(option)
-    const endpointHint =
-      option === options[0] ? lowLabel : option === options[options.length - 1] ? highLabel : null
-    const hint = cleanHint(tooltips[option] || endpointHint)
-    setHintToast({
-      option,
-      hint: hint || `سطح ${toFaNumber(option)} از ${toFaNumber(options.length)}`,
-    })
-    clearTimeout(toastTimerRef.current)
-    toastTimerRef.current = setTimeout(() => setHintToast(null), 3000)
   }
 
   const selectAt = (index) => {
@@ -143,7 +96,7 @@ export function SegmentedScale({
   }
 
   return (
-    <div ref={rootRef} className={`relative w-full ${className}`}>
+    <div className={`relative w-full ${className}`}>
       <div
         role="radiogroup"
         aria-label={ariaLabel}
@@ -179,40 +132,6 @@ export function SegmentedScale({
           )
         })}
       </div>
-
-      {hintToast && (
-        <div
-          className={`absolute top-full z-40 mt-1 w-72 max-w-[80vw] ${
-            options.indexOf(hintToast.option) <= 1
-              ? 'right-0'
-              : options.indexOf(hintToast.option) >= options.length - 2
-                ? 'left-0'
-                : 'left-1/2 -translate-x-1/2'
-          }`}
-        >
-          <div
-            role="status"
-            aria-live="polite"
-            className="sa-toast-enter rounded-xl border border-midnight-600 bg-midnight p-3 text-right text-xs text-white shadow-raised"
-          >
-            <div className="flex items-start gap-2.5">
-              <span
-                aria-hidden="true"
-                className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs"
-              >
-                🤖
-              </span>
-              <div className="min-w-0">
-                <span className="block text-[0.65rem] font-bold text-midnight-200">راهنمای انتخاب</span>
-                <span className="mt-0.5 block text-xs leading-5 text-white">
-                  <strong className="font-black text-brand-300">امتیاز {toFaNumber(hintToast.option)}:</strong>{' '}
-                  {hintToast.hint}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
@@ -257,28 +176,5 @@ export function ScaleInfo({ label = 'توضیح کامل مقیاس', title, chi
         </div>
       )}
     </div>
-  )
-}
-
-export function AnswerBadge({ value, emptyText = 'بدون پاسخ' }) {
-  const answered = value != null && value !== ''
-  const number = answered ? Number(value) : null
-  return (
-    <span
-      aria-live="polite"
-      aria-atomic="true"
-      className={`inline-flex shrink-0 items-baseline gap-0.5 rounded-lg px-2 py-1 text-xs font-bold ${
-        answered ? 'bg-brand-50 text-brand-800 border border-brand-200' : 'bg-canvas text-muted border border-line'
-      }`}
-    >
-      {answered ? (
-        <>
-          <span className="text-sm font-black tabular-nums">{toFaNumber(formatScore(number))}</span>
-          <span className="text-[0.65rem] font-semibold opacity-70">/ ۵</span>
-        </>
-      ) : (
-        emptyText
-      )}
-    </span>
   )
 }

@@ -1,4 +1,4 @@
-import { AnswerBadge, ScaleInfo, SegmentedScale } from './Controls'
+import { ScaleInfo, SegmentedScale } from './Controls'
 import { toFaNumber } from '../../utils/numbers'
 
 /**
@@ -27,7 +27,7 @@ export default function EvaluationCard({
     <article
       className={`flex h-full min-w-0 flex-col gap-3 rounded-xl border border-line bg-white p-4 transition-colors duration-200 hover:border-brand-200 ${className}`}
     >
-      <header className="flex items-start justify-between gap-2">
+      <header className="flex items-start gap-2">
         <div className="flex min-w-0 items-center gap-2">
           {number != null && (
             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-midnight-50 text-[0.7rem] font-black text-midnight-700">
@@ -36,7 +36,6 @@ export default function EvaluationCard({
           )}
           <h4 className="min-w-0 text-sm font-extrabold leading-6 text-midnight-900">{title}</h4>
         </div>
-        <AnswerBadge value={value} emptyText="بدون پاسخ" />
       </header>
 
       {(sourceLabel || tag) && (

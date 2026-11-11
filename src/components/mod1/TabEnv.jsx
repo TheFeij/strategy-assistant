@@ -1,6 +1,6 @@
 import { useStrategy } from '../../state/StrategyContext'
 import { envFactorsMulti, forceNames } from '../../data/porter'
-import { AiConsult, AnswerBadge, ScaleInfo, SegmentedScale } from '../ui/Controls'
+import { AiConsult, ScaleInfo, SegmentedScale } from '../ui/Controls'
 import { toFaNumber } from '../../utils/numbers'
 
 export default function TabEnv() {
@@ -47,9 +47,8 @@ export default function TabEnv() {
                   const value = envAnswers[q.id] ?? null
                   return (
                     <div key={q.id} className="flex flex-1 flex-col gap-2 rounded-lg border border-line bg-canvas/60 p-3">
-                      <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start gap-2">
                         <p className="text-sm font-semibold leading-6 text-midnight-800">{q.text}</p>
-                        <AnswerBadge value={value} emptyText="بدون پاسخ" />
                       </div>
                       <SegmentedScale
                         value={value}
