@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { porterForcesPages, envFactorsMulti } from '../data/porter'
 import { barneyData, barneyKeys, barneyAiInimitability } from '../data/barney'
 import { iranIndustriesRoic } from '../data/iranIndustries'
+import { pfiAllQuestions, pfiCompChecklist } from '../data/pfi'
 import { computeAll } from '../utils/calculations'
 import { applyChartTheme } from '../utils/chartSetup'
 
@@ -21,6 +22,22 @@ const emptyBarneyChecklist = () => {
   return map
 }
 
+const emptyPfiAnswers = () => {
+  const map = {}
+  pfiAllQuestions.forEach((q) => {
+    map[q.id] = null
+  })
+  return map
+}
+
+const emptyPfiChecklist = () => {
+  const map = {}
+  pfiCompChecklist.forEach((item) => {
+    map[item.id] = false
+  })
+  return map
+}
+
 const blankData = () => ({
   selectedIranIndustryId: '',
   indRoic: null,
@@ -36,6 +53,8 @@ const blankData = () => ({
   envAnswers: {},
   barney: emptyBarneyAnswers(),
   barneyChecklist: emptyBarneyChecklist(),
+  pfiAnswers: emptyPfiAnswers(),
+  pfiChecklist: emptyPfiChecklist(),
 })
 
 const initialState = {
@@ -43,6 +62,7 @@ const initialState = {
   mod1Tab: 1,
   mod2Tab: 'CHK',
   mod3Tab: 1,
+  mod4Tab: 1,
   forcePage: 1,
   rivalrySumType: 'balanced',
   ...blankData(),
@@ -90,6 +110,7 @@ export function StrategyProvider({ children }) {
   const setMod1Tab = useCallback((tab) => setState((prev) => ({ ...prev, mod1Tab: tab })), [])
   const setMod2Tab = useCallback((tab) => setState((prev) => ({ ...prev, mod2Tab: tab })), [])
   const setMod3Tab = useCallback((tab) => setState((prev) => ({ ...prev, mod3Tab: tab })), [])
+  const setMod4Tab = useCallback((tab) => setState((prev) => ({ ...prev, mod4Tab: tab })), [])
   const setForcePage = useCallback((page) => setState((prev) => ({ ...prev, forcePage: page })), [])
   const setRivalrySumType = useCallback((value) => setState((prev) => ({ ...prev, rivalrySumType: value })), [])
 
@@ -179,6 +200,14 @@ export function StrategyProvider({ children }) {
     })
   }, [])
 
+  const setPfiAnswer = useCallback((id, value) => {
+    setState((prev) => ({ ...prev, pfiAnswers: { ...prev.pfiAnswers, [id]: value } }))
+  }, [])
+
+  const togglePfiCheck = useCallback((id, checked) => {
+    setState((prev) => ({ ...prev, pfiChecklist: { ...prev.pfiChecklist, [id]: checked } }))
+  }, [])
+
   const resetToBlank = useCallback(() => {
     setState((prev) => ({
       ...prev,
@@ -200,6 +229,9 @@ export function StrategyProvider({ children }) {
         forceAnswers[q.id] = sampleForces[p][idx]
       })
     }
+    // The sample deliberately shows a monopolized distribution channel so the
+    // PFI module can demonstrate its Porter cross-link.
+    forceAnswers.f1_q6 = 2.0
 
     const envAnswers = {}
     envFactorsMulti.forEach((ef) => ef.questions.forEach((q) => (envAnswers[q.id] = q.aiRec)))
@@ -236,6 +268,8 @@ export function StrategyProvider({ children }) {
           I_hist_q: 4.0, I_soc_q: 4.5, I_codified_q: 1.5, I_poach_q: 1.5, N_q1: 4.5,
         },
       },
+      pfiChecklist: { mfg: true, dist: true, brand: false, srv: true, tech: false },
+      pfiAnswers: { q1: 2, q2: 4, q3: 3, q4: 4, q5: 4, q6: 4, q7: 3, q8: 4 },
     }))
   }, [])
 
@@ -251,6 +285,7 @@ export function StrategyProvider({ children }) {
     setMod1Tab,
     setMod2Tab,
     setMod3Tab,
+    setMod4Tab,
     setForcePage,
     setRivalrySumType,
     selectIranIndustry,
@@ -262,6 +297,8 @@ export function StrategyProvider({ children }) {
     applyAiInimitability,
     toggleBarneyCheck,
     setBarneyDetail,
+    setPfiAnswer,
+    togglePfiCheck,
     resetToBlank,
     fillSample,
   }

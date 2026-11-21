@@ -4,6 +4,7 @@ const titles = {
   mod1: 'تحلیل جذابیت صنعت (مقاله پورتر ۲۰۰۸ + ROIC صنایع ایران)',
   mod2: 'تحلیل جذابیت بنگاه (مقاله پایداری منابع بارنی ۱۹۹۱)',
   mod3: 'ترکیب امتیاز صنعت و بنگاه (مقاله مک‌گاهان و پورتر ۱۹۹۷)',
+  mod4: 'کسب سود از نوآوری (چارچوب PFI دیوید تیس)',
 }
 
 export default function BreadcrumbBar() {
@@ -53,6 +54,15 @@ export default function BreadcrumbBar() {
             }`}
           >
             ترکیب و استراتژی (مک‌گاهان)
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('mod4')}
+            className={`px-3 py-1.5 rounded-lg font-bold transition ${
+              view === 'mod4' ? 'bg-midnight text-white' : 'text-muted hover:bg-canvas'
+            }`}
+          >
+            سهم سود نوآوری (تیس)
           </button>
         </div>
       </div>

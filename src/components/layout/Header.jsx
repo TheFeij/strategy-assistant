@@ -12,7 +12,7 @@ function ScorePill({ label, value, dotClass, valueClass }) {
 }
 
 export default function Header() {
-  const { navigate, IS_current, FS, combinedScore, resetToBlank, fillSample, theme, toggleTheme } =
+  const { navigate, IS_current, FS, combinedScore, pfiFirmShare, resetToBlank, fillSample, theme, toggleTheme } =
     useStrategy()
 
   return (
@@ -47,7 +47,7 @@ export default function Header() {
           </div>
         </button>
 
-        <div className="pointer-events-none order-3 flex w-full items-center justify-center gap-1 rounded-2xl border border-line bg-canvas p-1 lg:absolute lg:left-1/2 lg:top-1/2 lg:order-none lg:w-auto lg:-translate-x-1/2 lg:-translate-y-1/2 dark:border-white/10 dark:bg-white/[0.04]">
+        <div className="pointer-events-none order-3 flex w-full flex-wrap items-center justify-center gap-1 rounded-2xl border border-line bg-canvas p-1 lg:absolute lg:left-1/2 lg:top-1/2 lg:order-none lg:w-auto lg:-translate-x-1/2 lg:-translate-y-1/2 dark:border-white/10 dark:bg-white/[0.04]">
           <ScorePill
             label="صنعت"
             value={IS_current}
@@ -65,6 +65,12 @@ export default function Header() {
             value={combinedScore}
             dotClass="bg-gold-500 dark:bg-gold-400"
             valueClass="text-gold-800 dark:text-gold-300"
+          />
+          <ScorePill
+            label="سهم سود"
+            value={pfiFirmShare != null ? `${toFaNumber(pfiFirmShare)}٪` : null}
+            dotClass="bg-midnight-400 dark:bg-midnight-300"
+            valueClass="text-midnight-800 dark:text-midnight-200"
           />
         </div>
 

@@ -5,6 +5,7 @@ React + Vite implementation of the **StratBI Pro v3.0** strategic decision dashb
 - **ماژول ۱ — صنعت (پورتر ۲۰۰۸):** مرز صنعت و ROIC ۲۰ صنعت بورس ایران، ۵ صفحه نیروی رقابتی (۳۶ سوال)، ۴ فاکتور محیطی (۱۲ سوال) و کارنامه/استراتژی صنعت.
 - **ماژول ۲ — بنگاه (بارنی ۱۹۹۱):** چک‌لیست مصادیق منابع، سنجش V/R/I/N با کشف غیرمستقیم «ابهام علی» و کارنامه پایداری منابع.
 - **ماژول ۳ — ترکیب (مک‌گاهان و پورتر ۱۹۹۷):** جدول ضرایب ۷ بخش اقتصادی، وزن‌های نرمال‌شده (صنعت/بنگاه/شرکت مادر)، ماتریس موقعیت‌یابی و بیانیه استراتژی قابل چاپ.
+- **ماژول ۴ — سهم سود نوآوری (PFI دیوید تیس):** سنجش توان محافظت از نوآوری، مرحله طراحی غالب و دارایی‌های مکمل، سپس برآورد توزیع سود میان بنگاه، شرکای مکمل و تقلیدکنندگان و تجویز استراتژی کسب سود.
 
 The UI is Persian/RTL, Vazirmatn, using the **Midnight Executive** palette (midnight navy, teal, muted gold, light blue-gray canvas). Default state is a blank form; the header can load a complete sample or reset back to blank.
 
@@ -43,15 +44,17 @@ src/
     mcgahan.js                # McGahan–Porter sector coefficients (Table 4)
     porter.js                 # 5 force pages, rival types, 4 environmental factors
     barney.js                 # resource checklists + VRIN AI guidance
+    pfi.js                    # PFI questions, complementary-asset checklist, AI benchmarks
   utils/
-    calculations.js           # force scores, industry score, VRIN score, combined score
+    calculations.js           # force scores, industry score, VRIN score, combined score, PFI capture
     chartSetup.js             # Chart.js registration + Persian font defaults
   components/
     layout/                   # Header, BreadcrumbBar
-    home/HomeView.jsx         # hero scores + 3 module portal cards
+    home/HomeView.jsx         # hero scores + 4 module portal cards
     mod1/                     # TabRoic, TabForces, TabEnv, TabResult
     mod2/                     # TabChecklist, TabFactor (V/R/N), TabI, TabFirmResult
     mod3/                     # TabWeights, TabStrategy
+    mod4/                     # TabAppropriability, TabDominantDesign, TabComplementary, TabPfiResult
     ui/Controls.jsx           # AiConsult popover, Range, ScaleInfo
   styles/index.css            # Tailwind layers + slider/tab/card primitives
 legacy/                       # original single-file dashboard, kept for reference
@@ -64,5 +67,6 @@ legacy/                       # original single-file dashboard, kept for referen
 - **Industry attractiveness:** effective pressure = `65% mean + 35% strongest force`; score = `(5 − pressure) / 4 × 100`.
 - **Firm/VRIN:** `V` averages the two value questions, `I = max(historical, social, causal ambiguity)` where causal ambiguity is inferred from `6 − (codified + poach)/2`; per-resource score uses the multiplicative gate formula. Firm score = `50% best resource + 50% mean of the three resources`.
 - **McGahan–Porter combination:** selected sector weights for industry / business unit / corporate parent are normalized after the optional parent toggle. Effective industry score = `60% current + 40% future`; combined = weighted sum (missing components default to 50).
+- **PFI capture (Teece):** appropriability is inferred from questions 1–3 (blended 15% with the Barney tacit-knowledge score when available), dominant-design stage from questions 4–5, and complementary-asset dependency from the checklist plus questions 6–8. The engine distributes 100% of innovation profit across the firm, complementary-asset owners and imitators, then selects one of five profit-capture strategies. A Porter distribution-channel monopoly and the Barney causal-ambiguity score act as live cross-module adjustments.
 
-Scores update live as inputs change — there is no manual recalculate step. All data stays in React state for the session; use the print action on module 3 for a PDF, or the sample/blank buttons to switch modes.
+Scores update live as inputs change — there is no manual recalculate step. All data stays in React state for the session; use the print action on the strategy tabs for a PDF, or the sample/blank buttons to switch modes.

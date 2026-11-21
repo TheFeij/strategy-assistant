@@ -50,10 +50,37 @@ const moduleCards = [
     ],
     footerLabel: 'ورود به ترکیب تحلیل‌ها و استراتژی',
   },
+  {
+    id: 'mod4',
+    badge: 'از نوآوری تا سود',
+    title: 'سهم سود نوآوری (PFI)',
+    subtitle: 'بر اساس چارچوب تصاحب ارزش دیوید تیس',
+    header: 'bg-midnight',
+    headerText: 'text-white',
+    badgeClass: 'bg-white/15 text-white',
+    footer:
+      'bg-midnight-50 border-midnight-100 text-midnight-800 group-hover:bg-midnight group-hover:text-white',
+    stats: [
+      { label: 'سهم سود بنگاه', key: 'pfi' },
+      { label: 'ذی‌نفع غالب:', key: 'winner', left: true },
+    ],
+    footerLabel: 'ورود به تحلیل سهم سود نوآوری',
+  },
 ]
 
 function StatValue({ card, s }) {
-  const { IS_current, IS_future, bindingForceName, FS, bestBadge, combinedScore, secObj, isBlank } = useStrategy()
+  const {
+    IS_current,
+    IS_future,
+    bindingForceName,
+    FS,
+    bestBadge,
+    combinedScore,
+    secObj,
+    isBlank,
+    pfiFirmShare,
+    pfiWinnerLabel,
+  } = useStrategy()
 
   if (s.key === 'ind') {
     return (
@@ -95,6 +122,19 @@ function StatValue({ card, s }) {
   if (s.key === 'sector') {
     return <div className="text-xs font-extrabold text-midnight-800 mt-0.5">{toFaNumber(secObj.name)}</div>
   }
+  if (s.key === 'pfi') {
+    return (
+      <div className="flex items-baseline gap-1.5 mt-0.5">
+        <span className="text-2xl font-black text-midnight-800">
+          {pfiFirmShare != null ? `${toFaNumber(pfiFirmShare)}٪` : '—'}
+        </span>
+        <span className="text-xs text-muted">از سود</span>
+      </div>
+    )
+  }
+  if (s.key === 'winner') {
+    return <div className="text-xs font-extrabold text-midnight-800 mt-0.5">{pfiWinnerLabel}</div>
+  }
   return null
 }
 
@@ -114,12 +154,24 @@ const scoreTones = {
     to: '#D6A449',
     surface: 'border-gold-200 bg-gold-50',
   },
+  midnight: {
+    from: '#8BA3BB',
+    to: '#1E3550',
+    surface: 'border-midnight-200 bg-midnight-50',
+  },
 }
 
-function ScoreRing({ id, value, label, source, tone = 'industry' }) {
+function ScoreRing({ id, value, label, source, tone = 'industry', caption = 'از ۱۰۰' }) {
+  const { theme } = useStrategy()
   const hasValue = value != null
   const filled = hasValue ? Math.max(0, Math.min(100, Number(value))) : 0
   const colors = scoreTones[tone]
+  // The midnight tone sits on a navy surface; in dark mode use lighter stops
+  // so the progress arc stays visible against the card.
+  const palette =
+    tone === 'midnight' && theme === 'dark'
+      ? { ...colors, from: '#C3D1DF', to: '#8BA3BB' }
+      : colors
   const center = 60
   const radius = 44
   const gaugeSweep = 270
@@ -151,7 +203,7 @@ function ScoreRing({ id, value, label, source, tone = 'industry' }) {
 
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border p-4 shadow-sm sm:flex sm:flex-col sm:items-center sm:gap-3 sm:p-5 sm:text-center ${colors.surface}`}
+      className={`relative overflow-hidden rounded-2xl border p-4 shadow-sm sm:flex sm:flex-col sm:items-center sm:gap-3 sm:p-5 sm:text-center ${palette.surface}`}
     >
       <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-l from-transparent via-white/70 to-transparent" />
 
@@ -159,13 +211,13 @@ function ScoreRing({ id, value, label, source, tone = 'industry' }) {
         <div
           className="relative h-40 w-40 shrink-0"
           role="img"
-          aria-label={`${label}: ${hasValue ? displayValue : 'بدون امتیاز'} از ۱۰۰`}
+          aria-label={`${label}: ${hasValue ? displayValue : 'بدون امتیاز'} ${caption}`}
         >
           <svg viewBox="0 0 120 120" className="h-40 w-40 overflow-visible">
             <defs>
               <linearGradient id={id} x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor={colors.from} />
-                <stop offset="100%" stopColor={colors.to} />
+                <stop offset="0%" stopColor={palette.from} />
+                <stop offset="100%" stopColor={palette.to} />
               </linearGradient>
             </defs>
 
@@ -176,7 +228,7 @@ function ScoreRing({ id, value, label, source, tone = 'industry' }) {
                 y1={tick.inner.y}
                 x2={tick.outer.x}
                 y2={tick.outer.y}
-                stroke={tick.active ? colors.from : 'currentColor'}
+                stroke={tick.active ? palette.from : 'currentColor'}
                 strokeWidth={tick.active ? 2.2 : 1.2}
                 strokeLinecap="round"
                 className={tick.active ? undefined : 'text-midnight-300'}
@@ -220,15 +272,15 @@ function ScoreRing({ id, value, label, source, tone = 'industry' }) {
             />
             {hasValue && filled > 0 && (
               <>
-                <circle cx={marker.x} cy={marker.y} r="7" fill={colors.to} opacity="0.25" />
-                <circle cx={marker.x} cy={marker.y} r="4" fill="#ffffff" stroke={colors.to} strokeWidth="2.5" />
+                <circle cx={marker.x} cy={marker.y} r="7" fill={palette.to} opacity="0.25" />
+                <circle cx={marker.x} cy={marker.y} r="4" fill="#ffffff" stroke={palette.to} strokeWidth="2.5" />
               </>
             )}
           </svg>
 
           <div className="absolute inset-0 flex flex-col items-center justify-center pt-1">
             <span className="text-4xl font-black leading-none tracking-tight text-midnight-900">{displayValue}</span>
-            <span className="mt-1 text-xs font-semibold text-muted">از ۱۰۰</span>
+            <span className="mt-1 text-xs font-semibold text-muted">{caption}</span>
           </div>
         </div>
 
@@ -240,7 +292,7 @@ function ScoreRing({ id, value, label, source, tone = 'industry' }) {
               className="h-full rounded-full transition-all duration-700 ease-out"
               style={{
                 width: `${filled}%`,
-                background: `linear-gradient(90deg, ${colors.to}, ${colors.from})`,
+                background: `linear-gradient(90deg, ${palette.to}, ${palette.from})`,
               }}
             />
           </div>
@@ -251,7 +303,7 @@ function ScoreRing({ id, value, label, source, tone = 'industry' }) {
 }
 
 export default function HomeView() {
-  const { navigate, IS_current, FS, combinedScore } = useStrategy()
+  const { navigate, IS_current, FS, combinedScore, pfiFirmShare } = useStrategy()
 
   return (
     <div className="space-y-4">
@@ -267,7 +319,7 @@ export default function HomeView() {
         </div>
 
         <div className="bg-white p-4 sm:p-5 dark:bg-midnight-900">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <ScoreRing
               id="hero-score-industry"
               value={IS_current}
@@ -289,11 +341,19 @@ export default function HomeView() {
               source="مک‌گاهان"
               tone="gold"
             />
+            <ScoreRing
+              id="hero-score-pfi"
+              value={pfiFirmShare}
+              label="سهم سود نوآوری"
+              source="تیس"
+              tone="midnight"
+              caption="درصد سود"
+            />
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {moduleCards.map((card) => (
           <button
             type="button"

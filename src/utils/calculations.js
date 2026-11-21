@@ -1,6 +1,7 @@
 import { porterForcesPages, envFactorsMulti, forceNames } from '../data/porter'
 import { barneyData, barneyKeys } from '../data/barney'
 import { mcgahanSectors } from '../data/mcgahan'
+import { pfiAllQuestions, pfiCompChecklist } from '../data/pfi'
 
 export const clip = (v, min, max) => Math.max(min, Math.min(max, v))
 
@@ -164,9 +165,173 @@ export function computeAll(state) {
   }
 
   // ---------------------------------------------------------------
-  // ۶. وضعیت فرم، ROIC بنگاه و منابع تیک‌خورده
+  // ۶. کسب سود از نوآوری (PFI دیوید تیس)
   // ---------------------------------------------------------------
-  const isBlank = answeredForceQs === 0 && !anyBarneyAnswered
+  const pfiValue = (id) => state.pfiAnswers[id] ?? null
+
+  const distVal = state.forceAnswers.f1_q6 ?? null
+  const distMonopolized = distVal != null && distVal <= 2
+
+  let barneyFilled = false
+  let maxAmbigScore = 0
+  let maxSocScore = 0
+  barneyKeys.forEach((k) => {
+    const b = state.barney[k]
+    if (b.I_codified_q != null || b.I_poach_q != null) {
+      barneyFilled = true
+      const ambig = 6.0 - ((b.I_codified_q ?? 3.0) + (b.I_poach_q ?? 3.0)) / 2.0
+      if (ambig > maxAmbigScore) maxAmbigScore = ambig
+    }
+    if (b.I_soc_q != null) {
+      barneyFilled = true
+      if (b.I_soc_q > maxSocScore) maxSocScore = b.I_soc_q
+    }
+  })
+  const barneyTacitSupportScore = barneyFilled ? Math.max(maxAmbigScore, maxSocScore) : null
+  const barneyAmbigPct = maxAmbigScore > 0 ? Math.round(((maxAmbigScore - 1) / 4) * 100) : null
+
+  const pfiAnsweredCount = pfiAllQuestions.filter((q) => pfiValue(q.id) != null).length
+
+  let pfiFirmShare = null
+  let pfiCompShare = null
+  let pfiImitatorShare = null
+  let pfiWinnerLabel = 'در انتظار پاسخ'
+  let pfiAppStatus = null
+  let pfiDomStatus = null
+  let pfiCompStatus = null
+  let pfiOwnStatus = null
+  let pfiStrategyTitle = 'در انتظار تکمیل سوالات PFI'
+  let pfiStrategyBody =
+    'پس از پاسخ به ۸ سوال، استراتژی دقیق کسب سود (تملک دارایی مکمل، اتحاد هوشمند، مقیاس سریع یا انعطاف معماری) تجویز می‌شود.'
+  const pfiActionBullets = []
+
+  if (pfiAnsweredCount > 0) {
+    const avgAnswered = (ids) => {
+      const values = ids.map((id) => pfiValue(id)).filter((v) => v != null)
+      return values.length ? avg(values) : 3.0
+    }
+
+    const appRawBase = avgAnswered(['q1', 'q2', 'q3'])
+    const appRaw =
+      barneyTacitSupportScore != null ? 0.85 * appRawBase + 0.15 * barneyTacitSupportScore : appRawBase
+    const appScore = clip((appRaw - 1) / 4, 0, 1)
+
+    const domRaw = avgAnswered(['q4', 'q5'])
+    const domScore = clip((domRaw - 1) / 4, 0, 1)
+
+    const checkedLinks = pfiCompChecklist.filter((item) => state.pfiChecklist[item.id])
+    const needFromChecklist = checkedLinks.length ? clip(checkedLinks.length / 4, 0.25, 1.0) : 0.5
+    const q6Value = pfiValue('q6') ?? 3
+    const q7Value = pfiValue('q7')
+    const q8Value = pfiValue('q8')
+    const q6Spec = (q6Value - 1) / 4
+    const q7Own = ((q7Value ?? 3) - 1) / 4
+    const fullyOwned = q7Value != null && q7Value >= 4.5
+    const q8Risk = fullyOwned ? 0 : ((q8Value ?? 3) - 1) / 4
+
+    let compDependency = clip(0.35 * needFromChecklist + 0.65 * q6Spec, 0, 1)
+    if (distMonopolized && state.pfiChecklist.dist) {
+      compDependency = clip(compDependency + 0.12, 0, 1)
+    }
+    const ownerControlFactor = fullyOwned ? 1.0 : clip(0.6 * q7Own + 0.4 * (1 - q8Risk), 0, 1)
+
+    const rawFirmShare = clip(
+      0.18 +
+        0.34 * appScore +
+        0.42 * ownerControlFactor +
+        0.12 * (1 - compDependency) -
+        0.1 * (1 - appScore) * domScore * (1 - ownerControlFactor),
+      0.1,
+      0.9,
+    )
+    const remaining = 1 - rawFirmShare
+    const compWeight = clip(0.25 + 0.55 * compDependency + 0.2 * q8Risk - 0.35 * q7Own, 0.1, 0.85)
+    const rawCompShare = remaining * compWeight
+
+    pfiFirmShare = Math.round(rawFirmShare * 100)
+    pfiCompShare = Math.round(rawCompShare * 100)
+    pfiImitatorShare = Math.max(0, 100 - pfiFirmShare - pfiCompShare)
+
+    if (pfiFirmShare >= pfiCompShare && pfiFirmShare >= pfiImitatorShare) {
+      pfiWinnerLabel = 'بنگاه نوآور (خود شما)'
+    } else if (pfiCompShare >= pfiFirmShare && pfiCompShare >= pfiImitatorShare) {
+      pfiWinnerLabel = 'دارندگان دارایی مکمل'
+    } else {
+      pfiWinnerLabel = 'تقلیدکنندگان سریع و رقبا'
+    }
+
+    pfiAppStatus =
+      appScore >= 0.62
+        ? 'قوی / دشوار برای کپی'
+        : appScore >= 0.38
+          ? 'متوسط / نیازمند تقویت راز تجاری'
+          : 'ضعیف / آسان برای کپی'
+    pfiDomStatus =
+      domScore >= 0.55 ? 'پس از تثبیت طراحی غالب' : 'پیش از طراحی غالب (دوران تنوع طرح)'
+    pfiCompStatus =
+      q6Spec >= 0.6 ? 'تخصصی / هم‌تخصص' : q6Spec >= 0.35 ? 'نیمه‌تخصصی' : 'عمومی'
+    pfiOwnStatus = fullyOwned
+      ? 'مالکیت کامل داخلی'
+      : q7Own >= 0.6
+        ? 'عمدتاً در اختیار بنگاه'
+        : 'وابسته به شرکا و بیرون'
+
+    if (appScore >= 0.62 && q6Spec < 0.45) {
+      pfiStrategyTitle = 'بهره‌برداری مستقیم یا اعطای لیسانس'
+      pfiStrategyBody =
+        'نظام صیانت قوی است و دارایی‌های مکمل عمومی‌اند؛ نیازی به سرمایه‌گذاری سنگین روی کارخانه یا پخش اختصاصی نیست. با پیمانکاران بازار کار کنید یا با خیال راحت لیسانس بفروشید و سهم اصلی سود را نگه دارید.'
+      pfiActionBullets.push(
+        'استفاده از پیمانکاران عمومی بازار برای کاهش هزینه ثابت',
+        'امکان اعطای لیسانس فناوری بدون ترس از از دست رفتن حاشیه سود',
+        'حفظ و تمدید سپرهای حقوقی و اسرار فرآیندی',
+      )
+    } else if (appScore < 0.55 && q6Spec >= 0.55 && q7Own < 0.55) {
+      pfiStrategyTitle = 'هشدار تله EMI: تملک دارایی مکمل یا اتحاد سهامی پیش از افشای کامل'
+      pfiStrategyBody =
+        'کپی نوآوری شما سخت نیست و هم‌زمان حلقه‌های تخصصی فروش و تولید دست شرکت‌های بیرونی است. با قرارداد عادی، صاحبان دارایی مکمل یا تقلیدکنندگان بزرگ کل سود را می‌برند. سریعاً دارایی مکمل گلوگاهی را تملک کنید یا وارد مشارکت سهامی و انحصاری بلندمدت شوید.'
+      pfiActionBullets.push(
+        'پرهیز از تکیه صرف بر قراردادهای کوتاه‌مدت با توزیع‌کنندگان یا تولیدکنندگان بیرونی',
+        'اولویت اول: تملک، ایجاد تدریجی یا مشارکت سهامی در حلقه‌های تیک‌خورده',
+        'در صورت کمبود سرمایه، همکاری راهبردی با یک شریک مکمل پیش از ورود رقبای کپی‌کار',
+      )
+    } else if (appScore < 0.55 && q7Own >= 0.55) {
+      pfiStrategyTitle = 'مقیاس‌گیری سریع و تبدیل دارایی‌های مکمل خودی به سپر دفاعی'
+      pfiStrategyBody =
+        'نظام صیانت ضعیف است و رقبا می‌توانند محصول را کپی کنند، اما برگ برنده شما مالکیت حلقه‌های حیاتی اجراست. با سرعت بالا مقیاس بگیرید تا پیش از رسیدن تقلیدکنندگان، استاندارد بازار و مشتریان را قفل کنید.'
+      pfiActionBullets.push(
+        'استفاده تهاجمی از شبکه فروش، برند و خدمات پس از فروش خودی به عنوان مانع ورود',
+        'حرکت سریع به سمت کاهش هزینه تمام‌شده و تولید در مقیاس',
+        'پیوند دادن نوآوری به خدمات مکمل تا کپی صرف محصول برای رقیب بی‌فایده شود',
+      )
+    } else if (domScore < 0.5) {
+      pfiStrategyTitle = 'انعطاف معماری و شکل‌دهی به طراحی غالب'
+      pfiStrategyBody =
+        'بازار هنوز پیش از طراحی غالب است و مشتریان دنبال کارکردهای جدیدند. از قفل کردن سرمایه سنگین روی خط تولید غیرقابل تغییر بپرهیزید، با سرعت از بازار بازخورد بگیرید و با اسرار تجاری و شرکای مکمل، مدل خود را به استاندارد غالب تبدیل کنید.'
+      pfiActionBullets.push(
+        'پرهیز از سرمایه‌گذاری سنگین و غیرمنعطف پیش از تثبیت استاندارد بازار',
+        'تمرکز بر تعامل نزدیک با مشتریان پیشرو برای کشف طرح برنده',
+        'ایجاد ائتلاف با ارائه‌دهندگان مکمل‌ها برای تثبیت طراحی غالب به نام خود',
+      )
+    } else {
+      pfiStrategyTitle = 'یکپارچه‌سازی انتخابی و قفل کردن سهم سود پایدار'
+      pfiStrategyBody =
+        'نظام صیانت و موقعیت دارایی‌های مکمل در سطح متعادل تا قوی است. تمرکز باید بر حفظ مالکیت گلوگاه‌های تخصصی، بهینه‌سازی فرآیند تولید پس از تثبیت طراحی غالب و قراردادهای محکم با شرکای غیرحیاتی باشد.'
+      pfiActionBullets.push(
+        'حفظ کنترل کامل بر حلقه‌های تخصصی و برون‌سپاری بخش‌های عمومی',
+        'تمرکز بر بهینه‌سازی هزینه و کیفیت در مرحله پس از طراحی غالب',
+        'رصد مداوم رقبای جدید برای جلوگیری از تضعیف تدریجی نظام صیانت',
+      )
+    }
+
+    if (checkedLinks.length > 0) {
+      pfiActionBullets.push(`حلقه‌های حیاتی شناسایی‌شده: ${checkedLinks.map((item) => item.label).join('، ')}`)
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // ۷. وضعیت فرم، ROIC بنگاه و منابع تیک‌خورده
+  // ---------------------------------------------------------------
+  const isBlank = answeredForceQs === 0 && !anyBarneyAnswered && pfiAnsweredCount === 0
 
   const nopat = parseFloat(state.firmNopat)
   const cap = parseFloat(state.firmCapital)
@@ -209,6 +374,22 @@ export function computeAll(state) {
     firmRoic,
     indRoicEffective: indRoic,
     checkedBarneyItems,
+    pfiAnsweredCount,
+    pfiFirmShare,
+    pfiCompShare,
+    pfiImitatorShare,
+    pfiWinnerLabel,
+    pfiAppStatus,
+    pfiDomStatus,
+    pfiCompStatus,
+    pfiOwnStatus,
+    pfiStrategyTitle,
+    pfiStrategyBody,
+    pfiActionBullets,
+    pfiDistVal: distVal,
+    pfiDistMonopolized: distMonopolized,
+    pfiBarneySupport: barneyTacitSupportScore,
+    pfiBarneyAmbigPct: barneyAmbigPct,
     bestBadge: FS !== null ? (FS >= 65 ? 'مزیت رقابتی پایدار' : 'مزیت موقت / برابری') : 'در انتظار تکمیل فرم',
   }
 }

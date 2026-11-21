@@ -19,8 +19,10 @@ export default function EvaluationCard({
   tag,
   detail,
   detailLabel = 'توضیح کامل معیار',
+  note,
   ariaLabel,
   action,
+  disabled = false,
   className = '',
 }) {
   return (
@@ -58,6 +60,12 @@ export default function EvaluationCard({
 
       {question && <p className="text-sm leading-6 text-midnight-800">{question}</p>}
 
+      {note && (
+        <div className="rounded-lg border border-brand-200 bg-brand-50 px-2.5 py-2 text-xs leading-relaxed text-brand-900">
+          {note}
+        </div>
+      )}
+
       <div className="mt-auto space-y-2.5 pt-1">
         <SegmentedScale
           value={value}
@@ -66,6 +74,7 @@ export default function EvaluationCard({
           highLabel={highLabel}
           tooltips={tooltips}
           ariaLabel={ariaLabel || title || question}
+          disabled={disabled}
         />
         {(detail || action) && (
           <div className="flex min-h-9 flex-wrap items-center justify-between gap-2">
