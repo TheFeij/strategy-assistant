@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useStrategy } from '../../state/StrategyContext'
 
 const THEMES = {
@@ -28,8 +28,18 @@ const MAX_PARTICLES = 190
 
 export default function ParticleBackground() {
   const canvasRef = useRef(null)
-  const { theme } = useStrategy()
-  const config = THEMES[theme] || THEMES.dark
+  const { theme, highContrast } = useStrategy()
+  const baseConfig = THEMES[theme] || THEMES.dark
+  // Projector mode keeps the motion but dims it so the background never
+  // competes with text or charts on a washed-out projected image.
+  const config = useMemo(() => {
+    if (!highContrast) return baseConfig
+    return {
+      ...baseConfig,
+      particleAlpha: [baseConfig.particleAlpha[0] * 0.5, baseConfig.particleAlpha[1] * 0.5],
+      lineAlpha: baseConfig.lineAlpha * 0.55,
+    }
+  }, [baseConfig, highContrast])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -212,14 +222,14 @@ export default function ParticleBackground() {
       aria-hidden="true"
       className={`pointer-events-none fixed inset-0 z-0 overflow-hidden transition-colors duration-500 ${config.wrapper}`}
     >
-      <div className={`absolute -top-40 right-1/4 h-[28rem] w-[28rem] rounded-full blur-3xl ${config.glows[0]}`} />
+      <div className={`particle-glow absolute -top-40 right-1/4 h-[28rem] w-[28rem] rounded-full blur-3xl ${config.glows[0]}`} />
       <div
-        className={`absolute -bottom-48 left-1/5 h-[30rem] w-[30rem] rounded-full blur-3xl ${config.glows[1]}`}
+        className={`particle-glow absolute -bottom-48 left-1/5 h-[30rem] w-[30rem] rounded-full blur-3xl ${config.glows[1]}`}
       />
       <div
-        className={`absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 rounded-full blur-3xl ${config.glows[2]}`}
+        className={`particle-glow absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 rounded-full blur-3xl ${config.glows[2]}`}
       />
-      <canvas ref={canvasRef} className="absolute inset-0" />
+      <canvas ref={canvasRef} className="particle-canvas absolute inset-0" />
     </div>
   )
 }

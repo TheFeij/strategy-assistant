@@ -20,9 +20,10 @@ export default function PfiQuestionCard({ question, number, value, onChange, dis
       onChange={onChange}
       lowLabel={question.lowLabel}
       highLabel={question.highLabel}
+      scaleLabels={question.scaleLabels}
       tooltips={{ 1: lowDetail, 5: highDetail }}
-      sourceIcon={isAi ? '🤖' : '👤'}
-      sourceLabel={isAi ? 'مشورت AI' : 'سوال مستقیم از مدیرعامل'}
+      sourceIcon={isAi ? null : '👤'}
+      sourceLabel={isAi ? null : 'سوال مستقیم از مدیرعامل'}
       ariaLabel={`${question.title} — امتیاز از ۱ تا ۵`}
       detail={
         <div className="space-y-1.5">

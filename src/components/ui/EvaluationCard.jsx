@@ -13,6 +13,7 @@ export default function EvaluationCard({
   onChange,
   lowLabel,
   highLabel,
+  scaleLabels,
   tooltips,
   sourceIcon,
   sourceLabel,
@@ -27,12 +28,12 @@ export default function EvaluationCard({
 }) {
   return (
     <article
-      className={`flex h-full min-w-0 flex-col gap-3 rounded-xl border border-line bg-white p-4 transition-colors duration-200 hover:border-brand-200 ${className}`}
+      className={`flex h-full min-w-0 flex-col gap-3 rounded-2xl border border-line bg-white p-4 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-brand-200 hover:shadow-card sm:p-5 ${className}`}
     >
-      <header className="flex items-start gap-2">
-        <div className="flex min-w-0 items-center gap-2">
+      <header className="flex items-start gap-2.5">
+        <div className="flex min-w-0 items-center gap-2.5">
           {number != null && (
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-midnight-50 text-sm font-black text-midnight-700">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-sm font-black text-brand-700">
               {toFaNumber(number)}
             </span>
           )}
@@ -66,18 +67,19 @@ export default function EvaluationCard({
         </div>
       )}
 
-      <div className="mt-auto space-y-2.5 pt-1">
+      <div className="mt-auto space-y-3 pt-1">
         <SegmentedScale
           value={value}
           onChange={onChange}
           lowLabel={lowLabel}
           highLabel={highLabel}
+          labels={scaleLabels}
           tooltips={tooltips}
           ariaLabel={ariaLabel || title || question}
           disabled={disabled}
         />
         {(detail || action) && (
-          <div className="flex min-h-9 flex-wrap items-center justify-between gap-2">
+          <div className="flex min-h-9 flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
             {detail ? (
               <ScaleInfo label={detailLabel} title={detailLabel}>
                 {detail}

@@ -366,8 +366,8 @@ export default function HomeView() {
                 <span className={`inline-block text-xs font-bold px-2.5 py-0.5 rounded-full ${card.badgeClass}`}>
                   {card.badge}
                 </span>
-                <h3 className="text-lg font-black mt-2">{card.title}</h3>
-                <p className="text-sm opacity-80 mt-1">{card.subtitle}</p>
+                <h3 className="text-lg font-black mt-2 leading-7">{card.title}</h3>
+                <p className="text-sm leading-5 opacity-80 mt-1 min-h-[2.5rem]">{card.subtitle}</p>
               </div>
               <div className="p-4">
                 <div className="flex items-center justify-between gap-4 bg-canvas rounded-xl p-4 border border-line">

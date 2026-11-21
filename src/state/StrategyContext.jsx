@@ -78,24 +78,40 @@ const getInitialTheme = () => {
   return 'light'
 }
 
+const getInitialHighContrast = () => {
+  try {
+    return localStorage.getItem('stratbi-high-contrast') === 'true'
+  } catch (error) {
+    /* localStorage may be unavailable */
+  }
+  return false
+}
+
 const StrategyContext = createContext(null)
 
 export function StrategyProvider({ children }) {
   const [state, setState] = useState(initialState)
   const [theme, setTheme] = useState(getInitialTheme)
+  const [highContrast, setHighContrast] = useState(getInitialHighContrast)
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
-    applyChartTheme(theme === 'dark')
+    document.documentElement.classList.toggle('high-contrast', highContrast)
+    applyChartTheme(theme === 'dark', highContrast)
     try {
       localStorage.setItem('stratbi-theme', theme)
+      localStorage.setItem('stratbi-high-contrast', String(highContrast))
     } catch (error) {
       /* ignore unavailable storage */
     }
-  }, [theme])
+  }, [theme, highContrast])
 
   const toggleTheme = useCallback(() => {
     setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
+  }, [])
+
+  const toggleHighContrast = useCallback(() => {
+    setHighContrast((current) => !current)
   }, [])
 
   const set = useCallback((patch) => {
@@ -279,7 +295,11 @@ export function StrategyProvider({ children }) {
     ...state,
     ...derived,
     theme,
+    setTheme,
     toggleTheme,
+    highContrast,
+    setHighContrast,
+    toggleHighContrast,
     set,
     navigate,
     setMod1Tab,

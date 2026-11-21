@@ -184,8 +184,8 @@ export default function TabForces() {
                   1: left?.replace(/^\s*[۰-۹]+\s*=\s*/, '').trim(),
                   5: right?.replace(/^\s*[۰-۹]+\s*=\s*/, '').trim(),
                 }}
-                sourceIcon={isAi ? '🤖' : '👤'}
-                sourceLabel={isAi ? 'مشورت AI' : 'سوال مستقیم از مدیرعامل'}
+                sourceIcon={isAi ? null : '👤'}
+                sourceLabel={isAi ? null : 'سوال مستقیم از مدیرعامل'}
                 ariaLabel={`${q.desc} — امتیاز از ۱ تا ۵`}
                 detail={
                   <div className="space-y-1.5">

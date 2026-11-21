@@ -4,14 +4,32 @@ Chart.register(...registerables)
 Chart.defaults.font.family = 'Vazirmatn Variable, Vazirmatn, Tahoma, sans-serif'
 Chart.defaults.font.size = 13
 
-const LIGHT_TICK = '#718096'
-const DARK_TICK = '#9FB0C4'
-const LIGHT_GRID = 'rgba(223, 230, 239, 0.9)'
-const DARK_GRID = 'rgba(139, 163, 187, 0.15)'
+// Chart colors are tuned for legibility: labels use a darker/lighter ink than
+// the rest of the UI so they survive being projected onto a washed-out screen.
+const LIGHT_TICK = '#44566D'
+const DARK_TICK = '#C3D1DF'
+const LIGHT_TICK_CONTRAST = '#16263A'
+const DARK_TICK_CONTRAST = '#F2F6FA'
+const LIGHT_GRID = 'rgba(203, 214, 226, 0.9)'
+const DARK_GRID = 'rgba(139, 163, 187, 0.22)'
+const LIGHT_GRID_CONTRAST = 'rgba(148, 166, 186, 0.9)'
+const DARK_GRID_CONTRAST = 'rgba(159, 176, 196, 0.4)'
 
-export function applyChartTheme(isDark) {
-  const tickColor = isDark ? DARK_TICK : LIGHT_TICK
-  const gridColor = isDark ? DARK_GRID : LIGHT_GRID
+export function applyChartTheme(isDark, highContrast = false) {
+  const tickColor = highContrast
+    ? isDark
+      ? DARK_TICK_CONTRAST
+      : LIGHT_TICK_CONTRAST
+    : isDark
+      ? DARK_TICK
+      : LIGHT_TICK
+  const gridColor = highContrast
+    ? isDark
+      ? DARK_GRID_CONTRAST
+      : LIGHT_GRID_CONTRAST
+    : isDark
+      ? DARK_GRID
+      : LIGHT_GRID
 
   Chart.defaults.color = tickColor
   Chart.defaults.borderColor = gridColor

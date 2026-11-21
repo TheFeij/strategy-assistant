@@ -1,7 +1,52 @@
 import { useEffect, useId, useRef, useState } from 'react'
-import { toFaNumber } from '../../utils/numbers'
 
 const DEFAULT_SCALE_OPTIONS = [1, 2, 3, 4, 5]
+
+/**
+ * Qualitative feedback for each step of an ordinal 1..5 scale.
+ * The numeric score stays internal; users only see the label and its tone.
+ * `labels` on <SegmentedScale> can override the wording per criterion while
+ * the color tone remains consistent across the app.
+ */
+const SCALE_LEVEL_META = {
+  1: {
+    label: 'بسیار کم',
+    badgeClass:
+      'text-rose-700 bg-rose-50 border-rose-200 dark:text-rose-300 dark:bg-rose-500/15 dark:border-rose-400/30',
+  },
+  2: {
+    label: 'کم',
+    badgeClass:
+      'text-amber-700 bg-amber-50 border-amber-200 dark:text-amber-300 dark:bg-amber-500/15 dark:border-amber-400/30',
+  },
+  3: {
+    label: 'حد وسط',
+    badgeClass:
+      'text-midnight-600 bg-white border-midnight-200 dark:text-midnight-200 dark:bg-midnight-800 dark:border-midnight-600',
+  },
+  4: {
+    label: 'زیاد',
+    badgeClass:
+      'text-brand-800 bg-brand-50 border-brand-200 dark:text-brand-300 dark:bg-brand-500/15 dark:border-brand-400/30',
+  },
+  5: {
+    label: 'بسیار زیاد',
+    badgeClass:
+      'text-emerald-700 bg-emerald-50 border-emerald-200 dark:text-emerald-300 dark:bg-emerald-500/15 dark:border-emerald-400/30',
+  },
+}
+
+const UNANSWERED_META = {
+  label: 'انتخاب نشده',
+  badgeClass:
+    'text-midnight-500 bg-white border-midnight-200 dark:text-midnight-300 dark:bg-midnight-800 dark:border-midnight-600',
+}
+
+function levelMeta(option, index, labels) {
+  const base = SCALE_LEVEL_META[option] ?? SCALE_LEVEL_META[index + 1] ?? SCALE_LEVEL_META[1]
+  const customLabel = Array.isArray(labels) ? labels[index] : labels?.[option]
+  return customLabel ? { ...base, label: customLabel } : base
+}
 
 export function AiConsult({
   hint,
@@ -38,7 +83,7 @@ export function AiConsult({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="text-xs bg-brand-50 hover:bg-brand-100 text-brand-800 border border-brand-300 px-2.5 py-1 rounded-lg font-extrabold inline-flex items-center gap-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+        className="inline-flex items-center gap-1.5 rounded-xl border border-brand-200 bg-brand-50 px-3 py-1.5 text-xs font-extrabold text-brand-800 transition-colors hover:border-brand-300 hover:bg-brand-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
       >
         <span>{buttonLabel}</span>
       </button>
@@ -64,11 +109,12 @@ export function AiConsult({
 }
 
 /**
- * Discrete five-point evaluation control.
+ * Numberless, RTL-aware five-point evaluation control.
  *
- * Keeps the ordinal 1..5 contract while making the whole segment clickable.
- * Values coming from older/AI data can be fractional; the closest segment is
- * highlighted for display, but every user selection writes an integer.
+ * Renders a continuous rose → amber → emerald track that snaps to the five
+ * ordinal steps, with a qualitative status pill and clickable tick dots. The
+ * numeric 1..5 contract is preserved: values set by AI can be fractional, the
+ * closest step is shown, and every user selection writes an integer.
  */
 export function SegmentedScale({
   value,
@@ -76,87 +122,112 @@ export function SegmentedScale({
   options = DEFAULT_SCALE_OPTIONS,
   lowLabel,
   highLabel,
+  labels,
   tooltips = {},
   ariaLabel = 'امتیاز ارزیابی',
   className = '',
   disabled = false,
 }) {
-  const buttonRefs = useRef([])
+  const min = options[0]
+  const max = options[options.length - 1]
+  const middleIndex = Math.floor(options.length / 2)
   const numericValue = value == null || value === '' ? null : Number(value)
-  const selected =
-    numericValue == null || Number.isNaN(numericValue)
-      ? null
-      : options.reduce((closest, option) =>
-          Math.abs(option - numericValue) < Math.abs(closest - numericValue) ? option : closest,
-        )
-  const selectedIndex = selected == null ? -1 : options.indexOf(selected)
+  const hasValue = numericValue != null && !Number.isNaN(numericValue)
+  const snapped = hasValue
+    ? options.reduce((closest, option) =>
+        Math.abs(option - numericValue) <= Math.abs(closest - numericValue) ? option : closest,
+      )
+    : null
+  const displayIndex = snapped == null ? middleIndex : options.indexOf(snapped)
+  const displayValue = options[displayIndex] ?? min
+  const currentMeta = hasValue ? levelMeta(displayValue, displayIndex, labels) : UNANSWERED_META
 
-  const choose = (option) => {
-    onChange?.(option)
+  const commit = (next) => {
+    const parsed = Number(next)
+    if (!Number.isNaN(parsed)) onChange?.(parsed)
   }
 
-  const selectAt = (index) => {
-    buttonRefs.current[index]?.focus()
-    choose(options[index])
-  }
+  const handleChange = (event) => commit(event.target.value)
 
-  const handleKeyDown = (event, index) => {
-    let nextIndex = null
-    // The grid is rendered in RTL (۱ on the right). Arrow keys therefore move
-    // with the visual direction, not the numeric order, which is what users see.
-    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = index - 1
-    else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = index + 1
-    else if (event.key === 'Home') nextIndex = 0
-    else if (event.key === 'End') nextIndex = options.length - 1
-    else return
-
-    event.preventDefault()
-    selectAt(Math.max(0, Math.min(options.length - 1, nextIndex)))
+  // A native range always shows a thumb, so tapping the thumb directly fires
+  // no change event. Commit the neutral midpoint explicitly in that case.
+  const handlePointerDown = () => {
+    if (!hasValue) commit(displayValue)
   }
 
   return (
-    <div className={`relative w-full ${className}`}>
-      {(lowLabel || highLabel) && (
-        <div className="mb-1.5 flex items-start justify-between gap-3 text-[0.7rem] leading-5 text-muted">
-          <span className="max-w-[48%] text-right font-semibold">{lowLabel}</span>
-          <span className="max-w-[48%] text-left font-semibold">{highLabel}</span>
-        </div>
-      )}
+    <div className={`w-full ${className}`}>
+      <div className="rounded-2xl border border-midnight-100 bg-midnight-50 p-3.5 sm:p-4">
+        <div
+          className={`mb-3 grid items-center gap-2 ${
+            lowLabel || highLabel ? 'grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]' : 'grid-cols-1 justify-items-center'
+          }`}
+        >
+          {(lowLabel || highLabel) && (
+            <span className="min-w-0 justify-self-start text-right text-[0.72rem] font-bold leading-4 text-muted">
+              {lowLabel}
+            </span>
+          )}
 
-      <div
-        role="radiogroup"
-        aria-label={ariaLabel}
-        dir="rtl"
-        className="grid grid-cols-5 gap-0.5 rounded-lg border border-line bg-canvas p-0.5"
-      >
-        {options.map((option, index) => {
-          const isSelected = selected === option
-          const tooltip = tooltips[option]
-          const isTabStop = selectedIndex === -1 ? index === 0 : selectedIndex === index
-          return (
-            <button
-              key={option}
-              ref={(node) => {
-                buttonRefs.current[index] = node
-              }}
-              type="button"
-              role="radio"
-              aria-checked={isSelected}
-              aria-label={`${toFaNumber(option)}${tooltip ? ` — ${tooltip}` : ''}`}
-              tabIndex={isTabStop ? 0 : -1}
-              disabled={disabled}
-              onClick={() => choose(option)}
-              onKeyDown={(event) => handleKeyDown(event, index)}
-              className={`flex h-8 min-w-0 items-center justify-center rounded-md text-xs font-extrabold tabular-nums transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 ${
-                isSelected
-                  ? 'border border-brand-600 bg-brand-600 text-white'
-                  : 'border border-transparent bg-white text-midnight-600 hover:border-brand-200 hover:bg-brand-50 hover:text-brand-800'
-              }`}
-            >
-              {toFaNumber(option)}
-            </button>
-          )
-        })}
+          <span
+            aria-hidden="true"
+            className={`shrink-0 rounded-full border px-2.5 py-1 text-[0.72rem] font-extrabold leading-none transition-colors duration-200 ${currentMeta.badgeClass}`}
+          >
+            {currentMeta.label}
+          </span>
+
+          {(lowLabel || highLabel) && (
+            <span className="min-w-0 justify-self-end text-left text-[0.72rem] font-bold leading-4 text-muted">
+              {highLabel}
+            </span>
+          )}
+        </div>
+
+        <div className="relative">
+          <input
+            type="range"
+            dir="rtl"
+            min={min}
+            max={max}
+            step={1}
+            value={displayValue}
+            onChange={handleChange}
+            onPointerDown={handlePointerDown}
+            disabled={disabled}
+            aria-label={ariaLabel}
+            aria-valuetext={currentMeta.label}
+            className={`gradient-scale-slider ${hasValue ? '' : 'is-unanswered'}`}
+          />
+
+          {/* Numberless tick marks, aligned with the five snap points. */}
+          <div className="mt-1 flex justify-between px-[3px]">
+            {options.map((option, index) => {
+              const meta = levelMeta(option, index, labels)
+              const isActive = hasValue && option === displayValue
+              const tooltip = tooltips[option]
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  tabIndex={-1}
+                  disabled={disabled}
+                  onClick={() => commit(option)}
+                  aria-label={tooltip ? `${meta.label} — ${tooltip}` : meta.label}
+                  className="group flex h-6 w-5 items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 disabled:cursor-not-allowed"
+                >
+                  <span
+                    aria-hidden="true"
+                    className={`rounded-full transition-all duration-200 ${
+                      isActive
+                        ? 'h-2 w-2 bg-brand-600'
+                        : 'h-1.5 w-1.5 bg-midnight-300 group-hover:bg-brand-400'
+                    }`}
+                  />
+                </button>
+              )
+            })}
+          </div>
+        </div>
       </div>
     </div>
   )

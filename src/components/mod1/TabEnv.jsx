@@ -29,10 +29,6 @@ export default function TabEnv() {
               <div className="flex flex-wrap items-start justify-between gap-2 border-b border-line pb-2.5">
                 <div className="min-w-0">
                   <h4 className="text-sm font-extrabold text-midnight-900">{ef.title}</h4>
-                  <span className="mt-0.5 inline-flex items-center gap-1 text-[0.7rem] text-muted">
-                    <span aria-hidden="true">🤖</span>
-                    <span>مشورت AI</span>
-                  </span>
                 </div>
                 <AiConsult
                   buttonLabel="🤖 مشورت با AI و درج خودکار"

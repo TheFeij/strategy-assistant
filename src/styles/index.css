@@ -12,20 +12,57 @@
   --sa-teal: #147d78;
   --sa-gold: #d6a449;
   --sa-industry: #2878a8;
-  --sa-canvas: #eaf0f6;
+  --sa-canvas: #e7eef6;
   --sa-surface: #ffffff;
-  --sa-ink: #26364b;
-  /* A slightly darkened #718096 variant keeps small labels at AA contrast. */
-  --sa-muted: #596b82;
-  --sa-line: #dfe6ef;
+  /* Ink and muted text are pushed darker than the original palette so they
+     stay legible when the screen is projected or viewed from a distance. */
+  --sa-ink: #1a2a3d;
+  --sa-muted: #44576d;
+  --sa-line: #c7d3e0;
 }
 
 .dark {
   --sa-canvas: #0a1420;
   --sa-surface: #16283f;
-  --sa-ink: #e8eef5;
-  --sa-muted: #9fb0c4;
-  --sa-line: #294564;
+  --sa-ink: #f2f6fa;
+  --sa-muted: #c3d1df;
+  --sa-line: #35577a;
+}
+
+/* High-contrast ("projector") palette. Enabled from the header toggle; adds
+   near-black ink, visibly stronger borders and brighter text in dark mode. */
+html.high-contrast {
+  --sa-canvas: #dce6f1;
+  --sa-surface: #ffffff;
+  --sa-ink: #06101d;
+  --sa-muted: #26384d;
+  --sa-line: #8296ab;
+}
+
+html.dark.high-contrast {
+  --sa-canvas: #050c16;
+  --sa-surface: #102033;
+  --sa-ink: #ffffff;
+  --sa-muted: #dbe6f0;
+  --sa-line: #5c7d9e;
+}
+
+/* Respect the OS "increase contrast" preference even without the toggle. */
+@media (prefers-contrast: more) {
+  :root {
+    --sa-canvas: #e0e9f2;
+    --sa-ink: #0b1726;
+    --sa-muted: #304156;
+    --sa-line: #8ba3bb;
+  }
+
+  .dark {
+    --sa-canvas: #060e18;
+    --sa-surface: #0f1e30;
+    --sa-ink: #ffffff;
+    --sa-muted: #dbe6f0;
+    --sa-line: #557799;
+  }
 }
 
 @layer base {
@@ -348,4 +385,331 @@
 .dark select option {
   background-color: #0b1726;
   color: #e8eef5;
+}
+
+/* ---------------------------------------------------------------------------
+   High-contrast / projector mode
+   Projected images lose saturation and fine gradients, so borders, labels and
+   muted text are pushed toward solid ink while decorative noise is reduced.
+--------------------------------------------------------------------------- */
+html.high-contrast body {
+  font-weight: 450;
+  letter-spacing: 0.002em;
+}
+
+/* Solid header/bars instead of translucent layers. */
+html.high-contrast .bg-white\/90 {
+  background-color: var(--sa-surface);
+}
+
+html.high-contrast .backdrop-blur {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Make every hairline visible from the back of a room. */
+html.high-contrast .border-line,
+html.high-contrast .border-canvas,
+html.high-contrast .divide-line > :not([hidden]) ~ :not([hidden]),
+html.high-contrast .divide-canvas > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--sa-line) !important;
+}
+
+html.high-contrast .border-midnight-100,
+html.high-contrast .border-midnight-200,
+html.high-contrast .border-midnight-300,
+html.high-contrast .border-industry-100,
+html.high-contrast .border-industry-200,
+html.high-contrast .border-industry-300,
+html.high-contrast .border-brand-100,
+html.high-contrast .border-brand-200,
+html.high-contrast .border-brand-300,
+html.high-contrast .border-gold-100,
+html.high-contrast .border-gold-200,
+html.high-contrast .border-gold-300 {
+  border-color: #8ba3bb !important;
+}
+
+html.dark.high-contrast .border-midnight-100,
+html.dark.high-contrast .border-midnight-200,
+html.dark.high-contrast .border-midnight-300 {
+  border-color: rgba(195, 209, 223, 0.6) !important;
+}
+
+html.dark.high-contrast .border-industry-100,
+html.dark.high-contrast .border-industry-200,
+html.dark.high-contrast .border-industry-300,
+html.dark.high-contrast .border-brand-100,
+html.dark.high-contrast .border-brand-200,
+html.dark.high-contrast .border-brand-300,
+html.dark.high-contrast .border-gold-100,
+html.dark.high-contrast .border-gold-200,
+html.dark.high-contrast .border-gold-300 {
+  border-color: rgba(195, 209, 223, 0.5) !important;
+}
+
+/* Push secondary text to full ink; no washed-out labels on the projector. */
+html.high-contrast .text-midnight-700,
+html.high-contrast .text-midnight-800,
+html.high-contrast .text-midnight-900,
+html.high-contrast .text-midnight-950 {
+  color: var(--sa-ink) !important;
+}
+
+html.high-contrast .text-midnight-500,
+html.high-contrast .text-midnight-600 {
+  color: #33465c !important;
+}
+
+html.high-contrast .text-muted {
+  color: var(--sa-muted) !important;
+}
+
+html.dark.high-contrast .text-midnight-500,
+html.dark.high-contrast .text-midnight-600 {
+  color: #c3d1df !important;
+}
+
+/* Brighten the accent text ramps used on cards and score labels. */
+html.high-contrast .text-industry-700,
+html.high-contrast .text-industry-800,
+html.high-contrast .text-industry-900 {
+  color: #0d4362 !important;
+}
+
+html.high-contrast .text-brand-700,
+html.high-contrast .text-brand-800,
+html.high-contrast .text-brand-900 {
+  color: #07524e !important;
+}
+
+html.high-contrast .text-gold-700,
+html.high-contrast .text-gold-800,
+html.high-contrast .text-gold-900 {
+  color: #6b4a0c !important;
+}
+
+html.dark.high-contrast .text-industry-700,
+html.dark.high-contrast .text-industry-800,
+html.dark.high-contrast .text-industry-900 {
+  color: #a8d4ec !important;
+}
+
+html.dark.high-contrast .text-brand-700,
+html.dark.high-contrast .text-brand-800,
+html.dark.high-contrast .text-brand-900 {
+  color: #9fe4df !important;
+}
+
+html.dark.high-contrast .text-gold-700,
+html.dark.high-contrast .text-gold-800,
+html.dark.high-contrast .text-gold-900 {
+  color: #f6dba6 !important;
+}
+
+/* Score-ring tracks and ticks need to read as real marks, not haze. */
+html.high-contrast .text-midnight-200,
+html.high-contrast .text-midnight-300 {
+  color: #7c90a6 !important;
+}
+
+html.dark.high-contrast .text-midnight-200,
+html.dark.high-contrast .text-midnight-300 {
+  color: #b9cbdd !important;
+}
+
+/* Remove decorative transparency that projector light washes out. */
+html.high-contrast .opacity-70,
+html.high-contrast .opacity-75,
+html.high-contrast .opacity-80,
+html.high-contrast .opacity-90 {
+  opacity: 1 !important;
+}
+
+/* Softer shadows become crisp outlines, which survive projection better. */
+html.high-contrast .shadow-card,
+html.high-contrast .shadow-raised {
+  box-shadow: none;
+}
+
+html.high-contrast .shadow-sm {
+  box-shadow: 0 0 0 1px rgba(6, 16, 29, 0.06);
+}
+
+html.dark.high-contrast .shadow-sm {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Active tabs and focus rings are landmarks on a giant screen. */
+html.high-contrast .subtab-active,
+html.high-contrast .force-page-btn-active {
+  outline: 1px solid rgba(0, 0, 0, 0.28);
+  outline-offset: 1px;
+}
+
+html.high-contrast button:focus-visible,
+html.high-contrast a:focus-visible,
+html.high-contrast [role='button']:focus-visible,
+html.high-contrast input:focus-visible,
+html.high-contrast select:focus-visible,
+html.high-contrast textarea:focus-visible {
+  outline-width: 3px;
+  outline-offset: 3px;
+}
+
+/* Calm the animated background so text and charts stay the focus. */
+html.high-contrast .particle-glow {
+  display: none;
+}
+
+html.high-contrast .particle-canvas {
+  opacity: 0.5;
+}
+
+/* Form controls get a solid border and brighter placeholder text. */
+html.high-contrast input:not([type='range']):not([type='checkbox']):not([type='radio']),
+html.high-contrast select,
+html.high-contrast textarea {
+  border-color: var(--sa-line);
+}
+
+html.high-contrast input::placeholder,
+html.high-contrast textarea::placeholder {
+  color: var(--sa-muted);
+  opacity: 1;
+}
+
+html.dark.high-contrast input::placeholder,
+html.dark.high-contrast textarea::placeholder {
+  color: #b6c6d7;
+}
+
+/* ---------------------------------------------------------------------------
+   Numberless gradient evaluation scale (RTL)
+   Min sits on the right (rose) and max on the left (emerald), matching native
+   RTL range behaviour. Stops are themeable through custom properties so the
+   light, dark and projector palettes stay legible.
+--------------------------------------------------------------------------- */
+input[type='range'].gradient-scale-slider {
+  --scale-from: #fda4af;
+  --scale-mid: #fde68a;
+  --scale-to: #6ee7b7;
+  --scale-ring: #0f766e;
+  display: block;
+  width: 100%;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  direction: rtl;
+}
+
+input[type='range'].gradient-scale-slider:focus {
+  outline: none;
+}
+
+input[type='range'].gradient-scale-slider:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* Track and thumb — Chrome / Edge / Safari */
+input[type='range'].gradient-scale-slider::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to left,
+    var(--scale-from) 0%,
+    var(--scale-mid) 50%,
+    var(--scale-to) 100%
+  );
+  box-shadow: inset 0 0 0 1px rgba(16, 29, 48, 0.06);
+}
+
+input[type='range'].gradient-scale-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  /* Centers a 26px thumb on the 10px track: (10 - 26) / 2 */
+  margin-top: -8px;
+  border-radius: 9999px;
+  border: 4px solid var(--scale-ring);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+  transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type='range'].gradient-scale-slider:hover::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+
+input[type='range'].gradient-scale-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgba(20, 125, 120, 0.22), 0 4px 12px rgba(15, 118, 110, 0.25);
+}
+
+input[type='range'].gradient-scale-slider.is-unanswered::-webkit-slider-thumb {
+  border-color: #94a3b8;
+}
+
+/* Track and thumb — Firefox */
+input[type='range'].gradient-scale-slider::-moz-range-track {
+  height: 10px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to left,
+    var(--scale-from) 0%,
+    var(--scale-mid) 50%,
+    var(--scale-to) 100%
+  );
+  box-shadow: inset 0 0 0 1px rgba(16, 29, 48, 0.06);
+}
+
+input[type='range'].gradient-scale-slider::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px;
+  border: 4px solid var(--scale-ring);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+  transition: transform 0.15s ease, border-color 0.2s ease;
+}
+
+input[type='range'].gradient-scale-slider:hover::-moz-range-thumb {
+  transform: scale(1.12);
+}
+
+input[type='range'].gradient-scale-slider:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px rgba(20, 125, 120, 0.22), 0 4px 12px rgba(15, 118, 110, 0.25);
+}
+
+input[type='range'].gradient-scale-slider.is-unanswered::-moz-range-thumb {
+  border-color: #94a3b8;
+}
+
+/* Keep the gradient (not the flat dark-mode track) in the dark palette. */
+html.dark input[type='range'].gradient-scale-slider {
+  --scale-from: #fb7185;
+  --scale-mid: #fbbf24;
+  --scale-to: #34d399;
+  --scale-ring: #3aa9a3;
+  background: transparent;
+}
+
+/* Projector mode needs saturated stops; pastels wash out on a big screen. */
+html.high-contrast input[type='range'].gradient-scale-slider {
+  --scale-from: #e11d48;
+  --scale-mid: #d97706;
+  --scale-to: #059669;
+  --scale-ring: #0f172a;
+}
+
+html.dark.high-contrast input[type='range'].gradient-scale-slider {
+  --scale-ring: #d3eeeb;
 }
