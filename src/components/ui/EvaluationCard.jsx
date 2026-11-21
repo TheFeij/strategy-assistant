@@ -28,7 +28,7 @@ export default function EvaluationCard({
 }) {
   return (
     <article
-      className={`flex h-full min-w-0 flex-col gap-3 rounded-2xl border border-line bg-white p-4 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-brand-200 hover:shadow-card sm:p-5 ${className}`}
+      className={`flex min-w-0 flex-col gap-3 rounded-2xl border border-line bg-white p-4 shadow-sm transition-[box-shadow,border-color] duration-200 hover:border-brand-200 hover:shadow-card sm:p-5 ${className}`}
     >
       <header className="flex items-start gap-2.5">
         <div className="flex min-w-0 items-center gap-2.5">
