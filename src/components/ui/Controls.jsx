@@ -12,27 +12,27 @@ const SCALE_LEVEL_META = {
   1: {
     label: 'بسیار کم',
     badgeClass:
-      'text-rose-700 bg-rose-50 border-rose-200 dark:text-rose-300 dark:bg-rose-500/15 dark:border-rose-400/30',
+      'text-midnight-600 bg-midnight-50 border-midnight-200 dark:text-midnight-200 dark:bg-white/10 dark:border-white/15',
   },
   2: {
     label: 'کم',
     badgeClass:
-      'text-amber-700 bg-amber-50 border-amber-200 dark:text-amber-300 dark:bg-amber-500/15 dark:border-amber-400/30',
+      'text-midnight-700 bg-midnight-50 border-midnight-200 dark:text-midnight-100 dark:bg-white/10 dark:border-white/15',
   },
   3: {
     label: 'حد وسط',
     badgeClass:
-      'text-midnight-600 bg-white border-midnight-200 dark:text-midnight-200 dark:bg-midnight-800 dark:border-midnight-600',
+      'text-midnight-700 bg-midnight-100 border-midnight-300 dark:text-midnight-100 dark:bg-white/10 dark:border-white/20',
   },
   4: {
     label: 'زیاد',
     badgeClass:
-      'text-brand-800 bg-brand-50 border-brand-200 dark:text-brand-300 dark:bg-brand-500/15 dark:border-brand-400/30',
+      'text-midnight-800 bg-midnight-100 border-midnight-300 dark:text-midnight-100 dark:bg-white/15 dark:border-white/20',
   },
   5: {
     label: 'بسیار زیاد',
     badgeClass:
-      'text-emerald-700 bg-emerald-50 border-emerald-200 dark:text-emerald-300 dark:bg-emerald-500/15 dark:border-emerald-400/30',
+      'text-midnight-900 bg-midnight-200 border-midnight-400 dark:text-white dark:bg-white/15 dark:border-white/25',
   },
 }
 
@@ -48,73 +48,13 @@ function levelMeta(option, index, labels) {
   return customLabel ? { ...base, label: customLabel } : base
 }
 
-export function AiConsult({
-  hint,
-  onApply,
-  applyLabel,
-  children,
-  buttonLabel = '🤖 مشورت با AI',
-  className = '',
-  panelAlign = 'right',
-}) {
-  const [open, setOpen] = useState(false)
-  const rootRef = useRef(null)
-
-  useEffect(() => {
-    if (!open) return
-
-    const handlePointerDown = (event) => {
-      if (rootRef.current && !rootRef.current.contains(event.target)) setOpen(false)
-    }
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') setOpen(false)
-    }
-
-    document.addEventListener('pointerdown', handlePointerDown)
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown)
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [open])
-
-  return (
-    <div ref={rootRef} className={`relative inline-flex items-center ${className}`}>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center gap-1.5 rounded-xl border border-brand-200 bg-brand-50 px-3 py-1.5 text-xs font-extrabold text-brand-800 transition-colors hover:border-brand-300 hover:bg-brand-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
-      >
-        <span>{buttonLabel}</span>
-      </button>
-      {open && (
-        <div
-          className={`absolute ${panelAlign === 'left' ? 'left-0' : 'right-0'} top-full mt-2 w-80 max-w-[80vw] z-40 bg-midnight text-white p-3 rounded-xl text-xs space-y-2 border border-midnight-600 shadow-raised text-right`}
-        >
-          {children}
-          {hint && <p className="text-xs leading-relaxed text-midnight-200">{hint}</p>}
-          {onApply && (
-            <button
-              type="button"
-              onClick={onApply}
-              className="bg-brand-500 hover:bg-brand-400 text-white font-extrabold px-2.5 py-1 rounded-lg text-xs transition"
-            >
-              {applyLabel || 'قرار دادن عدد پیشنهادی AI'}
-            </button>
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
-
 /**
  * Numberless, RTL-aware five-point evaluation control.
  *
- * Renders a continuous rose → amber → emerald track that snaps to the five
+ * Renders a continuous neutral track (light → dark) that snaps to the five
  * ordinal steps, with a qualitative status pill and clickable tick dots. The
- * numeric 1..5 contract is preserved: values set by AI can be fractional, the
- * closest step is shown, and every user selection writes an integer.
+ * neutral palette deliberately avoids green/red so higher values are not
+ * visually framed as inherently good or bad.
  */
 export function SegmentedScale({
   value,
@@ -219,8 +159,8 @@ export function SegmentedScale({
                     aria-hidden="true"
                     className={`rounded-full transition-all duration-200 ${
                       isActive
-                        ? 'h-2 w-2 bg-brand-600'
-                        : 'h-1.5 w-1.5 bg-midnight-300 group-hover:bg-brand-400'
+                        ? 'h-2 w-2 bg-midnight-800 dark:bg-midnight-100'
+                        : 'h-1.5 w-1.5 bg-midnight-300 group-hover:bg-midnight-500 dark:bg-midnight-500 dark:group-hover:bg-midnight-300'
                     }`}
                   />
                 </button>

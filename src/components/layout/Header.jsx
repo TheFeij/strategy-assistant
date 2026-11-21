@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useStrategy } from '../../state/StrategyContext'
 import { toFaNumber } from '../../utils/numbers'
+import AiStatusBadge from '../ai/AiStatusBadge'
 
 function ScorePill({ label, value, dotClass, valueClass }) {
   return (
@@ -146,6 +147,7 @@ export default function Header() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2 xl:min-w-0 xl:justify-self-end">
+          <AiStatusBadge />
           <button
             type="button"
             onClick={resetToBlank}

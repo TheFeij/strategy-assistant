@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useStrategy } from '../../state/StrategyContext'
 import { barneyData, barneyKeys } from '../../data/barney'
-import { AiConsult } from '../ui/Controls'
+import AiConsult from '../ai/AiConsult'
 import EvaluationCard from '../ui/EvaluationCard'
 import ResourceTabs from './ResourceTabs'
 import { toFaNumber } from '../../utils/numbers'
@@ -98,6 +98,20 @@ export default function TabI() {
     },
   ]
 
+  const aiContext = {
+    module: 'mod2',
+    tab: 'بارنی — تقلیدناپذیری',
+    subject: `${b.title} — تقلیدناپذیری`,
+    criterion:
+      'ارزیابی چهار معیار تاریخ‌مندی، پیچیدگی اجتماعی، مستندسازی دانش و وابستگی به افراد کلیدی برای سنجش سختی کپی‌برداری رقبا.',
+    scale: { min: 1, max: 5, low: 'کپی آسان', high: 'کپی بسیار سخت' },
+    currentValue: null,
+    relatedAnswers: cards.reduce((answers, card) => {
+      if (values[card.field] != null) answers[card.title] = values[card.field]
+      return answers
+    }, {}),
+  }
+
   return (
     <div className="bg-white rounded-2xl p-4 border border-line shadow-sm space-y-4">
       <div className="bg-white border border-line border-r-4 !border-r-gold-400 rounded-2xl p-4 text-sm text-ink space-y-1.5">
@@ -115,10 +129,11 @@ export default function TabI() {
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line pb-2">
           <p className="text-xs font-bold text-muted">هر معیار را با انتخاب یکی از پنج سطح تکمیل کنید.</p>
           <AiConsult
-            hint={b.I_aiHint}
+            consultKey={`barney:I:${k}`}
+            context={aiContext}
             onApply={() => applyAiInimitability(k)}
-            applyLabel="تکمیل پیشنهادی AI برای این بخش"
-            panelAlign="left"
+            applyLabel="تکمیل پیشنهادی مرجع برای این بخش"
+            showScore={false}
           />
         </div>
 
@@ -145,6 +160,23 @@ export default function TabI() {
                   </p>
                   <p>{card.detail}</p>
                 </div>
+              }
+              action={
+                <AiConsult
+                  consultKey={`barney:I:${k}:${card.field}`}
+                  context={{
+                    module: 'mod2',
+                    tab: 'بارنی — تقلیدناپذیری',
+                    subject: `${b.title} — ${card.title}`,
+                    criterion: card.question,
+                    scale: { min: 1, max: 5, low: card.lowLabel, high: card.highLabel },
+                    currentValue: values[card.field],
+                    relatedAnswers: aiContext.relatedAnswers,
+                  }}
+                  onApply={(score) => {
+                    if (score != null) setBarneyAnswer(k, card.field, score)
+                  }}
+                />
               }
             />
           ))}

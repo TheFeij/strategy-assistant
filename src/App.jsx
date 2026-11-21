@@ -1,5 +1,6 @@
 import './utils/chartSetup'
 import { StrategyProvider, useStrategy } from './state/StrategyContext'
+import { AiProvider } from './state/AiContext'
 import Header from './components/layout/Header'
 import BreadcrumbBar from './components/layout/BreadcrumbBar'
 import ParticleBackground from './components/layout/ParticleBackground'
@@ -8,6 +9,7 @@ import Module1 from './components/mod1/Module1'
 import Module2 from './components/mod2/Module2'
 import Module3 from './components/mod3/Module3'
 import Module4 from './components/mod4/Module4'
+import OllamaSettingsModal from './components/ai/OllamaSettingsModal'
 
 function Views() {
   const { view } = useStrategy()
@@ -33,7 +35,10 @@ function Views() {
 export default function App() {
   return (
     <StrategyProvider>
-      <Views />
+      <AiProvider>
+        <Views />
+        <OllamaSettingsModal />
+      </AiProvider>
     </StrategyProvider>
   )
 }

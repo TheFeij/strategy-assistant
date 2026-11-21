@@ -585,16 +585,17 @@ html.dark.high-contrast textarea::placeholder {
 }
 
 /* ---------------------------------------------------------------------------
-   Numberless gradient evaluation scale (RTL)
-   Min sits on the right (rose) and max on the left (emerald), matching native
-   RTL range behaviour. Stops are themeable through custom properties so the
-   light, dark and projector palettes stay legible.
+   Numberless neutral evaluation scale (RTL)
+   Min sits on the right (light) and max on the left (dark), matching native
+   RTL range behaviour. A neutral light-to-dark track avoids implying that
+   higher values are inherently good or bad. Stops are themeable through custom
+   properties so the light, dark and projector palettes stay legible.
 --------------------------------------------------------------------------- */
 input[type='range'].gradient-scale-slider {
-  --scale-from: #fda4af;
-  --scale-mid: #fde68a;
-  --scale-to: #6ee7b7;
-  --scale-ring: #0f766e;
+  --scale-from: #c3d1df;
+  --scale-mid: #8ba3bb;
+  --scale-to: #1e3550;
+  --scale-ring: #1e3550;
   display: block;
   width: 100%;
   height: 26px;
@@ -641,7 +642,7 @@ input[type='range'].gradient-scale-slider::-webkit-slider-thumb {
   border-radius: 9999px;
   border: 4px solid var(--scale-ring);
   background: #ffffff;
-  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+  box-shadow: 0 4px 12px rgba(16, 29, 48, 0.18);
   transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -650,7 +651,7 @@ input[type='range'].gradient-scale-slider:hover::-webkit-slider-thumb {
 }
 
 input[type='range'].gradient-scale-slider:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 4px rgba(20, 125, 120, 0.22), 0 4px 12px rgba(15, 118, 110, 0.25);
+  box-shadow: 0 0 0 4px rgba(30, 53, 80, 0.18), 0 4px 12px rgba(16, 29, 48, 0.18);
 }
 
 input[type='range'].gradient-scale-slider.is-unanswered::-webkit-slider-thumb {
@@ -677,7 +678,7 @@ input[type='range'].gradient-scale-slider::-moz-range-thumb {
   border-radius: 9999px;
   border: 4px solid var(--scale-ring);
   background: #ffffff;
-  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+  box-shadow: 0 4px 12px rgba(16, 29, 48, 0.18);
   transition: transform 0.15s ease, border-color 0.2s ease;
 }
 
@@ -686,30 +687,101 @@ input[type='range'].gradient-scale-slider:hover::-moz-range-thumb {
 }
 
 input[type='range'].gradient-scale-slider:focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 4px rgba(20, 125, 120, 0.22), 0 4px 12px rgba(15, 118, 110, 0.25);
+  box-shadow: 0 0 0 4px rgba(30, 53, 80, 0.18), 0 4px 12px rgba(16, 29, 48, 0.18);
 }
 
 input[type='range'].gradient-scale-slider.is-unanswered::-moz-range-thumb {
   border-color: #94a3b8;
 }
 
-/* Keep the gradient (not the flat dark-mode track) in the dark palette. */
+/* Keep the neutral gradient (not the flat dark-mode track) in the dark palette. */
 html.dark input[type='range'].gradient-scale-slider {
-  --scale-from: #fb7185;
-  --scale-mid: #fbbf24;
-  --scale-to: #34d399;
-  --scale-ring: #3aa9a3;
+  --scale-from: #35577a;
+  --scale-mid: #8ba3bb;
+  --scale-to: #c3d1df;
+  --scale-ring: #c3d1df;
   background: transparent;
 }
 
-/* Projector mode needs saturated stops; pastels wash out on a big screen. */
+/* Projector mode needs stronger contrast; the stops stay neutral. */
 html.high-contrast input[type='range'].gradient-scale-slider {
-  --scale-from: #e11d48;
-  --scale-mid: #d97706;
-  --scale-to: #059669;
+  --scale-from: #94a3b8;
+  --scale-mid: #475569;
+  --scale-to: #0f172a;
   --scale-ring: #0f172a;
 }
 
 html.dark.high-contrast input[type='range'].gradient-scale-slider {
-  --scale-ring: #d3eeeb;
+  --scale-ring: #e2e8f0;
+}
+
+/* ---------------------------------------------------------------------------
+   AI assistant states
+   Small, restrained indicators for "thinking" and streamed text.
+--------------------------------------------------------------------------- */
+@keyframes ai-thinking-bounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+  40% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+.ai-thinking-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #147d78;
+  animation: ai-thinking-bounce 1.2s infinite ease-in-out;
+}
+
+.ai-thinking-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.ai-thinking-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes ai-caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.ai-caret {
+  display: inline-block;
+  width: 0.45rem;
+  height: 1.05em;
+  margin-inline-start: 2px;
+  border-radius: 1px;
+  vertical-align: -0.15em;
+  background: currentColor;
+  animation: ai-caret-blink 1s steps(1) infinite;
+}
+
+.dark .ai-thinking-dot {
+  background: #6ec5c0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-thinking-dot,
+  .ai-caret {
+    animation: none;
+  }
+
+  .ai-thinking-dot {
+    opacity: 0.85;
+  }
 }

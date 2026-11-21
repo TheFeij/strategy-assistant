@@ -1,8 +1,7 @@
 import { useStrategy } from '../../state/StrategyContext'
 import { porterForcesPages } from '../../data/porter'
-import { AiConsult } from '../ui/Controls'
+import AiConsult from '../ai/AiConsult'
 import EvaluationCard from '../ui/EvaluationCard'
-import { toFaNumber } from '../../utils/numbers'
 
 const persianDigit = '۰-۹'
 
@@ -171,6 +170,21 @@ export default function TabForces() {
             const { number, title: purpose } = splitQuestionTitle(q.title)
             const isAi = q.source === 'ai'
             const shortAnchor = SHORT_ANCHORS[q.id]
+            const aiContext = {
+              module: 'mod1',
+              tab: `نیروی ${forcePage}`,
+              subject: purpose || q.title,
+              criterion: q.desc,
+              scale: { min: 1, max: 5, low: left, high: right },
+              currentValue: value,
+              relatedAnswers: {
+                forcePage,
+                answeredInPage: pageData.questions.reduce((acc, item) => {
+                  if (forceAnswers[item.id] != null) acc[item.id] = forceAnswers[item.id]
+                  return acc
+                }, {}),
+              },
+            }
             return (
               <EvaluationCard
                 key={q.id}
@@ -201,14 +215,15 @@ export default function TabForces() {
                   </div>
                 }
                 action={
-                  isAi ? (
-                    <AiConsult
-                      hint={q.aiHint}
-                      onApply={() => setForceAnswer(q.id, q.aiRec)}
-                      applyLabel={`قرار دادن عدد AI (${toFaNumber(q.aiRec.toFixed(1))})`}
-                      panelAlign="left"
-                    />
-                  ) : null
+                  <AiConsult
+                    consultKey={`force:${q.id}`}
+                    context={aiContext}
+                    fallbackValue={q.aiRec}
+                    onApply={(score) => {
+                      const next = score ?? q.aiRec
+                      if (next != null) setForceAnswer(q.id, next)
+                    }}
+                  />
                 }
               />
             )

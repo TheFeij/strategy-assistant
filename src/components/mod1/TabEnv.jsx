@@ -1,6 +1,7 @@
 import { useStrategy } from '../../state/StrategyContext'
 import { envFactorsMulti, forceNames } from '../../data/porter'
-import { AiConsult, ScaleInfo, SegmentedScale } from '../ui/Controls'
+import AiConsult from '../ai/AiConsult'
+import { ScaleInfo, SegmentedScale } from '../ui/Controls'
 import { toFaNumber } from '../../utils/numbers'
 
 export default function TabEnv() {
@@ -31,19 +32,59 @@ export default function TabEnv() {
                   <h4 className="text-sm font-extrabold text-midnight-900">{ef.title}</h4>
                 </div>
                 <AiConsult
-                  buttonLabel="🤖 مشورت با AI و درج خودکار"
-                  hint={ef.aiSummary}
+                  consultKey={`env:${ef.id}`}
+                  context={{
+                    module: 'mod1',
+                    tab: 'فاکتورهای محیطی',
+                    subject: ef.title,
+                    criterion: 'ارزیابی اثر چهار فاکتور محیطی بر پنج نیروی پورتر و پیشنهاد اعداد هر سوال',
+                    scale: {
+                      min: 1,
+                      max: 5,
+                      low: 'کاملاً مخالفم / خیلی کم',
+                      high: 'کاملاً موافقم / خیلی زیاد',
+                    },
+                    currentValue: null,
+                    relatedAnswers: ef.questions.reduce((answers, item) => {
+                      if (envAnswers[item.id] != null) answers[item.text] = envAnswers[item.id]
+                      return answers
+                    }, {}),
+                  }}
                   onApply={() => applyAiEnvFactor(ef.id)}
-                  applyLabel="قرار دادن اعداد پیشنهادی AI برای این فاکتور"
-                  panelAlign="left"
+                  applyLabel="قرار دادن اعداد پیشنهادی مرجع برای این فاکتور"
+                  showScore={false}
                 />
               </div>
               {ef.questions.map((q) => {
                 const value = envAnswers[q.id] ?? null
+                const relatedAnswers = ef.questions.reduce((answers, item) => {
+                  if (envAnswers[item.id] != null) answers[item.text] = envAnswers[item.id]
+                  return answers
+                }, {})
                 return (
                   <div key={q.id} className="flex flex-col gap-2 rounded-lg border border-line bg-canvas/60 p-3">
-                    <div className="flex items-start gap-2">
-                      <p className="text-sm font-semibold leading-6 text-midnight-800">{q.text}</p>
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <p className="min-w-0 text-sm font-semibold leading-6 text-midnight-800">{q.text}</p>
+                      <AiConsult
+                        consultKey={`env:${ef.id}:${q.id}`}
+                        context={{
+                          module: 'mod1',
+                          tab: 'فاکتورهای محیطی',
+                          subject: q.text,
+                          criterion: q.text,
+                          scale: {
+                            min: 1,
+                            max: 5,
+                            low: 'کاملاً مخالفم / خیلی کم',
+                            high: 'کاملاً موافقم / خیلی زیاد',
+                          },
+                          currentValue: value,
+                          relatedAnswers: { فاکتور: ef.title, ...relatedAnswers },
+                        }}
+                        onApply={(score) => {
+                          if (score != null) setEnvAnswer(q.id, score)
+                        }}
+                      />
                     </div>
                     <SegmentedScale
                       className="mt-auto"

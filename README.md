@@ -23,6 +23,32 @@ npm run preview      # serve the production build
 
 For a single shareable file, run `npm run build:single`. It uses `vite-plugin-singlefile` to produce a fully self-contained `dist/index.html` (no external JS, CSS, or font requests), which can be opened directly or sent by email/Telegram.
 
+## AI assistant (Ollama)
+
+The “مشورت با AI” buttons can send the relevant page data plus the user’s question to a **local Ollama model** and stream the answer back. Everything stays on the machine; no API key or cloud service is used.
+
+1. Install and start [Ollama](https://ollama.com).
+2. Install at least one model, for example:
+   ```bash
+   ollama pull qwen2.5:7b
+   ```
+3. Open the app and use the **AI** status button in the header or the setup card on the homepage to select the installed model and test the connection.
+
+`npm run dev` proxies `/ollama` to `http://127.0.0.1:11434`, so CORS does not need to be configured during development. A production/static build talks to Ollama directly; if the browser blocks the request, restart Ollama with an allowed origin:
+
+```powershell
+setx OLLAMA_ORIGINS "*"
+# then fully quit and reopen Ollama
+```
+
+or, temporarily in PowerShell:
+
+```powershell
+$env:OLLAMA_ORIGINS="*"; ollama serve
+```
+
+Do not expose Ollama to a public network. If the app is hosted over HTTPS, browsers may block direct requests to `http://127.0.0.1`; in that case use the Vite dev proxy or a small local proxy instead of the direct URL. The model selection is deliberately manual: the app lists installed models and clearly reports when none exist. Suggested scores are never applied automatically; the user must click the apply button. Models that support a “thinking” mode have it disabled by default for faster, concise answers; it can be enabled under advanced settings.
+
 ## Stack
 
 - React 19 + Vite 6
@@ -39,6 +65,10 @@ src/
   App.jsx                     # header, breadcrumb, view switcher, footer
   state/
     StrategyContext.jsx       # all inputs, actions, sample/blank presets, derived results
+    AiContext.jsx             # Ollama config, connection state, streaming requests and errors
+    useAiWorkspace.js         # memoized workspace snapshot used in AI prompts
+  services/
+    ollamaClient.js           # Ollama /api/tags and streaming /api/chat client
   data/
     iranIndustries.js         # 20 Iranian industries + ROIC benchmark (39%)
     mcgahan.js                # McGahan–Porter sector coefficients (Table 4)
@@ -48,14 +78,18 @@ src/
   utils/
     calculations.js           # force scores, industry score, VRIN score, combined score, PFI capture
     chartSetup.js             # Chart.js registration + Persian font defaults
+    aiContext.js              # relevant workspace/criterion context for local AI prompts
+    aiPrompt.js               # system prompt, context serialization, score parsing
+    numbers.js                # Persian/English digit conversion
   components/
     layout/                   # Header, BreadcrumbBar
     home/HomeView.jsx         # hero scores + 4 module portal cards
+    ai/                       # AiConsult, AiSetupCard, AiStatusBadge, OllamaSettingsModal
     mod1/                     # TabRoic, TabForces, TabEnv, TabResult
     mod2/                     # TabChecklist, TabFactor (V/R/N), TabI, TabFirmResult
     mod3/                     # TabWeights, TabStrategy
     mod4/                     # TabAppropriability, TabDominantDesign, TabComplementary, TabPfiResult
-    ui/Controls.jsx           # AiConsult popover, Range, ScaleInfo
+    ui/Controls.jsx           # Range, ScaleInfo and shared controls
   styles/index.css            # Tailwind layers + slider/tab/card primitives
 legacy/                       # original single-file dashboard, kept for reference
 ```

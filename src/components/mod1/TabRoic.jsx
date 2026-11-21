@@ -1,10 +1,11 @@
 import { useStrategy } from '../../state/StrategyContext'
 import { iranIndustriesRoic, IRAN_ROIC_BENCHMARK } from '../../data/iranIndustries'
-import { AiConsult } from '../ui/Controls'
+import AiConsult from '../ai/AiConsult'
 import { toFaNumber } from '../../utils/numbers'
 
 export default function TabRoic() {
   const {
+    companyName,
     selectedIranIndustryId,
     indRoic,
     scopeProduct,
@@ -46,6 +47,19 @@ export default function TabRoic() {
             </select>
           </div>
 
+          <div>
+            <label className="block font-bold text-midnight-700 mb-1">
+              نام شرکت / بنگاه شما (برای تحلیل و مشورت AI):
+            </label>
+            <input
+              type="text"
+              value={companyName}
+              onChange={(e) => set({ companyName: e.target.value })}
+              placeholder="مثلاً: شرکت صنایع فلزی البرز"
+              className="w-full rounded-xl border border-midnight-300 px-3 py-2"
+            />
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block font-bold text-midnight-700 mb-1">نام دقیق محصول / خدمت شما:</label>
@@ -71,9 +85,24 @@ export default function TabRoic() {
 
           <div className="pt-1">
             <AiConsult
+              consultKey="roic:boundary"
               buttonLabel="🤖 مشورت با AI برای تشخیص مرز درست صنعت و افق زمانی"
-              hint="راهنمای هوش مصنوعی (بر اساس مقاله پورتر ۲۰۰۸): مرز صنعت نباید بیش از حد کلان (مثلاً کل صنعت غذا) یا بیش از حد خرد باشد. اگر دو خط محصول شما مشتریان، تامین‌کنندگان و رقبای کاملاً متفاوتی دارند، باید برای هر کدام این فرم را جداگانه پر کنید. افق زمانی مناسب برای تحلیل ساختاری صنایع ایران ۳ تا ۵ سال است."
-              panelAlign="left"
+              context={{
+                module: 'mod1',
+                tab: 'مرز صنعت و ROIC',
+                subject: 'تشخیص مرز درست صنعت و افق زمانی تحلیل ساختاری',
+                criterion:
+                  'مرز صنعت نباید بیش از حد کلان (مثلاً کل صنعت غذا) یا بیش از حد خرد باشد. اگر دو خط محصول مشتریان، تامین‌کنندگان و رقبای متفاوتی دارند باید جدا تحلیل شوند. افق زمانی مناسب برای تحلیل ساختاری صنایع ایران ۳ تا ۵ سال است.',
+                currentValue: selectedIranIndustryId || scopeProduct || null,
+                relatedAnswers: {
+                  شرکت: companyName,
+                  محصول: scopeProduct,
+                  گستره_جغرافیایی: scopeGeo,
+                  ROIC_صنعت: indRoic,
+                  ROIC_بنگاه: firmRoic,
+                },
+              }}
+              showScore={false}
             />
           </div>
 

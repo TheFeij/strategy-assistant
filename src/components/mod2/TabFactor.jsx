@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { useStrategy } from '../../state/StrategyContext'
 import { barneyData, barneyKeys } from '../../data/barney'
-import { AiConsult } from '../ui/Controls'
+import AiConsult from '../ai/AiConsult'
 import EvaluationCard from '../ui/EvaluationCard'
-import { toFaNumber } from '../../utils/numbers'
 import ResourceTabs from './ResourceTabs'
 
 const configs = {
@@ -53,6 +52,24 @@ export default function TabFactor({ mode }) {
   const k = activeKey
   const b = barneyData[k]
   const values = barney[k]
+  const isRare = mode === 'R'
+  const scoredField = isRare ? 'R_q1' : 'N_q1'
+  const fallbackScore = isRare ? b.R_aiRec : b.N_aiRec
+  const aiContext = {
+    module: 'mod2',
+    tab: `بارنی — ${mode}`,
+    subject: `${b.title} — ${isRare ? 'کمیابی' : 'جایگزین‌ناپذیری'}`,
+    criterion: isRare
+      ? 'چقدر این منبع در مقایسه با رقبای فعلی و بالقوه صنعت کمیاب و منحصربه‌فرد است؟'
+      : 'چقدر این منبع در برابر جایگزینی با فناوری یا مدل کسب‌وکار دیگر مصون و جایگزین‌ناپذیر است؟',
+    scale: isRare
+      ? { min: 1, max: 5, low: 'اکثر رقبا دارند', high: 'فقط شرکت ما دارد' }
+      : { min: 1, max: 5, low: 'قابل دور زدن', high: 'بدون جایگزین هم‌ارز' },
+    currentValue: values[scoredField],
+    relatedAnswers: Object.fromEntries(
+      Object.entries(values).filter(([, value]) => value != null && value !== ''),
+    ),
+  }
 
   return (
     <div className="bg-white rounded-2xl p-4 border border-line shadow-sm space-y-4">
@@ -66,52 +83,57 @@ export default function TabFactor({ mode }) {
       <div className="bg-white rounded-2xl p-4 border border-line border-r-4 !border-r-brand-400 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line pb-2">
           <p className="text-xs font-bold text-muted">یکی از پنج سطح را برای هر معیار انتخاب کنید.</p>
-          {mode !== 'V' && (
-            <AiConsult
-              hint={mode === 'R' ? b.R_aiHint : b.N_aiHint}
-              onApply={() => setBarneyAnswer(k, mode === 'R' ? 'R_q1' : 'N_q1', mode === 'R' ? b.R_aiRec : b.N_aiRec)}
-              applyLabel={`قرار دادن عدد AI (${toFaNumber((mode === 'R' ? b.R_aiRec : b.N_aiRec).toFixed(1))})`}
-              panelAlign="left"
-            />
-          )}
         </div>
 
         {mode === 'V' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {['V_q1', 'V_q2'].map((field, idx) => {
               const value = values[field]
+              const isEconomic = idx === 0
+              const cardTitle = isEconomic
+                ? 'چقدر این منبع به کاهش هزینه‌ها یا دریافت قیمت بالاتر از مشتری کمک می‌کند؟'
+                : 'چقدر این منبع مستقیماً تهدیدها و فشار ۵ نیروی صنعت را برای شرکت شما خنثی می‌کند؟'
               return (
                 <EvaluationCard
                   key={field}
                   number={idx + 1}
-                  title={
-                    idx === 0
-                      ? 'چقدر این منبع به کاهش هزینه‌ها یا دریافت قیمت بالاتر از مشتری کمک می‌کند؟'
-                      : 'چقدر این منبع مستقیماً تهدیدها و فشار ۵ نیروی صنعت را برای شرکت شما خنثی می‌کند؟'
-                  }
+                  title={cardTitle}
                   value={value}
                   onChange={(v) => setBarneyAnswer(k, field, v)}
                   lowLabel="خیلی کم"
                   highLabel="خیلی زیاد"
                   tooltips={{ 1: 'خیلی کم', 2: 'کم', 3: 'متوسط', 4: 'زیاد', 5: 'خیلی زیاد' }}
-                  sourceLabel="ورودی مدیرعامل"
+                  sourceLabel="ورودی مدیرعامل · مشورت AI"
                   sourceIcon="👤"
-                  ariaLabel={
-                    idx === 0
-                      ? 'چقدر این منبع به کاهش هزینه‌ها یا دریافت قیمت بالاتر از مشتری کمک می‌کند؟'
-                      : 'چقدر این منبع مستقیماً تهدیدها و فشار ۵ نیروی صنعت را برای شرکت شما خنثی می‌کند؟'
-                  }
+                  ariaLabel={cardTitle}
                   detail={
                     <div className="space-y-1.5">
                       <p>
                         <strong className="text-midnight-700">هدف سوال: </strong>
-                        {idx === 0 ? 'ارزش‌آفرینی اقتصادی' : 'خنثی‌سازی تهدیدها'}
+                        {isEconomic ? 'ارزش‌آفرینی اقتصادی' : 'خنثی‌سازی تهدیدها'}
                       </p>
                       <p>
                         مقیاس پنج‌سطحی از «خیلی کم» (۱) تا «خیلی زیاد» (۵). عدد انتخاب‌شده مستقیماً در محاسبه ارزشمند
                         بودن منبع استفاده می‌شود.
                       </p>
                     </div>
+                  }
+                  action={
+                    <AiConsult
+                      consultKey={`barney:V:${k}:${field}`}
+                      context={{
+                        module: 'mod2',
+                        tab: 'بارنی — ارزشمند بودن (V)',
+                        subject: `${b.title} — ${isEconomic ? 'ارزش‌آفرینی اقتصادی' : 'خنثی‌سازی تهدیدها'}`,
+                        criterion: cardTitle,
+                        scale: { min: 1, max: 5, low: 'خیلی کم', high: 'خیلی زیاد' },
+                        currentValue: value,
+                        relatedAnswers: aiContext.relatedAnswers,
+                      }}
+                      onApply={(score) => {
+                        if (score != null) setBarneyAnswer(k, field, score)
+                      }}
+                    />
                   }
                 />
               )
@@ -120,8 +142,9 @@ export default function TabFactor({ mode }) {
         )}
 
         {mode === 'R' && (
-          <div className="grid grid-cols-1 gap-3">
+          <div className="flex justify-center">
             <EvaluationCard
+              className="w-full lg:w-[calc(50%-0.5rem)]"
               number={1}
               title="چقدر این منبع شما در مقایسه با رقبای فعلی و بالقوه صنعت کمیاب و منحصربه‌فرد است؟"
               value={values.R_q1}
@@ -144,13 +167,25 @@ export default function TabFactor({ mode }) {
                   </p>
                 </div>
               }
+              action={
+                <AiConsult
+                  consultKey={`barney:R:${k}`}
+                  context={aiContext}
+                  fallbackValue={fallbackScore}
+                  onApply={(score) => {
+                    const next = score ?? fallbackScore
+                    if (next != null) setBarneyAnswer(k, 'R_q1', next)
+                  }}
+                />
+              }
             />
           </div>
         )}
 
         {mode === 'N' && (
-          <div className="grid grid-cols-1 gap-3">
+          <div className="flex justify-center">
             <EvaluationCard
+              className="w-full lg:w-[calc(50%-0.5rem)]"
               number={1}
               title="چقدر این منبع در برابر جایگزینی با یک فناوری یا مدل کسب‌وکار دیگر (هم‌ارز استراتژیک) مصون و جایگزین‌ناپذیر است؟"
               value={values.N_q1}
@@ -175,6 +210,17 @@ export default function TabFactor({ mode }) {
                     وجود ندارد.
                   </p>
                 </div>
+              }
+              action={
+                <AiConsult
+                  consultKey={`barney:N:${k}`}
+                  context={aiContext}
+                  fallbackValue={fallbackScore}
+                  onApply={(score) => {
+                    const next = score ?? fallbackScore
+                    if (next != null) setBarneyAnswer(k, 'N_q1', next)
+                  }}
+                />
               }
             />
           </div>

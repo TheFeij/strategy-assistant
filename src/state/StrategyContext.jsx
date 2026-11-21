@@ -39,6 +39,7 @@ const emptyPfiChecklist = () => {
 }
 
 const blankData = () => ({
+  companyName: '',
   selectedIranIndustryId: '',
   indRoic: null,
   scopeProduct: '',
@@ -259,6 +260,7 @@ export function StrategyProvider({ children }) {
 
     setState((prev) => ({
       ...prev,
+      companyName: 'شرکت صنایع فلزی البرز (نمونه)',
       selectedIranIndustryId: 'auto',
       indRoic: 34.0,
       scopeProduct: 'تولید قطعات و مجموعه‌های صنعتی خودرو و ماشین‌آلات',

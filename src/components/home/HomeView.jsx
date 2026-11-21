@@ -1,5 +1,6 @@
 import { useStrategy } from '../../state/StrategyContext'
 import { toFaNumber } from '../../utils/numbers'
+import AiConsult from '../ai/AiConsult'
 
 const moduleCards = [
   {
@@ -303,7 +304,18 @@ function ScoreRing({ id, value, label, source, tone = 'industry', caption = 'ا�
 }
 
 export default function HomeView() {
-  const { navigate, IS_current, FS, combinedScore, pfiFirmShare } = useStrategy()
+  const {
+    navigate,
+    IS_current,
+    IS_future,
+    FS,
+    combinedScore,
+    pfiFirmShare,
+    bindingForceName,
+    bestBadge,
+    pfiWinnerLabel,
+  } = useStrategy()
+  const hasScores = [IS_current, FS, combinedScore, pfiFirmShare].some((value) => value != null)
 
   return (
     <div className="space-y-4">
@@ -313,9 +325,34 @@ export default function HomeView() {
           <div className="pointer-events-none absolute -bottom-24 left-1/4 h-56 w-56 rounded-full bg-gold-500/10 blur-3xl" />
           <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-l from-transparent via-white/25 to-transparent" />
 
-          <h1 className="relative text-xl font-black leading-tight text-white sm:text-2xl">
-            داشبورد مدیریتی
-          </h1>
+          <div className="relative flex flex-wrap items-center justify-between gap-3">
+            <h1 className="text-xl font-black leading-tight text-white sm:text-2xl">داشبورد مدیریتی</h1>
+            <AiConsult
+              consultKey="dashboard:strategy"
+              buttonLabel="🤖 تولید استراتژی با AI"
+              context={{
+                module: 'dashboard',
+                tab: 'داشبورد مدیریتی',
+                subject: 'استراتژی یکپارچه بر اساس امتیازهای داشبورد',
+                criterion:
+                  'چهار امتیاز داشبورد را کنار هم ببین: جذابیت صنعت (پورتر)، جذابیت بنگاه (بارنی)، امتیاز ترکیبی صنعت و بنگاه (مک‌گاهان و پورتر) و سهم سود نوآوری (تیس).',
+                outputMode: 'strategy-paragraph',
+                relatedAnswers: {
+                  'امتیاز صنعت فعلی': IS_current,
+                  'امتیاز صنعت آینده': IS_future,
+                  'امتیاز بنگاه': FS,
+                  'امتیاز ترکیبی صنعت و بنگاه': combinedScore,
+                  'سهم سود نوآوری': pfiFirmShare,
+                  'تنگنای اصلی سود': bindingForceName,
+                  'وضعیت مزیت رقابتی': bestBadge,
+                  'ذی‌نفع غالب سود': pfiWinnerLabel,
+                },
+              }}
+              disabled={!hasScores}
+              showScore={false}
+              className="shrink-0"
+            />
+          </div>
         </div>
 
         <div className="bg-white p-4 sm:p-5 dark:bg-midnight-900">
@@ -337,8 +374,8 @@ export default function HomeView() {
             <ScoreRing
               id="hero-score-combined"
               value={combinedScore}
-              label="امتیاز نهایی"
-              source="مک‌گاهان"
+              label="امتیاز ترکیبی صنعت و بنگاه"
+              source="مک‌گاهان و پورتر"
               tone="gold"
             />
             <ScoreRing

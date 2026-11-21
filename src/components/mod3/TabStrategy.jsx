@@ -96,7 +96,7 @@ export default function TabStrategy() {
             <>
               <div className="p-4 rounded-2xl bg-gold-50 border border-gold-200 border-r-4 !border-r-gold-500 space-y-2">
                 <div className="font-black text-gold-900 text-base">
-                  امتیاز نهایی تصمیم‌گیری (مک‌گاهان و پورتر): {toFaNumber(combinedScore)} از ۱۰۰
+                  امتیاز ترکیبی صنعت و بنگاه (مک‌گاهان و پورتر): {toFaNumber(combinedScore)} از ۱۰۰
                 </div>
                 <p>
                   در بخش اقتصادی <strong>«{secObj.name}»</strong>، وزن جذابیت صنعت{' '}

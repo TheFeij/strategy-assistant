@@ -40,7 +40,7 @@ export default function TabAppropriability() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="flex flex-wrap justify-center gap-4">
         {pfiAppropriability.map((q, idx) => (
           <PfiQuestionCard
             key={q.id}
@@ -48,6 +48,7 @@ export default function TabAppropriability() {
             number={idx + 1}
             value={pfiAnswers[q.id]}
             onChange={(v) => setPfiAnswer(q.id, v)}
+            className="w-full lg:w-[calc(50%-0.5rem)]"
           />
         ))}
       </div>

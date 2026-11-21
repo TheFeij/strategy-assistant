@@ -87,7 +87,7 @@ export default function TabComplementary() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="flex flex-wrap justify-center gap-4">
         {pfiComplementaryAssets.map((q, idx) => {
           const isConditional = !!q.conditionalOnQ7
           return (
@@ -98,7 +98,7 @@ export default function TabComplementary() {
               value={pfiAnswers[q.id]}
               onChange={(v) => setPfiAnswer(q.id, v)}
               disabled={isConditional && fullyOwned}
-              className={isConditional ? 'lg:col-span-2' : ''}
+              className="w-full lg:w-[calc(50%-0.5rem)]"
               note={
                 isConditional && fullyOwned
                   ? 'چون در سوال ۷ مالکیت کامل داخلی را انتخاب کردید، ریسک تصاحب سود توسط شریک بیرونی موضوعیت ندارد و اثر این سوال صفر می‌شود.'
